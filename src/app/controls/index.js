@@ -1,6 +1,6 @@
 // Left column: tools, run/optimise, facility sorting method, node list / node editor, map card.
 import { icon, WASTE_ICON } from '../icons.js';
-import { editScenario, deleteNode, runBaseline, runOptimise } from '../actions.js';
+import { editScenario, deleteNode, runBaseline, runOptimise, cancelOptimise } from '../actions.js';
 import { changeMapImage } from '../io.js';
 import { MAX_NODES } from '../scenario-utils.js';
 
@@ -59,13 +59,20 @@ export function mount(el, store) {
   }
 
   /* ---------- run ---------- */
+  let wasBusy = false;
   function renderRun(host, s) {
     const busy = s.mode === 'optimising';
+    const ae = document.activeElement;
+    const refocus = wasBusy && !busy && (ae === document.body || host.contains(ae));
+    wasBusy = busy;
     const canRun = !busy && s.scenario.nodes.length > 0 && !!s.scenario.facility;
     host.innerHTML = `<div class="c-run">
       <button class="app-btn app-btn--primary app-btn--lg" data-act="run" ${canRun ? '' : 'disabled'} title="${canRun ? 'Simulate 30 days with the current setup' : 'Add a node and place the facility first'}">${icon('play', 18)}<span>Run</span></button>
-      <button class="app-btn app-btn--lg" data-act="optimise" ${s.baseline && !busy ? '' : 'disabled'} title="${s.baseline ? 'Ask the AI for a better setup, then verify it by simulation' : 'Run the baseline first'}">${icon('sparkles', 18)}<span>${busy ? 'Thinking' : 'Optimise'}</span></button>
+      ${busy
+    ? `<button class="app-btn app-btn--lg app-btn--cancel" data-act="cancel" aria-label="Cancel AI request" title="Cancel the AI request (Esc)">${icon('x', 18)}<span>Cancel</span></button>`
+    : `<button class="app-btn app-btn--lg" data-act="optimise" ${s.baseline ? '' : 'disabled'} title="${s.baseline ? 'Ask the AI for a better setup, then verify it by simulation' : 'Run the baseline first'}">${icon('sparkles', 18)}<span>Optimise</span></button>`}
     </div>`;
+    if (refocus) host.querySelector('[data-act="optimise"]')?.focus();
   }
 
   /* ---------- facility ---------- */
@@ -187,6 +194,7 @@ export function mount(el, store) {
       rerender('nodes');
     } else if (t.dataset.act === 'run') runBaseline(store);
     else if (t.dataset.act === 'optimise') runOptimise(store);
+    else if (t.dataset.act === 'cancel') cancelOptimise();
     else if (t.dataset.act === 'deselect') store.set({ selectedNodeId: null });
     else if (t.dataset.act === 'delete') deleteNode(store, s.selectedNodeId);
     else if (t.dataset.act === 'image') $('c-file').click();
@@ -217,6 +225,16 @@ export function mount(el, store) {
     }
   });
 
+  const onKey = (e) => {
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    const s = store.get();
+    if (s.mode !== 'optimising' || s.panel) return;
+    e.preventDefault();
+    cancelOptimise();
+  };
+  window.addEventListener('keydown', onKey);
+
   render(store.get());
-  return store.subscribe(render);
+  const unsub = store.subscribe(render);
+  return () => { window.removeEventListener('keydown', onKey); unsub(); };
 }

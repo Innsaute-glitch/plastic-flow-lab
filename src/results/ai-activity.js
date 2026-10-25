@@ -1,5 +1,6 @@
 // Live AI activity card: stage stepper, monospace stream with cursor, rationales popping in.
 import { h, svgIcon, ICONS } from './dom.js';
+import { cancelOptimise } from '../app/actions.js';
 import { parseRationales, sourceBadge } from './format.js';
 
 const STEPS = [
@@ -20,7 +21,13 @@ export function createAiActivity() {
   const t = h('h3', 'results-h3 results-ai-title');
   t.append(svgIcon(ICONS.spark, 16, 'results-ai-spark'), document.createTextNode(' AI optimiser'));
   const badgeSlot = h('span', 'results-badge-slot');
-  head.append(t, badgeSlot);
+  const cancelBtn = h('button', 'results-linkbtn results-ai-cancel', 'Cancel');
+  cancelBtn.type = 'button';
+  cancelBtn.setAttribute('aria-label', 'Cancel AI request');
+  cancelBtn.addEventListener('click', () => cancelOptimise());
+  const right = h('span', 'results-head-actions');
+  right.append(badgeSlot, cancelBtn);
+  head.append(t, right);
 
   const stepper = h('ol', 'results-steps');
   const stepEls = STEPS.map((s, i) => {
@@ -61,6 +68,7 @@ export function createAiActivity() {
         else s.dot.textContent = String(i + 1);
       });
       card.classList.toggle('is-done', stage === 'done');
+      cancelBtn.hidden = state.mode !== 'optimising';
       note.textContent = llm.error
         ? llm.error.fallback ? `${llm.error.message || 'LLM call failed'} — using the rule-based heuristic.` : llm.error.message || 'LLM call failed'
         : stage === 'retrying' ? 'Response failed validation, asking once more…' : '';

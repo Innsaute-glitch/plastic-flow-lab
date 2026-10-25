@@ -120,7 +120,7 @@ The screen has three columns: **controls on the left**, the **map in the centre*
 2. **Switch Demo on** (top bar) so nothing depends on the internet.
 3. **Run.** The 30 days replay in about 30 seconds. Waste dots flow into bins, bin meters rise green → amber → red, overflowing bins pulse red and drop litter specks, and the truck draws its route to the facility on pickup days. The HUD (bottom-left) shows the day, how many bins are full, kg of litter and kg sorted. Use **2× / 4×** or **Skip to end** if short on time.
 4. **Read the baseline results** (right column). Point at overflow bin-days (44), recovery (18.4%) and the flow diagram: the red band from Generated to "Overflow → litter" is plastic lost to the environment.
-5. **Optimise.** The AI card shows the stages (Sending → Thinking → Validating) and the AI's answer streaming in, with each node's reason popping out as it arrives.
+5. **Optimise.** The AI card shows the stages (Sending → Thinking → Validating) and the AI's answer streaming in, with each node's reason popping out as it arrives. Pressed it by mistake? **Cancel** (the Optimise button turns into it, there's one on the AI card, or press Esc) stops the request at once: the server stops Claude so no more tokens are used, there is no retry, and the app goes back to the baseline results.
 6. **Before → after.** The map replays the AI's plan. The right column shows the big headline (44 → 0 overflow bin-days), each metric with its change, the budget check, the 5-seed check, the flow diagram (toggle Before/After, or expand to side by side) and the list of changes with the AI's reason for each.
 7. **Then load "after" (Thapar 2024) and press Run** to show what Thapar really did with Saahas, and compare it with the AI's plan using the table in section 1.
 8. Optional: click **What the AI saw / said** to show the exact data sent and the raw reply. This proves the AI only suggested settings.
@@ -329,7 +329,7 @@ Note what is *not* in it: no route (the simulation plans routes itself), and no 
 | Reply is not valid JSON | **Retries once**, sending the error back to the AI |
 | Still invalid, network down, not logged in | **Falls back** to the rule-based heuristic, labelled "Heuristic fallback" |
 
-The app's Optimise step can never crash: the browser-side function is written so it always returns a proposal.
+The app's Optimise step can never crash: the browser-side function is written so it always returns a proposal (or nothing, if you cancel it).
 
 ### The rule-based fallback (heuristic)
 

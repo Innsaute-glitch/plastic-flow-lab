@@ -180,9 +180,12 @@
 @keyframes results-sweep { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .results-ai-title { display: inline-flex; align-items: center; gap: 4px; }
 .results-ai-spark { color: var(--accent); filter: drop-shadow(0 0 6px var(--accent)); }
-.results-steps { list-style: none; margin: 0 0 var(--space-3); padding: 0; display: flex; align-items: center; gap: 0; }
+.results-steps { list-style: none; margin: 0 0 var(--space-3); padding: 0; display: flex; align-items: center; gap: 0; container-type: inline-size; }
+/* narrow results column: three labels do not fit, so only the current step keeps its label (dots still show progress) */
+@container (max-width: 340px) { .results-step:not(.is-active) .results-step-label { display: none; } }
 .results-step { display: flex; align-items: center; gap: 8px; flex: 1 1 auto; color: var(--text-faint); font: 600 13px/1 var(--font-ui); }
-.results-step:not(:last-child)::after { content: ''; flex: 1 1 auto; height: 2px; margin: 0 10px; background: var(--line); border-radius: 1px; }
+.results-step:not(:last-child)::after { content: ''; flex: 1 1 auto; min-width: 6px; height: 2px; margin: 0 8px; background: var(--line); border-radius: 1px; }
+.results-step:last-child { flex: none; }
 .results-step-dot { width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center; border: 2px solid var(--line); font-size: 12px; flex: none; }
 .results-step.is-active { color: var(--text); }
 .results-step.is-active .results-step-dot { border-color: var(--accent); color: var(--accent); animation: results-pulse 1.2s ease-in-out infinite; }
@@ -289,3 +292,10 @@
 .results-gains-val--flat { color: var(--text-faint); font-weight: 500; }
 .results-gains-val--plain { color: var(--text); }
 .results-gains-foot { margin: var(--space-2) 0 0; padding-top: var(--space-2); border-top: 1px solid var(--line); font-size: 12px; line-height: 1.4; color: var(--text-faint); }
+
+.results-ai-cancel { color: var(--text-dim, var(--text-faint)); }
+.results-ai-cancel:hover { color: var(--bad); }
+.results-ai-cancel[hidden] { display: none; }
+.results-ai .results-card-head { flex-wrap: wrap; row-gap: var(--space-1, 4px); }
+.results-ai .results-ai-title { white-space: nowrap; }
+.results-ai .results-head-actions { margin-left: auto; }

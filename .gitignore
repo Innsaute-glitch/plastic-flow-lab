@@ -3,3 +3,7 @@ dist/
 .env
 *.log
 .playwright-mcp/
+# agent plans and reports stay local; screenshots are kept
+tasks/*
+!tasks/*.png
+!tasks/shots/

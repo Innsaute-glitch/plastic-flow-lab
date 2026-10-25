@@ -55,20 +55,20 @@ After the first time, you can just double-click the start file.
 
 Do these in order and tick them off. Each step says what you should see.
 
-1. **Load the demo.** Click **Load demo** in the top bar.
-   ✅ 10 coloured markers (canteen, hostels, library...) and a green square (the sorting facility) appear on the map.
+1. **Load the demo.** Click **Load demo** in the top bar and choose **Thapar 2023 · before Saahas**.
+   ✅ 40 coloured markers (hostels, canteens, library...) and a green square (the sorting facility, the MRF) appear on the real Thapar satellite map.
 2. **Turn on Demo mode.** Click the **Demo** switch in the top bar so it turns green.
    ✅ Nothing visible changes yet. This makes the AI step work without the internet.
 3. **Run the baseline.** Click **Run** (left panel).
    ✅ Coloured dots flow into the bins, the bin meters fill and turn red, and a truck route draws itself. The day counter at the bottom-left counts to 30. It takes about 30 seconds (use **4×** to speed it up).
 4. **Read the results** in the right column.
-   ✅ "Overflow bin-days" shows **152**. Recovery rate shows **18.7%**. Total cost shows **₹28,973**.
+   ✅ "Overflow bin-days" shows **44**. Recovery rate shows **18.4%**. Total spend is about **₹47.0k** and bale revenue about **₹51.6k**.
 5. **Optimise.** Click **Optimise** (left panel).
    ✅ An "AI optimiser" card appears, the AI's answer streams in like typing, and it is labelled **Cached (demo)**.
 6. **Before → after.** After a few seconds the right column changes.
-   ✅ The big number reads **152 → 0**. Recovery shows **18.7 → 41.1 %**. Cost shows **₹28,973 → ₹34,738** with **"Within budget +20%"**. Further down: **"better in 5/5 seeds"**.
+   ✅ The big number reads **44 → 0**. Recovery shows **18.4 → 28.0 %**. Spend shows about **₹47.0k → ₹57.0k** and the net stays a surplus, with **"Within budget"**. Further down: **"better in 5/5 seeds"**.
 7. **Open the Assumptions panel** (top bar).
-   ✅ A list of 32 values appears, many with an amber "estimate" tag. Close it with the **×**.
+   ✅ A list of 34 values appears, 24 of them with an amber "estimate" tag. Close it with the **×**.
 
 If all seven checks match, the app is working exactly as it should.
 

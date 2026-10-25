@@ -18,7 +18,7 @@ The assignment's three bullets and where this app fits:
 
 ### The one-line idea: the AI proposes, the simulation verifies
 
-1. We describe the campus as it is today: up to 10 places that produce plastic waste (canteen, hostels, library...), how much each produces, what bins they have and how often they are emptied.
+1. We describe the campus as it is today: up to 40 places that produce plastic waste (hostels, canteens, academic blocks, library...), how much each produces, what bins they have and how often they are emptied.
 2. The app simulates 30 days of that setup, hour by hour, and shows where every kilogram ends up: in the bin, overflowing as litter, collected, sorted into bales, or rejected.
 3. We press **Optimise**. An AI (Claude Sonnet) reads the campus data and the baseline results and proposes a better setup: pickup intervals, bin types and sizes, and the sorting method.
 4. The **same simulation re-runs with the AI's setup** and shows before vs after. The AI never reports results. Every number comes from the simulation.
@@ -27,7 +27,29 @@ That last point is the heart of the project and the answer to "how do you know t
 
 ### Headline result on the demo campus
 
-With the current demo data (placeholder numbers until our field data arrives), the AI's proposal takes overflow from **152 bin-days to 0**, litter from **253 kg to 0**, recovery from **18.7% to 41.1%** and bale purity from **49.7% to 78.5%**, for **20% more cost**, inside the 25% budget we allow. The improvement holds on all 5 random seeds we test.
+The demo is the real Thapar Institute (TIET), Patiala campus: 40 real buildings (18 hostels, six canteens or food courts, academic blocks, library, lecture complex, sports, health centre, guest house, faculty residences) and the real sorting facility (the MRF near the STP). The campus makes about 238 kg of plastic a day. There are two demo campuses in the **Load demo** menu:
+
+- **Thapar 2023 · before Saahas:** one unlabelled mixed bin type per point, daily pickup (our estimate), bins sized to an average day.
+- **Thapar 2024 · after Saahas:** same capacity and schedule, but labelled segregated bin sets, as Thapar did with Saahas Zero Waste.
+
+The cached AI answer is a real Claude Sonnet 5.5 answer for the 2023 campus. Results over 30 days, seed 42, are model results from partly estimated assumptions:
+
+| | Before Saahas (2023) | After Saahas (real, 2024) | AI plan (Claude) |
+|---|---|---|---|
+| Bins segregated | 0 of 40 | 40 of 40 | 35 of 40 |
+| Overflow bin-days | 44 | 44 | 0 |
+| Recovery rate | 18.4% | 26.1% | 28.0% |
+| Bale purity | 59.5% | 71.1% | 82.5% |
+| Plastic recycled | 1,322 kg | 1,875 kg | 2,010 kg |
+| CO₂e avoided | 1.25 t | 1.77 t | 1.90 t |
+| Sent to landfill | 1,270 kg | 806 kg | 1,036 kg |
+| Spend | ₹47.0k | ₹47.7k | ₹57.0k |
+| Bale revenue | ₹51.6k | ₹73.1k | ₹78.5k |
+| Net | ₹4.5k surplus | ₹25.4k surplus | ₹21.4k surplus |
+
+Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements. The AI's improvement is also checked on 5 random seeds.
+
+Screenshots in `docs/images/` were taken before the real map and may look different.
 
 ### What the app is not
 
@@ -94,25 +116,26 @@ The screen has three columns: **controls on the left**, the **map in the centre*
 
 ### The 3-minute demo path (rehearse this)
 
-1. **Load demo.** 10 campus nodes and the sorting facility appear on the map. Each node's colour is its waste type.
+1. **Load demo, "before" (Thapar 2023).** 40 campus nodes and the sorting facility (the MRF) appear on the real satellite map. Each node's colour is its waste type.
 2. **Switch Demo on** (top bar) so nothing depends on the internet.
 3. **Run.** The 30 days replay in about 30 seconds. Waste dots flow into bins, bin meters rise green → amber → red, overflowing bins pulse red and drop litter specks, and the truck draws its route to the facility on pickup days. The HUD (bottom-left) shows the day, how many bins are full, kg of litter and kg sorted. Use **2× / 4×** or **Skip to end** if short on time.
-4. **Read the baseline results** (right column). Point at overflow bin-days (152), recovery (18.7%) and the flow diagram: the red band from Generated to "Overflow → litter" is plastic lost to the environment.
+4. **Read the baseline results** (right column). Point at overflow bin-days (44), recovery (18.4%) and the flow diagram: the red band from Generated to "Overflow → litter" is plastic lost to the environment.
 5. **Optimise.** The AI card shows the stages (Sending → Thinking → Validating) and the AI's answer streaming in, with each node's reason popping out as it arrives.
-6. **Before → after.** The map replays the AI's plan. The right column shows the big headline (152 → 0 overflow bin-days), each metric with its change, the budget check, the 5-seed check, the flow diagram (toggle Before/After, or expand to side by side) and the list of changes with the AI's reason for each.
-7. Optional: click **What the AI saw / said** to show the exact data sent and the raw reply. This proves the AI only suggested settings.
+6. **Before → after.** The map replays the AI's plan. The right column shows the big headline (44 → 0 overflow bin-days), each metric with its change, the budget check, the 5-seed check, the flow diagram (toggle Before/After, or expand to side by side) and the list of changes with the AI's reason for each.
+7. **Then load "after" (Thapar 2024) and press Run** to show what Thapar really did with Saahas, and compare it with the AI's plan using the table in section 1.
+8. Optional: click **What the AI saw / said** to show the exact data sent and the raw reply. This proves the AI only suggested settings.
 
 ### Editing the campus (Edit mode)
 
 | Tool or control | What it does |
 | --- | --- |
 | **Select** | Click a node to edit it in the left panel; drag a node to move it. Delete key removes the selected node; Esc deselects. |
-| **Add** | Click the map to place a new node (maximum 10). |
-| **Place** | Click the map to place the sorting facility (it does not count toward the 10). |
+| **Add** | Click the map to place a new node (maximum 40). |
+| **Place** | Click the map to place the sorting facility (it does not count toward the 40). |
 | **Calibrate** | Click two points on the map, then type the real distance between them in metres. This sets the map scale used for truck distances. |
 | **Change image** | Load a different map screenshot (any campus or town). |
 | Node editor | Name, waste type (icon chips), rate in kg/day, optional peak window (start hour, end hour, multiplier), bin type (single or segregated), bin count, bin size (60/120/240/660 L), pickup interval in days. |
-| Sorting facility | Manual (90 kg/day), Manual + float tank (150 kg/day), Manual + NIR sensor (400 kg/day). |
+| Sorting facility | Manual (350 kg/day), Manual + float tank (500 kg/day), Manual + NIR sensor (1,200 kg/day). |
 
 Any edit clears old results, because they no longer match the campus. Press **Edit** in the top bar during a replay to go back to editing (the results are kept until you change something).
 
@@ -124,7 +147,7 @@ Any edit clears old results, because they no longer match the campus. Press **Ed
 
 ### The Assumptions panel
 
-Opens from the top bar. It lists every number the model uses (32 values), each with its unit, its source and an amber **estimate** tag where it is a placeholder. Cost values are editable: change one, re-run and the costs and the AI's budget update. Edited values show an **edited** tag and a reset arrow; edits are saved with the scenario.
+Opens from the top bar. It lists every number the model uses (34 values), each with its unit, its source and an amber **estimate** tag where it is not directly sourced (24 of the 34 today); the reasoning for each estimate is shown in the panel. Cost values are editable: change one, re-run and the costs and the AI's budget update. Edited values show an **edited** tag and a reset arrow; edits are saved with the scenario.
 
 ## 5. How the simulation works
 
@@ -134,7 +157,7 @@ The simulation is one function: `simulate(scenario, setup, assumptions, seed) �
 
 | Input | What it contains |
 | --- | --- |
-| **Scenario** | The map (image, size, metres per pixel), the facility position, and up to 10 nodes. Each node has a position, a waste type, a rate in kg/day and an optional peak window. |
+| **Scenario** | The map (image, size, metres per pixel), the facility position, and up to 40 nodes. Each node has a position, a waste type, a rate in kg/day and an optional peak window. |
 | **Setup** | The choices that can change. Per node: bin type, bin count, bin size in litres, pickup interval in days. For the facility: the sorting method. The baseline setup is what campus has today; the AI proposes a new setup. |
 | **Assumptions** | Every model number (densities, contamination, sorting accuracy, truck speed, costs) from `config/assumptions.json`, after any edits. |
 | **Seed** | A number that fixes the randomness. Same seed, same "random" days. |
@@ -147,11 +170,11 @@ Each step is one hour, numbered `t = day × 24 + hour`, with days 0 to 29. Every
 
 **2. Fill the bin.** Bin capacity in kg = bin count × bin size in litres × bulk density of that waste. Loose bottles are light (0.03 kg/L), food-soiled packaging is heavier (0.09 kg/L). So one 120 L bin holds 3.6 kg of PET bottles but 10.8 kg of food-contaminated plastic.
 
-**3. Overflow.** Anything above capacity is overflow. **40%** of it becomes **litter**, lost to wind, animals and drains. The other **60%** lies beside the bin; the truck picks it up at the next collection, but it counts as **contaminated** because it has been on the ground.
+**3. Overflow.** Anything above capacity is overflow. **20%** of it becomes **litter**, lost to wind, animals and drains. The other **80%** lies beside the bin; the truck picks it up at the next collection, but it counts as **contaminated** because it has been on the ground.
 
 **4. Pickup (end of day).** A node with pickup interval *k* is emptied at the end of day *d* when `(d + 1) mod k = 0`. Interval 3 means days 2, 5, 8 ... 29; interval 1 means every day. Bins start empty on day 0.
 
-**5. The truck route.** On each pickup day the truck starts at the facility, visits only the nodes due that day, and returns. The sim finds the shortest loop: it tries every order for up to 8 stops; for 9-10 stops it uses a nearest-neighbour tour improved by 2-opt swaps (within 0.4% of the best possible on our demo). Distance = straight-line pixels × metres per pixel × 1.3 (roads are not straight lines). Trip time = distance at 15 km/h + 5 minutes per stop.
+**5. The truck route.** On each pickup day the truck starts at the facility, visits only the nodes due that day, and returns. The sim finds the shortest loop: it tries every order for up to 8 stops; for more stops it uses a nearest-neighbour tour improved by 2-opt swaps (within 0.4% of the best possible on the earlier 10-node demo). Distance = straight-line pixels × metres per pixel × 1.3 (roads are not straight lines). Trip time = distance at 10 km/h + 2 minutes per stop.
 
 **6. Sorting at the facility.** Everything collected joins a queue and is sorted the same day, up to the method's throughput (kg/day). What doesn't fit is **backlog**, sorted on later days. Sorting uses expected values (averages), not dice rolls:
 
@@ -163,9 +186,9 @@ Each step is one hour, numbered `t = day × 24 + hour`, with days 0 to 29. Every
 
 ### Where contamination comes from
 
-Each waste type starts with a base share of contaminated material: PET bottles 5%, HDPE 8%, PP 10%, mixed plastic 20%, food-contaminated 55%. A **single mixed bin** adds 15 percentage points of cross-contamination (people throw everything in together). A **segregated** bin set adds only 15 × (1 − 0.7) = 4.5 points, because we assume 70% of people use the right slot. Overflow that lay on the ground counts as 100% contaminated.
+Each waste type starts with a base share of contaminated material: PET bottles 5%, HDPE 8%, PP 10%, mixed plastic 15%, food-contaminated 55%. A **single mixed bin** adds 25 percentage points of cross-contamination (people throw everything in together). A **segregated** bin set adds only 25 × (1 − 0.9) = 2.5 points, because 90% of people use the right slot (Thapar case study: "90% segregation at source"). Overflow that lay on the ground counts as 100% contaminated.
 
-Each waste type is also split into resins: for example PET bottles are 90% PET, 8% PP (caps) and 2% other; food-contaminated packaging is 15% PET, 10% HDPE, 35% PP and 40% mixed/multilayer.
+Each waste type is also split into resins: for example PET bottles are 90% PET, 8% PP (caps) and 2% other. The mixed-plastic split comes from CPCB: PET 14%, HDPE 12%, PP 16%, the rest films and multilayer.
 
 ### The only randomness
 
@@ -179,18 +202,18 @@ A node makes 10 kg/day (no randomness, no peak), its bins hold 25 kg, and the tr
 | --- | --- | --- |
 | 0 | 10 kg | — |
 | 1 | 20 kg | — |
-| 2 | 25 kg (full) | 30 kg arrived, so 5 kg overflowed: 2 kg litter, 3 kg beside the bin. Truck takes 25 + 3 = 28 kg. |
+| 2 | 25 kg (full) | 30 kg arrived, so 5 kg overflowed: 2 kg litter, 3 kg beside the bin (this test case uses 40% litter; the live config uses 20%). Truck takes 25 + 3 = 28 kg. |
 
 This repeats on days 2, 5 ... 29, giving 10 overflow bin-days. Over 30 days: 300 kg generated = 280 kg collected + 20 kg litter. Nothing disappears. The "load at pickup" is 30 ÷ 25 = 120% while the bin itself is 100% full.
 
 ### What comes out
 
-- **Summary:** generated, collected, litter, still in bins, backlog, recovery rate, purity, contamination rate, overflow bin-days, overflow calendar days, route distance, truck trips, pickups, cost (transport, bins, sorting, total) and a mass-balance error that must be 0.
+- **Summary:** generated, collected, litter, still in bins, backlog, recovery rate, purity, contamination rate, overflow bin-days, overflow calendar days, route distance, truck trips, pickups, spend (transport, bins, sorting), bale revenue, net cost, recycled kg, landfill kg, CO₂e avoided and a mass-balance error that must be 0.
 - **Per node:** generated, collected, litter, overflow days, pickups, average bin fill at pickup (capped at 100%), average load at pickup (uncapped), maximum fill.
 - **Flows:** 18 links that feed the flow diagram (every one always present, 0 kg where nothing flows).
 - **Timeline:** 720 frames (per node: waste generated that hour, kg in the bin, fill %, overflow, litter; plus the facility queue and running totals) and a list of truck trips with their exact path. The animation only replays this. It never calculates anything itself.
 
-One run takes about 10-15 milliseconds, so the 11 runs after you press Optimise (the proposal, plus the 5-seed check of baseline and proposal) finish instantly.
+One run of the 40-node demo takes about 30 milliseconds, so the 11 runs after you press Optimise (the proposal, plus the 5-seed check of baseline and proposal) finish instantly.
 
 ## 6. Reading the results
 
@@ -198,17 +221,20 @@ Every number on screen is labelled **model results**: it is what our model predi
 
 ### The metrics
 
-| Metric | Exact definition | What it tells you | Demo baseline → AI plan |
+| Metric | Exact definition | What it tells you | 2023 baseline → AI plan |
 | --- | --- | --- | --- |
-| **Overflow bin-days** (headline) | For each node, count the days its bins overflowed; add them up over all nodes | How often bins spill. 10 nodes × 30 days = 300 is the maximum. | 152 → 0 |
-| Overflow calendar days | Days on which at least one bin overflowed | Shown under the headline | 28 of 30 → 0 |
-| **Recovery rate** | Correctly sorted PET + HDPE + PP in bales ÷ all plastic generated | The honest end-to-end score: litter, backlog, contamination and sorting errors all lower it | 18.7% → 41.1% |
-| **Bale purity** | Correctly sorted resin in bales ÷ total bale mass | Quality of what we sell to recyclers | 49.7% → 78.5% |
-| **Contamination rate** | Plastic pulled out as contaminated ÷ everything sorted | How dirty the collected stream is | 36.1% → 29.0% |
-| **Route distance** | Total truck km over 30 days | Collection effort | 24.9 → 69.5 km |
-| **Total cost** (INR) | Transport (km × ₹25) + bins (count × price per day by size × 30) + sorting (price per day × 30) | What the setup costs for 30 days | ₹28,973 → ₹34,738 |
+| **Overflow bin-days** (headline) | For each node, count the days its bins overflowed; add them up over all nodes | How often bins spill. 40 nodes × 30 days = 1,200 is the maximum. | 44 → 0 |
+| Overflow calendar days | Days on which at least one bin overflowed | Shown under the headline | see the app → 0 |
+| **Recovery rate** | Correctly sorted PET + HDPE + PP in bales ÷ all plastic generated | The honest end-to-end score: litter, backlog, contamination and sorting errors all lower it | 18.4% → 28.0% |
+| **Bale purity** | Correctly sorted resin in bales ÷ total bale mass | Quality of what we sell to recyclers | 59.5% → 82.5% |
+| **Contamination rate** | Plastic pulled out as contaminated ÷ everything sorted | How dirty the collected stream is | shown in the app |
+| **Route distance** | Total truck km over 30 days | Collection effort | shown in the app |
+| **Spend** (INR) | Transport (km × ₹12) + bins (count × price per day by size × 30) + sorting (price per day × 30) | What the setup costs for 30 days | ₹47.0k → ₹57.0k |
+| **Bale revenue** (INR) | Correctly sorted PET / HDPE / PP kg × bale price (PET ₹40, HDPE ₹45, PP ₹35 per kg). Impurities earn nothing. | What the bales sell for | ₹51.6k → ₹78.5k |
+| **Net cost** (INR) | Spend − bale revenue. Negative means a surplus. | The number the budget rule uses | ₹4.5k surplus → ₹21.4k surplus |
+| **Gains** (ⓘ popover) | Plastic recycled, plastic sent to landfill, CO₂e avoided (kg recycled × US EPA WARM factor) | Environmental outcome | 1,322 → 2,010 kg recycled; 1.25 → 1.90 t CO₂e |
 
-Why recovery is only \~41% even with zero overflow: 40% of food-contaminated packaging is multilayer (goes to chemical recycling, not bales), contaminated material is removed, sorting is not 100% accurate and some is lost in processing. Recovery measures only clean, correctly baled PET/HDPE/PP.
+Why recovery is only about 28% even with zero overflow: most mixed and food-contaminated packaging is multilayer or film (goes to chemical recycling, not bales), contaminated material is removed, sorting is not 100% accurate and some is lost in processing. Recovery measures only clean, correctly baled PET/HDPE/PP.
 
 ### The flow diagram (Sankey)
 
@@ -219,7 +245,7 @@ It shows where every kilogram went, left to right. Band width = kg.
 - **Sorted** splits into **PET / HDPE / PP bales**, **Mixed / multilayer residue**, **Contaminated** and **Rejected**.
 - The right-most column is the recycling route: bales → **Mechanical route**; residue and half of the contaminated → **Chemical recycling candidate**; the other half of contaminated and rejected → **Landfill**.
 
-In the demo baseline the story is visible at a glance: a red band of 253 kg goes to litter and 33 kg piles up as backlog. In the AI plan both disappear.
+In the 2023 baseline the story is visible at a glance: a red band goes to litter and some plastic piles up as backlog. In the AI plan the overflow band disappears.
 
 The colours are fixed across the whole app: PET blue, HDPE purple, PP orange, mixed grey, contaminated brown-red. The same colour is used for that material on the map dots, the bins, the flow diagram and the legends.
 
@@ -231,15 +257,15 @@ The colours are fixed across the whole app: PET blue, HDPE purple, PP orange, mi
 | Overflow days | Days (out of 30) its bins overflowed; the bar shows the same number |
 | Load at pickup | Plastic that arrived between two pickups, as % of the bin's capacity, averaged over pickups. A bin can never be more than 100% full, so anything over 100% is overflow. |
 
-Example: Sports complex makes 4 kg/day of bottles into one 120 L bin (3.6 kg) emptied every 3 days. About 12 kg arrives per cycle, so its load is about 326%, and it overflows 26 of 30 days. Academic block's load is 98%: its bins are just big enough on average, and overflow only on the 4 busier days.
+Example (illustrative): a node makes 4 kg/day of bottles into one 120 L bin (3.6 kg) emptied every 3 days. About 12 kg arrives per cycle, so its load is about 326% and it overflows on most days. A node whose load is near 98% has bins just big enough on average, and overflows only on the busier days.
 
 If the scenario has observed values from the field survey, a note under that node compares them with the model (e.g. "Observed 18 overflow days... Model: 20 days"). This is our calibration check.
 
 ### The before/after view
 
 - **Headline card:** overflow bin-days before → after, and the % reduction.
-- **Metric rows:** before → after with a change pill. Rates (recovery, purity, contamination) change in **percentage points (pp)**: 18.7% → 41.1% is +22.4 pp. Route distance changes in %. Green = better, red = worse.
-- **Budget line:** the cost change against the allowed limit ("Within budget +20%, limit +25%").
+- **Metric rows:** before → after with a change pill. Rates (recovery, purity, contamination) change in **percentage points (pp)**: 18.4% → 28.0% is +9.6 pp. Route distance changes in %. Green = better, red = worse.
+- **Budget line:** the cost change against the allowed limit (for example "Within budget"). The rule is on **net** cost: net(plan) ≤ net(baseline) + 0.25 × spend(baseline).
 - **Holds across 5 seeds:** the before and after are re-run with 5 different random seeds. It shows the range for each, and "better in 5/5 seeds". This shows the improvement is not luck.
 - **Changes made:** for every node, what changed (e.g. "interval 3 → 1 d", "bins 2×120 L → 1×240 L", "single → segregated") with the AI's one-line reason, plus the sorting method change and its reason.
 - **What the AI saw / said:** the input facts sent to the AI and its raw reply.
@@ -265,7 +291,7 @@ The AI is **Claude Sonnet 5.5** (model `claude-sonnet-5-5`), set in `config/llm.
 
 - **Role:** a waste-logistics planner for a campus. "A separate simulator will verify your proposal; never claim or predict simulation results."
 - **Priorities, in order:** (1) remove overflow and litter, (2) reduce contamination (segregated bins where contamination is high, a better sorting method), (3) raise recovery.
-- **Budget:** projected cost must stay within baseline cost × (1 + 25%). It gets the unit prices so it can estimate cost.
+- **Budget:** the plan's net cost (spend minus bale revenue) may rise by at most 25% of baseline spend. It gets the unit prices and the bale prices so it can estimate both sides, and is told that only correctly sorted PET/HDPE/PP earns money.
 - **Smallest bin that works:** after choosing a node's pickup interval, needed litres = rate × interval × 1.15 ÷ bulk density ÷ 0.8 (15% for busy days, 20% spare room). Choose the smallest bin set that holds it, at most 3 bins per node, preferring fewer bins when sizes are within about 25%. Oversizing is a worse proposal even inside the budget.
 - **Output:** one JSON object only, pretty-printed, in a fixed key order, with a one-line reason per node (max 20 words) that cites the node's own numbers, e.g. *"6 kg/day PET overflowed 20 of 30 days; daily pickup: needs \~288 L → 3×120 L."*
 
@@ -321,30 +347,34 @@ The code passes a `history` list and a `round` number. Today it is one round. A 
 
 Every number the model uses lives in **one file**, `config/assumptions.json`. Nothing is hard-coded in the program. Each value is stored with four fields: `value`, `unit`, `source`, and `estimate` (true until a real source replaces it). The Assumptions panel in the app shows all of them.
 
-**Status today:** 32 values, 25 of them marked as placeholder estimates. Our research teammate replaces each value and its source, then sets `estimate` to false. No code changes are needed.
+**Status today:** 34 values, 24 of them still marked as estimates. Most placeholders have been replaced by sourced or reasoned values (see the table below). Everything not directly sourced keeps the amber "estimate" tag, with its reasoning in the Assumptions panel. To replace one, change the value and its source and set `estimate` to false. No code changes are needed. What to collect next: [FIELD-DATA-GUIDE.md](FIELD-DATA-GUIDE.md).
 
 ### The key values
 
 | Group | Value now | Unit / meaning |
 | --- | --- | --- |
-| Active hours | 07:00–22:00 | When waste is generated |
-| Daily variation | ±15% | Day-to-day randomness in generation |
+| Active hours | 07:00–22:00 | When waste is generated (estimate) |
+| Daily variation | ±15% | Day-to-day randomness in generation (estimate) |
 | Bulk density | PET bottles 0.03, HDPE 0.05, PP 0.06, mixed 0.05, food-contaminated 0.09 | kg per litre, loose |
 | Bin sizes allowed | 60, 120, 240, 660 | litres |
-| Contamination at source | PET bottles 5%, HDPE 8%, PP 10%, mixed 20%, food-contaminated 55% | share already dirty |
-| Single-bin cross-contamination | +15 points | added when everything goes in one bin |
-| Segregation compliance | 70% | people using the right slot |
-| Overflow lost as litter | 40% | the rest is picked up later, as contaminated |
-| Sorting: manual | 80% accuracy, 60% detection, 90 kg/day, 4% loss | — |
-| Sorting: manual + float tank | 90% accuracy, 75% detection, 150 kg/day, 5% loss | — |
-| Sorting: manual + NIR | 96% accuracy, 90% detection, 400 kg/day, 3% loss | — |
-| Contaminated → chemical route | 50% | the rest to landfill |
-| Road detour factor | 1.3 | road distance ÷ straight-line distance |
-| Truck speed, stop time | 15 km/h, 5 min | — |
-| Transport cost | ₹25 | per km |
-| Bin cost | 60 L ₹2, 120 L ₹3, 240 L ₹5, 660 L ₹12; segregated ×1.6 | per bin per day |
-| Sorting cost | Manual ₹900, float ₹1,050, NIR ₹1,800 | per day |
-| Budget tolerance | 25% | AI's plan may cost up to 25% more than today |
+| Hostel rate | 0.011 kg plastic per bed per day | scales with bed capacity (assumes full occupancy) |
+| Contamination at source | PET bottles 5%, HDPE 8%, PP 10%, mixed 15%, food-contaminated 55% | share already dirty (estimate) |
+| Single-bin cross-contamination | +25 points | added when everything goes in one bin (estimate) |
+| Segregation compliance | 90% | people using the right slot (Thapar case study: "90% segregation at source") |
+| Resin mix of mixed plastic | PET 14%, HDPE 12%, PP 16%, rest films/multilayer | CPCB |
+| Overflow lost as litter | 20% | the rest is picked up later, as contaminated (estimate) |
+| Sorting: manual | 80% accuracy, 60% detection, 350 kg/day, 4% loss | MRF handles 1.5–1.75 t/day dry waste with 21 workers |
+| Sorting: manual + float tank | 90% accuracy, 75% detection, 500 kg/day, 5% loss | estimate |
+| Sorting: manual + NIR | 96% accuracy, 90% detection, 1,200 kg/day, 3% loss | estimate |
+| Contaminated → chemical route | 50% | the rest to landfill (estimate) |
+| Road detour factor | 1.3 | road distance ÷ straight-line distance (estimate) |
+| Truck speed, stop time | 10 km/h, 2 min | estimate |
+| Transport cost | ₹12 | per km, e-loader |
+| Bin cost | 60 L ₹0.4, 120 L ₹0.7, 240 L ₹1.2, 660 L ₹6.5; segregated ×1.6 | per bin per day, amortised from IndiaMART prices |
+| Sorting cost | Manual ₹1,450, float ₹1,750, NIR ₹3,000 | per day; manual is Punjab minimum wage × workers |
+| Bale prices | PET ₹40, HDPE ₹45, PP ₹35 | per kg of correctly sorted resin; conservative vs dealer prices (estimate) |
+| CO₂e avoided | PET 1.15, HDPE 0.85, PP 0.85 | kg CO₂e per kg recycled, US EPA WARM (estimate) |
+| Budget tolerance | 25% | net cost may rise by at most 25% of baseline spend |
 | Bin sizing headroom | 20% | spare room kept when sizing bins |
 
 ### Editing costs while the app runs
@@ -353,19 +383,21 @@ In the Assumptions panel, transport cost, bin costs, the segregated multiplier, 
 
 ### Field data from our teammate
 
-The field-data teammate fills `data/nodes.template.csv` (copy to `nodes.csv`), one row per collection point, max 10. Columns: name, waste type (`pet_bottles`, `hdpe`, `pp`, `mixed`, `food_contaminated`), rate in kg/day, optional peak start/end hour and multiplier, bin type, bin count, bin size in litres, pickup interval, and optionally **observed overflow days** and **observed fill % at pickup**. Map positions are left blank; after **Import → CSV** the app asks you to click each place on the map. Full column guide: `data/README.md`.
+The field-data teammate fills `data/nodes.template.csv` (copy to `nodes.csv`), one row per collection point, max 40. Columns: name, waste type (`pet_bottles`, `hdpe`, `pp`, `mixed`, `food_contaminated`), rate in kg/day, optional peak start/end hour and multiplier, bin type, bin count, bin size in litres, pickup interval, and optionally **observed overflow days** and **observed fill % at pickup**. Map positions are left blank; after **Import → CSV** the app asks you to click each place on the map. Full column guide: `data/README.md`.
 
 The observed columns never drive the simulation. They are shown next to the model's numbers, so we can say how close the baseline is to what we saw on campus. If the model is far off, adjust the rates or assumptions (not the code) until the baseline matches; that is calibration.
 
-### Swapping the placeholder map
+### The campus map, and swapping it
 
-The current map is a drawn placeholder (1600 × 1000 px). To use the real campus (full steps in `public/maps/README.md`):
+The map is the real Thapar Institute (TIET), Patiala campus: `public/maps/campus.jpg`, a Google satellite image, 2960 × 1840 px, at 0.5153 m per pixel (zoom 17 at 30.354°N, captured at 2× density; it matches the 100 m scale bar within 2%). `campus-labelled.jpg` (Google's labels) and `campus-reference.jpg` (every node id drawn) share the same pixel grid. Attribution: *Imagery ©2026 Airbus, Maxar Technologies · Map data ©2026 Google*. The sorting facility is the real MRF near the STP, in the north-west corner (30.356775, 76.361124).
 
-1. Take a Google Maps satellite screenshot of campus, keeping the Google attribution visible.
+To re-capture or use another campus (full steps in `public/maps/README.md`):
+
+1. Take a Google Maps satellite screenshot of the campus, keeping the attribution visible.
 2. Save it as `public/maps/campus.jpg`.
-3. In `public/demo/demo-scenario.json`, set `map.src` to `maps/campus.jpg`, the image width and height in pixels, and the attribution text.
+3. In `public/demo/demo-scenario.json` and `public/demo/demo-scenario-after.json`, set `map.src`, the image width and height in pixels, and the attribution text.
 4. Set the scale: either compute metres ÷ pixels from Google's scale bar, or use **Calibrate** in the app (click two landmarks, type the distance).
-5. Drag each node onto its real spot, then Export and copy the result back.
+5. Move the nodes and the facility onto their real spots, then Export and copy the result back.
 6. Regenerate the cached AI answer (section 7), because the scenario changed.
 
 Or skip editing files entirely: **Change image** in the app, calibrate, place nodes, Export.
@@ -432,9 +464,10 @@ If a reviewer asks "show me where X happens", this is where to look.
 | `config/assumptions.json` | Every model number, each with unit, source and estimate flag |
 | `config/ui.json` | Colours (resins, fill levels, flows), labels, fill thresholds, playback length (30 s), number of seeds in the check (5), which assumptions are editable |
 | `config/llm.json` | AI provider (`claude-cli` or `anthropic-api`), model name, timeout, retries |
-| `public/demo/demo-scenario.json` | The demo campus: map, facility, 10 nodes, baseline setup |
-| `public/demo/cached-proposal.json` | A real saved AI answer for the demo campus, with its fingerprint |
-| `public/maps/` | The map image (placeholder now) and the guide to replacing it |
+| `public/demo/demo-scenario.json` | The 2023 demo campus (before Saahas): map, facility, 40 nodes, baseline setup |
+| `public/demo/demo-scenario-after.json` | The 2024 demo campus (after Saahas): same capacity and schedule, labelled segregated bins |
+| `public/demo/cached-proposal.json` | A real saved Claude Sonnet 5.5 answer for the 2023 demo campus, with its fingerprint |
+| `public/maps/` | The real Thapar satellite map (`campus.jpg`), its labelled and node-id versions, and the guide to replacing it |
 | `data/nodes.template.csv`, `data/README.md` | Field survey template and its column guide |
 | `plan.md` | The full design: shared contracts (section 3.1), the task list, fixtures |
 | `CLAUDE.md` | Short version of the rules every agent followed |
@@ -520,14 +553,18 @@ Say these before the reviewer does. Knowing the limits of your own model is a st
 
 | Limitation | Why it matters | How we handle it |
 | --- | --- | --- |
-| Most assumptions are placeholder estimates (25 of 32) | Absolute numbers (₹, %, kg) may be off | Every one is labelled "estimate" in the app; the research teammate is replacing them with sourced values; the *comparison* between setups is still meaningful |
-| Placeholder map and demo node data | Distances and rates are illustrative | Real map and field CSV drop in with no code changes |
+| 24 of the 34 assumptions are still estimates | Absolute numbers (₹, %, kg) may be off | Each is tagged "estimate" with its reasoning in the Assumptions panel; the rest are sourced (Thapar case study, CPCB, US EPA WARM, IndiaMART, Punjab minimum wage); the *comparison* between setups is still meaningful. What to collect next: `docs/FIELD-DATA-GUIDE.md` |
+| Bale prices and CO₂e factors are estimates | Revenue, net cost and CO₂e avoided could move | Prices are set conservatively against dealer prices; CO₂e factors are US EPA WARM, not Indian-specific; both are editable |
+| Collection frequency before and after Saahas is assumed daily | The real schedule may differ, which changes overflow and transport | Marked as an estimate; the MRF supervisor can confirm it (field data guide) |
+| Hostel rates assume full occupancy (0.011 kg per bed per day) | Real rates are lower in vacations and exam breaks | Rates are editable per node |
+| PG-2 (Pavani Hall) sits on a plot shown as construction in the satellite imagery | Its map position may not match a finished building | Position is approximate; noted so nobody is surprised |
+| Node rates come from capacity and a sourced campus total, not from weighing | The 238 kg/day campus total is a model figure | Field weighing replaces it with no code change |
 | One dominant waste type per node | A canteen really produces a mix | The resin mix per waste type splits it into PET/HDPE/PP/mixed |
 | Only daily generation is random | Real sorting quality also varies day to day | Sorting uses averages so before/after comparisons are not blurred by noise; the 5-seed check covers generation randomness |
-| One truck, no capacity or shift limit | A real truck may need two trips | Campus volumes (\~52 kg/day) are small for a vehicle; could be added |
+| One truck, no capacity or shift limit | A real truck may need two trips | The campus makes about 238 kg/day of plastic, which is still small for a vehicle; could be added |
 | Straight-line distance × 1.3 | Not real road routes | No external routing service needed, works offline; detour factor is an assumption |
-| No behaviour change modelled | Better bins may change how people dispose | Segregation compliance (70%) is an assumption we can vary |
-| Overflow of 40% to litter is an estimate | Drives the litter numbers | Visible and editable in the assumptions file |
+| No behaviour change modelled | Better bins may change how people dispose | Segregation compliance (90%) comes from the Thapar case study but is a claim, not a measurement; we can vary it |
+| Overflow of 20% to litter is an estimate | Drives the litter numbers | Visible and editable in the assumptions file |
 | The AI is not guaranteed optimal | It proposes, it doesn't search every option | That is why the simulation verifies; the heuristic gives a second, non-AI comparison |
 | Live AI call takes 30-40 s | Long pause in a live demo | Demo mode replays a real saved answer in 4 s |
 
@@ -540,7 +577,6 @@ Say these before the reviewer does. Knowing the limits of your own model is a st
 - **Real road routing** from map data.
 - **Calibration helper:** automatically tune rates until the model's overflow days match the observed ones.
 - **Per-node results for the AI plan** in the before/after view (today it shows the changes and the reasons, but the per-node table only for the baseline).
-- **Revenue side:** add the sale value of clean bales so better purity shows up as money earned, not only cost.
 
 ## 13. Viva questions and answers
 
@@ -554,11 +590,11 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: Which part of the assignment does it answer?** Bullet 2, setting up a collection and sorting system. Its outputs (litter, bales, recycling routes) feed bullets 1 and 3, which the PPT covers.
 
-**Q: Who is it for?** A campus facilities team deciding how many bins, what kind, and how often to collect, and what sorting equipment to buy. The map is swappable, so it works for any campus or town.
+**Q: Who is it for?** A campus facilities team deciding how many bins, what kind, and how often to collect, and what sorting equipment to buy. Our demo is Thapar's own campus. The map is swappable, so it works for any campus or town.
 
 ### About the simulation
 
-**Q: How does the simulation work?** It steps through 720 hours. Each hour every node generates waste into its bins; anything over capacity overflows (40% litter, 60% picked up later as contaminated). At the end of each day, due nodes are collected by a truck on the shortest route, and the facility sorts up to its daily capacity into bales, residue, contaminated and rejected. It reports where every kilogram went.
+**Q: How does the simulation work?** It steps through 720 hours. Each hour every node generates waste into its bins; anything over capacity overflows (20% litter, 80% picked up later as contaminated). At the end of each day, due nodes are collected by a truck on the shortest route, and the facility sorts up to its daily capacity into bales, residue, contaminated and rejected. It reports where every kilogram went.
 
 **Q: Why hourly and not daily?** Peaks matter. A canteen's lunch rush can overflow a bin at 2 pm even if the daily total would fit. Hourly steps catch that.
 
@@ -572,7 +608,7 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: How is the truck route chosen?** On each pickup day it visits only the nodes due that day, starting and ending at the facility. For up to 8 stops it tries every order and takes the shortest; for more it uses nearest-neighbour then 2-opt improvement. Distance is straight-line × 1.3 for roads.
 
-**Q: What do the three sorting methods mean?** Manual: people pick by hand (80% accuracy, 90 kg/day). Float tank: plastics separated by density in water; PET sinks, PP and HDPE float (90%, 150 kg/day). NIR: a near-infrared sensor identifies resin types automatically (96%, 400 kg/day). Better methods cost more per day.
+**Q: What do the three sorting methods mean?** Manual: people pick by hand (80% accuracy, 350 kg/day). Float tank: plastics separated by density in water; PET sinks, PP and HDPE float (90%, 500 kg/day). NIR: a near-infrared sensor identifies resin types automatically (96%, 1,200 kg/day). Better methods cost more per day.
 
 **Q: What is "load at pickup" and why can it be over 100%?** It is how much plastic arrived since the last pickup, as a % of the bin's capacity. The bin itself can't be more than 100% full; the excess is the overflow. 326% means three times more waste arrived than the bin can hold.
 
@@ -588,7 +624,7 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: What if the AI gives a nonsense answer?** The answer is validated against a strict format. Out-of-range values are clamped (pickup 1-14 days, 1-6 bins, allowed sizes only) and listed as notes. Invalid JSON gets one retry with the error. If that fails, a rule-based plan is used and labelled as such.
 
-**Q: Couldn't the AI just schedule daily pickups everywhere?** It would blow the budget. Every proposal has a cost (transport, bins, sorting), and the AI must stay within 25% of today's cost. The before/after view shows whether it did.
+**Q: Couldn't the AI just schedule daily pickups everywhere?** It would blow the budget. Every proposal has a cost (transport, bins, sorting), and the AI must keep its plan's net cost (spend minus bale revenue) within 25% of baseline spend above today's net. The before/after view shows whether it did.
 
 **Q: Why does it pick such small bins?** We tell it to use the smallest bin that holds the expected waste between pickups plus 20% spare. An early test chose huge 660 L bins because all sizes cost the same; we fixed the price model and the prompt.
 
@@ -598,17 +634,17 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: What is demo mode? Isn't that faking it?** It replays a real answer the AI gave for this exact campus, saved to disk, so the presentation doesn't depend on the internet. It is clearly labelled "Cached (demo)", and it refuses to replay if the scenario has been edited. We can switch it off and make a live call.
 
-**Q: Is the AI better than a simple rule?** On the demo both reach zero overflow. The AI's value is that it balances all nodes against one budget, picks the sorting method with a reason, and explains every choice in words a facilities team can act on. The rule-based plan is our non-AI baseline and backup.
+**Q: Is the AI better than a simple rule?** On the 2023 demo both reach zero overflow, but the AI's plan ends with a ₹21.4k surplus against ₹7.9k for the rule-based plan, because it weighs extra bale revenue against extra spend node by node. The AI's value is also that it balances all nodes against one budget, picks the sorting method with a reason, and explains every choice in words a facilities team can act on. The rule-based plan is our non-AI baseline and backup.
 
 ### About the data and results
 
-**Q: Where do your numbers come from?** Every assumption is in one file with its unit and source. Most are placeholder estimates today, clearly marked; our research teammate is replacing them with sourced values. The node rates and bins come from our field survey.
+**Q: Where do your numbers come from?** Every assumption is in one file with its unit and source. Most are now sourced (the Thapar case study, CPCB, US EPA WARM, IndiaMART, Punjab minimum wage); 24 of 34 are still estimates and are marked amber with their reasoning. Node rates come from bed capacity and campus totals, and the next step is real weighing (see `docs/FIELD-DATA-GUIDE.md`).
 
 **Q: If the assumptions are estimates, are the results meaningless?** The absolute values will move, but the comparison between setups is robust because both use the same assumptions. Since every value can be edited, we can show how sensitive the conclusion is.
 
 **Q: How did you validate against reality?** The field survey records observed overflow days and fill at pickup. The app shows them next to the model's values for each node. We tune rates and assumptions until the baseline matches what we saw.
 
-**Q: Why does route distance go up so much (+179%)?** The AI moved most nodes to daily pickups to stop overflow, so the truck drives every day instead of every 3 days. It is a deliberate trade: more transport cost, no litter. Total cost still rose only 20% because transport is cheap compared with sorting.
+**Q: Why does spend go up with the AI plan?** Spend rises from about ₹47.0k to ₹57.0k because of right-sized bins and the float-tank sorter. Bale revenue rises more, from ₹51.6k to ₹78.5k for the correct reasons, so the net is still a surplus (₹21.4k). The budget rule looks at net cost, not spend.
 
 ### About how it was built
 
@@ -622,7 +658,7 @@ Model answers in plain words. Learn the idea, not the wording.
 
 | Term | Meaning |
 | --- | --- |
-| Node | A place that generates plastic waste and has bins (canteen, hostel, library...). Up to 10. |
+| Node | A place that generates plastic waste and has bins (hostel, canteen, library...). Up to 40. |
 | Facility | The sorting facility where the truck delivers and plastic is sorted. Also the truck's depot. |
 | Scenario | Everything about the campus: map, facility, nodes, baseline setup, edited costs, last AI proposal. Saved by Export. |
 | Setup | The choices that can change: per node bin type, count, size, pickup interval; plus the facility's sorting method. |
@@ -631,7 +667,7 @@ Model answers in plain words. Learn the idea, not the wording.
 | Pickup interval | Days between collections at a node (1 = daily). |
 | Single / segregated bin | One mixed bin, or a set split by material. Segregated reduces contamination but costs 1.6×. |
 | Bulk density | How many kg of loose waste fit in one litre. Converts bin litres to kg. |
-| Overflow | Waste arriving when the bin is already full. 40% becomes litter, 60% is picked up later as contaminated. |
+| Overflow | Waste arriving when the bin is already full. 20% becomes litter, 80% is picked up later as contaminated. |
 | Overflow bin-days | Sum over nodes of the days each node overflowed. The headline metric. |
 | Load at pickup | Plastic that arrived since the last pickup as % of capacity. Over 100% means overflow. |
 | Backlog | Collected plastic the facility could not sort yet because it hit its daily capacity. |

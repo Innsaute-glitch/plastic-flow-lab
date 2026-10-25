@@ -4,6 +4,7 @@ import { icon } from './icons.js';
 const ICONS = { info: 'info', warn: 'alert', error: 'alert' };
 const TTL = { info: 3500, warn: 5500, error: 8000 };
 
+// opts.action = { label, onClick } adds a button; opts.key replaces any visible toast with the same key.
 export function notify(level, message, opts = {}) {
   const lvl = ['info', 'warn', 'error'].includes(level) ? level : 'info';
   const log = lvl === 'error' ? console.error : lvl === 'warn' ? console.warn : console.info;
@@ -28,7 +29,12 @@ export function notify(level, message, opts = {}) {
     setTimeout(() => el.remove(), 200);
   };
   el.querySelector('.app-toast__x').addEventListener('click', close);
+  if (opts.key) {
+    el.dataset.key = opts.key;
+    root.querySelectorAll(`[data-key="${opts.key}"]`).forEach((t) => t.remove());
+  }
   root.appendChild(el);
-  while (root.children.length > 4) root.firstChild.remove();
+  // over the cap, drop the oldest plain message first so an Undo is not pushed out by info toasts
+  while (root.children.length > 4) (root.querySelector('.app-toast:not(:has(.app-toast__action))') ?? root.firstChild).remove();
   setTimeout(close, action ? 8000 : TTL[lvl]);
 }

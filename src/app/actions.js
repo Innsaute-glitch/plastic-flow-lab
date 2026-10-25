@@ -80,6 +80,11 @@ export function loadScenario(store, scenarioObj) {
 
 export function newScenario(store) {
   const st = store.get();
+  // already blank: nothing to undo, and a new Undo would replace the one that restores real work
+  if (!st.scenario.nodes.length && !st.scenario.facility) {
+    notify('info', 'Already a blank campus.');
+    return;
+  }
   const snapshot = structuredClone({
     scenario: st.scenario, assumptions: st.assumptions, baseline: st.baseline, optimised: st.optimised,
     sweep: st.sweep, mode: st.mode, playback: { ...st.playback, playing: false }, llm: st.llm, selectedNodeId: st.selectedNodeId,
@@ -88,6 +93,7 @@ export function newScenario(store) {
   fresh.assumptionOverrides = structuredClone(st.scenario.assumptionOverrides ?? {});
   if (!loadScenario(store, fresh)) return;
   notify('info', 'Cleared. Start placing nodes on the map.', {
+    key: 'blank-undo',
     action: { label: 'Undo', onClick: () => { store.set(snapshot); notify('info', 'Restored.'); } },
   });
 }

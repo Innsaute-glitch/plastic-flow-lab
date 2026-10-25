@@ -24,13 +24,13 @@
         22
       ],
       "unit": "hour of day [start, end)",
-      "source": "Placeholder: typical campus activity hours",
+      "source": "Estimate: campus activity from breakfast to late evening (hostel and canteen waste peaks around 8–10, 12–14 and 19–21); no campus-specific timing data",
       "estimate": true
     },
     "dailyNoise": {
       "value": 0.15,
       "unit": "± fraction",
-      "source": "Placeholder: day-to-day variation in generation",
+      "source": "Estimate: ±15% day-to-day variation in generation (attendance, events, weather); no campus logs yet — MRF weigh logs would replace this",
       "estimate": true
     }
   },
@@ -43,7 +43,7 @@
         "mixed": 0.02
       },
       "unit": "mass fraction",
-      "source": "Placeholder: bottle body PET, caps PP, labels other",
+      "source": "Estimate: bottle body PET (~90%), caps and rings PP (~8%), labels and other (~2%) by mass",
       "estimate": true
     },
     "hdpe": {
@@ -54,7 +54,7 @@
         "mixed": 0.05
       },
       "unit": "mass fraction",
-      "source": "Placeholder estimate",
+      "source": "Estimate: HDPE containers (~85%) with PP caps (~10%) and labels/other (~5%) by mass",
       "estimate": true
     },
     "pp": {
@@ -65,7 +65,7 @@
         "mixed": 0.15
       },
       "unit": "mass fraction",
-      "source": "Placeholder estimate",
+      "source": "Estimate: PP cups/containers (~85%) with film lids, straws and other (~15%) by mass",
       "estimate": true
     },
     "mixed": {
@@ -119,7 +119,7 @@
     "sideWasteContaminated": {
       "value": 1.0,
       "unit": "fraction of non-lost overflow counted contaminated",
-      "source": "Placeholder: waste left on the ground is soiled",
+      "source": "Estimate: waste left beside an overflowing bin is soiled by ground contact and food waste, so all of it counts as contaminated",
       "estimate": true
     }
   },
@@ -146,7 +146,7 @@
     "defaultCapacityL": {
       "value": 120,
       "unit": "L",
-      "source": "Placeholder default",
+      "source": "Common 120 L wheeled bin (IndiaMART listings); default for newly added nodes",
       "estimate": true
     },
     "bulkDensityKgPerL": {
@@ -200,7 +200,7 @@
     "contaminatedToChemicalFraction": {
       "value": 0.5,
       "unit": "fraction of removed contaminated mass suitable for chemical recycling",
-      "source": "Placeholder estimate",
+      "source": "Estimate: half of the contaminated plastic is fit for chemical recycling / co-processing; Thapar sends MRF rejects to an authorised co-processing vendor (case study p16), so this may be higher in practice",
       "estimate": true
     }
   },
@@ -208,7 +208,7 @@
     "detourFactor": {
       "value": 1.3,
       "unit": "road distance / straight-line distance",
-      "source": "Placeholder: typical circuity factor for campus roads",
+      "source": "Estimate: road distance ≈ 1.3 × straight-line distance on a gridded campus road network (typical urban circuity 1.2–1.4)",
       "estimate": true
     },
     "truckSpeedKmh": {
@@ -269,7 +269,7 @@
     "segregatedBinMultiplier": {
       "value": 1.6,
       "unit": "× bin cost for a segregated set",
-      "source": "Placeholder estimate",
+      "source": "Estimate: a labelled segregated set (wet/dry/hazardous, as at Thapar) costs about 1.6× a single bin of the same plastic capacity",
       "estimate": true
     }
   },

@@ -4,6 +4,7 @@
 // Contract: plan.md §3.1 "Assumption overrides"; pure helpers in src/shared/assumptions.js.
 
 import { applyOverrides, validateOverrides } from '../shared/assumptions.js';
+import './assumptions.css';
 
 const ARROW = ' – ';
 const FOOTER_TEXT = 'All outputs are model results computed from these assumptions.';

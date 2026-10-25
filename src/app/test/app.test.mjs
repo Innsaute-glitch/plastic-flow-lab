@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createStore } from '../store.js';
-import { emptyScenario, normaliseScenario, csvToNodes, nextNodeId, parseCsvRows } from '../scenario-utils.js';
+import { emptyScenario, normaliseScenario, csvToNodes, nextNodeId, parseCsvRows, mapScaleProblem } from '../scenario-utils.js';
 
 const J = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const assumptions = J('../../../config/assumptions.json');
@@ -65,4 +65,14 @@ test('emptyScenario keeps the given map and starts with no nodes', () => {
   assert.equal(e.facility, null);
   e.assumptionOverrides = { a: 1 };
   assert.deepEqual(normaliseScenario(e, assumptions).assumptionOverrides, { a: 1 });
+});
+
+test('mapScaleProblem: accepts the real campus, rejects implausible scales', () => {
+  const map = { widthPx: 2960, metresPerPixel: 0.5153 };
+  assert.equal(mapScaleProblem(map), null);
+  assert.match(mapScaleProblem({ ...map, metresPerPixel: 0.0003 }).text, /0\.888 m wide|88\.8 cm wide/);
+  assert.match(mapScaleProblem({ ...map, metresPerPixel: 20 }).text, /59\.2 km wide/);
+  assert.ok(mapScaleProblem({ ...map, metresPerPixel: 0 }));
+  assert.ok(mapScaleProblem({ ...map, metresPerPixel: 'x' }));
+  assert.equal(mapScaleProblem({ ...map, metresPerPixel: 0.02 }, { minMapWidthM: 50 }), null); // 59.2 m wide
 });

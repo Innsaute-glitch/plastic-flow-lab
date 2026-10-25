@@ -147,3 +147,18 @@ export function csvToNodes(text, assumptions, wasteTypes) {
   });
   return { nodes, nodeSetups, warnings };
 }
+
+export const CALIBRATION_DEFAULTS = { minMapWidthM: 50, maxMapWidthM: 50000, minPointGapScreenPx: 24 };
+
+/** "1.53 km", "20 m", "20 cm" */
+export const fmtLength = (m) => (m >= 1000 ? `${+(m / 1000).toPrecision(3)} km` : m >= 1 ? `${+m.toPrecision(3)} m` : `${+(m * 100).toPrecision(3)} cm`);
+
+/** Plausibility of a map scale: null if fine, else { widthM, text }. Limits from config/ui.json "calibration". */
+export function mapScaleProblem(map, limits = {}) {
+  const lim = { ...CALIBRATION_DEFAULTS, ...limits };
+  const mpp = Number(map?.metresPerPixel);
+  if (!(mpp > 0) || !(map?.widthPx > 0)) return { widthM: NaN, text: 'the map scale (metres per pixel) is missing or not a positive number' };
+  const widthM = map.widthPx * mpp;
+  if (widthM < lim.minMapWidthM || widthM > lim.maxMapWidthM) return { widthM, text: `the whole map would be ${fmtLength(widthM)} wide` };
+  return null;
+}

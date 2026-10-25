@@ -3,7 +3,7 @@ import { simulate, SimInputError } from '../sim/index.js';
 import { optimise } from '../llm/client.js';
 import { applyOverrides } from '../shared/assumptions.js';
 import { notify } from './notify.js';
-import { normaliseScenario, emptyScenario, defaultNodeSetup, nextNodeId, MAX_NODES } from './scenario-utils.js';
+import { normaliseScenario, emptyScenario, defaultNodeSetup, nextNodeId, MAX_NODES, mapScaleProblem } from './scenario-utils.js';
 
 const RESET = { baseline: null, optimised: null, sweep: null, mode: 'edit' };
 const FRESH_PLAYBACK = (which = 'baseline', playing = false) => ({ t: 0, playing, speed: 1, done: false, which });
@@ -63,8 +63,11 @@ export function placeFacility(store, x, y) {
 
 export function loadScenario(store, scenarioObj) {
   try {
-    const { assumptionsBase } = store.get();
+    const { assumptionsBase, ui } = store.get();
     const scenario = normaliseScenario(scenarioObj, assumptionsBase);
+    // an implausible scale would make every distance, cost and AI input meaningless, so refuse the file
+    const bad = mapScaleProblem(scenario.map, ui?.calibration);
+    if (bad) throw new Error(`its map scale is ${scenario.map.metresPerPixel} m per pixel, so ${bad.text}. Fix "metresPerPixel" in the file's "map" section.`);
     store.set({
       scenario,
       assumptions: applyOverrides(assumptionsBase, scenario.assumptionOverrides), ...RESET, playback: FRESH_PLAYBACK(), llm: FRESH_LLM,

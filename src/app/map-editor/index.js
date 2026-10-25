@@ -3,7 +3,7 @@ import { icon } from '../icons.js';
 import { addNode, moveNode, placeFacility, deleteNode, editScenario } from '../actions.js';
 import { assetUrl } from '../io.js';
 import { notify } from '../notify.js';
-import { MAX_NODES } from '../scenario-utils.js';
+import { MAX_NODES, CALIBRATION_DEFAULTS, fmtLength as fmtLen, mapScaleProblem } from '../scenario-utils.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 // Smallest round 1-2-5 distance (m) at or above `target`, for any map scale.
@@ -11,7 +11,6 @@ const niceStep = (target) => {
   const p = 10 ** Math.floor(Math.log10(target));
   return [1, 2, 5, 10].map((f) => f * p).find((v) => v >= target);
 };
-const fmtLen = (m) => (m >= 1000 ? `${+(m / 1000).toPrecision(3)} km` : m >= 1 ? `${+m.toPrecision(3)} m` : `${+(m * 100).toPrecision(3)} cm`);
 
 export function mount(el, store) {
   const $ = (id) => el.querySelector('#' + id);
@@ -258,11 +257,11 @@ export function mount(el, store) {
     const apply = () => {
       const m = Number(input.value);
       if (!(m > 0) || !(px > 0)) return notify('warn', 'Enter a distance in metres greater than zero.');
-      const lim = { minMapWidthM: 50, maxMapWidthM: 50000, minPointGapScreenPx: 24, ...store.get().ui?.calibration };
+      const lim = { ...CALIBRATION_DEFAULTS, ...store.get().ui?.calibration };
       if (px * k < lim.minPointGapScreenPx) return notify('warn', 'The two points are too close together. Pick two landmarks further apart.');
       const mpp = Number((m / px).toPrecision(4));
       const widthM = map.widthPx * mpp;
-      if (widthM < lim.minMapWidthM || widthM > lim.maxMapWidthM) {
+      if (mapScaleProblem({ ...map, metresPerPixel: mpp }, lim)) {
         return notify('warn', `That would make the whole map ${fmtLen(widthM)} wide. Check the distance: it is the real metres between your two points.`);
       }
       const before = map.metresPerPixel;

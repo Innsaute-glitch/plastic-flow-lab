@@ -12,7 +12,9 @@ export function tick(el, to, opts = {}) {
   const from = opts.from ?? (typeof el._value === 'number' ? el._value : 0);
   const write = (v) => {
     el._value = v;
-    el.textContent = prefix + formatNumber(v, decimals);
+    // negative values read "−₹475" (sign before the currency symbol), never "₹-475" or "-0"
+    const neg = v < 0 && Math.round(Math.abs(v) * 10 ** decimals) > 0;
+    el.textContent = (neg ? '\u2212' : '') + prefix + formatNumber(Math.abs(v), decimals);
   };
   if (reduced() || duration <= 0 || from === to) {
     write(to);

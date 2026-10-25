@@ -1,6 +1,6 @@
 // "What the AI saw / said" drawer. Lives in #overlay-root; open when store.panel === "ai-drawer".
 import { h, svgIcon, ICONS } from './dom.js';
-import { fmtInt, fmtKg } from './format.js';
+import { fmtInr, fmtInrSigned, fmtKg } from './format.js';
 import { sourceBadgeEl } from './ai-activity.js';
 
 function prettyRaw(raw) {
@@ -48,11 +48,11 @@ export function createAiDrawer(root, store) {
     ['Allowed intervals', lim ? `${lim.pickupIntervalDays.value[0]}–${lim.pickupIntervalDays.value[1]} days` : '–'],
     ['Allowed bin counts', lim ? `${lim.binCount.value[0]}–${lim.binCount.value[1]}` : '–'],
     ['Allowed capacities', assumptions?.bins?.allowedCapacitiesL ? `${assumptions.bins.allowedCapacitiesL.value.join(', ')} L` : '–'],
-    ['Budget rule', lim ? `cost ≤ baseline + ${Math.round(lim.budgetTolerance.value * 100)}%` : '–'],
+    ['Budget rule', lim ? `net cost ≤ baseline net + ${Math.round(lim.budgetTolerance.value * 100)}% of baseline spend` : '–'],
   ];
   if (baseline) {
     const s = baseline.results.summary;
-    facts.push(['Baseline', `${s.overflowBinDays} overflow bin-days · recovery ${(s.recoveryRate * 100).toFixed(1)}% · purity ${(s.purity * 100).toFixed(1)}% · ₹${fmtInt(s.cost.total)}`]);
+    facts.push(['Baseline', `${s.overflowBinDays} overflow bin-days · recovery ${(s.recoveryRate * 100).toFixed(1)}% · purity ${(s.purity * 100).toFixed(1)}% · spend ${fmtInr(s.cost.total)} − bales ${fmtInr(s.cost.baleRevenue)} = net ${fmtInrSigned(s.cost.net)}`]);
   }
   const dl = h('dl', 'results-facts');
   facts.forEach(([k, v]) => dl.append(h('dt', '', k), h('dd', '', v)));

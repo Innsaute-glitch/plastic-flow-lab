@@ -1,5 +1,6 @@
 // Pure helpers for the results UI: formatting, deltas, setup diff, partial-JSON parsing.
 // No DOM, no model numbers. Metrics are only formatted / differenced here, never computed.
+import { budgetCheck } from '../shared/budget.js';
 
 const nf0 = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
 const nf1 = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -8,6 +9,18 @@ export const fmtInt = (n) => nf0.format(Math.round(n));
 export const fmtDec1 = (n) => nf1.format(n);
 export const fmtPct1 = (frac) => nf1.format(frac * 100); // fraction -> "28.5"
 export const fmtKg = (n) => (n >= 100 ? nf0.format(n) : nf1.format(n)) + ' kg';
+const MINUS = '\u2212';
+/** Compact rupees: "₹850", "₹47.0k", "₹1.23M". Magnitude only (no sign). */
+export function fmtInr(n) {
+  const a = Math.abs(n);
+  if (a < 1000) return '₹' + nf0.format(Math.round(a));
+  if (a < 1e6) return '₹' + nf1.format(a / 1000) + 'k';
+  return '₹' + (a / 1e6).toFixed(2) + 'M';
+}
+/** Signed compact rupees with a real minus sign: "−₹12.5k". */
+export const fmtInrSigned = (n) => (Math.abs(n) < 0.5 ? '₹0' : (n < 0 ? MINUS : '') + fmtInr(n));
+/** CO2e: kg below one tonne, tonnes above. */
+export const fmtCo2 = (kg) => (Math.abs(kg) >= 1000 ? (kg / 1000).toFixed(2) + ' t' : nf0.format(Math.round(kg)) + ' kg');
 
 /**
  * Metric table. `get` reads the summary, `scale` converts fraction -> % for the UI,
@@ -19,12 +32,13 @@ export const METRICS = [
   { key: 'purity', label: 'Bale purity', short: 'Purity', unit: '%', get: (s) => s.purity * 100, decimals: 1, better: 'up' },
   { key: 'contamination', label: 'Contamination', short: 'Contam.', unit: '%', get: (s) => s.contaminationRate * 100, decimals: 1, better: 'down' },
   { key: 'km', label: 'Route distance', short: 'Route', unit: 'km', get: (s) => s.routeDistanceKm, decimals: 1, better: 'down' },
-  { key: 'cost', label: 'Total cost', short: 'Cost', unit: 'INR', prefix: '₹', get: (s) => s.cost.total, decimals: 0, better: 'down', isCost: true },
+  // cost = NET of bale revenue (spend - bale sales); negative = surplus
+  { key: 'cost', label: 'Net cost (− = surplus)', short: 'Net cost', unit: 'INR', prefix: '₹', get: (s) => s.cost.net, decimals: 0, better: 'down', isCost: true },
 ];
 
 export function formatMetric(m, value) {
-  const s = m.decimals === 0 ? fmtInt(value) : fmtDec1(value);
-  return (m.prefix || '') + s;
+  const s = m.decimals === 0 ? fmtInt(Math.abs(value)) : fmtDec1(Math.abs(value));
+  return (value < 0 && Math.round(Math.abs(value) * 10 ** m.decimals) > 0 ? MINUS : '') + (m.prefix || '') + s;
 }
 
 /**
@@ -43,16 +57,24 @@ export function deltaFor(m, before, after) {
   return { abs, dir, tone, pct };
 }
 
-/** "Within budget +22%" status for the cost line. tolerance is a fraction (0.25). */
-export function budgetStatus(baseTotal, optTotal, tolerance) {
-  const change = baseTotal === 0 ? 0 : (optTotal - baseTotal) / baseTotal;
-  const within = change <= tolerance + 1e-9;
-  const sign = change >= 0 ? '+' : '−';
+/**
+ * Budget line for the compare view (net rule, plan.md v0.3):
+ * within budget when net(plan) - net(baseline) <= tolerance x baseline spend. Uses src/shared/budget.js.
+ * Takes the two `summary.cost` objects. tolerance is a fraction (0.25).
+ */
+export function budgetStatus(baseCost, planCost, tolerance) {
+  const { extraNet, allowance, within } = budgetCheck(baseCost, planCost, tolerance);
+  const extraSpend = planCost.total - baseCost.total;
+  const extraRevenue = (planCost.baleRevenue ?? 0) - (baseCost.baleRevenue ?? 0);
+  const more = (x) => (Math.abs(x) < 0.5 ? 'about the same' : `${fmtInr(x)} ${x > 0 ? 'more' : 'less'}`);
+  const detail = `spends ${more(extraSpend)}, earns ${more(extraRevenue)} in bales`;
+  const over = extraNet - allowance;
   return {
-    change,
+    extraNet,
+    allowance,
     within,
-    text: `${within ? 'Within budget' : 'Over budget'} ${sign}${Math.round(Math.abs(change) * 100)}%`,
-    limitText: `limit +${Math.round(tolerance * 100)}%`,
+    text: within ? `Within budget \u00B7 ${detail}` : `Over budget by ${fmtInr(over)} \u00B7 ${detail}`,
+    limitText: `net may rise by up to ${fmtInr(allowance)} (${Math.round(tolerance * 100)}% of baseline spend)`,
   };
 }
 
@@ -125,3 +147,43 @@ export function sourceBadge(source) {
   if (source === 'heuristic') return { label: 'Heuristic fallback', tone: 'heuristic' };
   return { label: 'LLM', tone: 'llm' };
 }
+
+// ---------- gains ("i" popover) ----------
+// Each row: { key, label, value, tone: 'good' | 'bad' | 'flat' | 'plain', icon }. Pure: the DOM lives in gains.js.
+const signed = (n, f, eps) => (Math.abs(n) < eps ? null : (n > 0 ? '+' : MINUS) + f(Math.abs(n)));
+const toneOf = (n, eps, goodWhenUp) => (Math.abs(n) < eps ? 'flat' : (n > 0) === goodWhenUp ? 'good' : 'bad');
+
+/** Gains of one run, from its summary. */
+export function gainsRows(s) {
+  const c = s.cost;
+  const net = c.net ?? c.total - (c.baleRevenue ?? 0);
+  return [
+    { key: 'revenue', label: 'Bale revenue', value: '+' + fmtInr(c.baleRevenue ?? 0), tone: 'good', icon: 'coin' },
+    { key: 'net', label: net < 0 ? 'Net result (surplus)' : 'Net result (cost)', value: fmtInr(net), tone: net < 0 ? 'good' : 'plain', icon: 'scale' },
+    { key: 'recycled', label: 'Plastic recycled', value: fmtKg(s.recycledKg ?? 0), tone: 'good', icon: 'recycle' },
+    { key: 'co2e', label: 'CO\u2082e avoided', value: fmtCo2(s.co2eAvoidedKg ?? 0), tone: 'good', icon: 'leaf' },
+    { key: 'landfill', label: 'Sent to landfill', value: fmtKg(s.landfillKg ?? 0), tone: 'plain', icon: 'bin' },
+    { key: 'litter', label: 'Litter', value: fmtKg(s.litterKg ?? 0), tone: 'plain', icon: 'litter' },
+  ];
+}
+
+/** Gains of the AI plan relative to the baseline (honest signs; good = green, worse = red). */
+export function gainsDeltaRows(b, o) {
+  const bc = b.cost, oc = o.cost;
+  const bn = bc.net ?? bc.total - (bc.baleRevenue ?? 0), on = oc.net ?? oc.total - (oc.baleRevenue ?? 0);
+  const row = (key, label, icon, d, f, eps, goodWhenUp) => ({
+    key, label, icon, tone: toneOf(d, eps, goodWhenUp), value: signed(d, f, eps) ?? 'no change',
+  });
+  return [
+    row('revenue', 'Bale revenue', 'coin', (oc.baleRevenue ?? 0) - (bc.baleRevenue ?? 0), fmtInr, 0.5, true),
+    row('spend', 'Spend', 'spend', oc.total - bc.total, fmtInr, 0.5, false),
+    row('net', 'Net cost (surplus if negative)', 'scale', on - bn, fmtInr, 0.5, false),
+    row('recycled', 'Plastic recycled', 'recycle', (o.recycledKg ?? 0) - (b.recycledKg ?? 0), fmtKg, 0.05, true),
+    row('co2e', 'CO\u2082e avoided', 'leaf', (o.co2eAvoidedKg ?? 0) - (b.co2eAvoidedKg ?? 0), fmtCo2, 0.5, true),
+    row('landfill', 'Sent to landfill', 'bin', (o.landfillKg ?? 0) - (b.landfillKg ?? 0), fmtKg, 0.05, false),
+    row('litter', 'Litter', 'litter', (o.litterKg ?? 0) - (b.litterKg ?? 0), fmtKg, 0.05, false),
+    row('overflow', 'Overflow bin-days', 'overflow', o.overflowBinDays - b.overflowBinDays, fmtInt, 0.5, false),
+  ];
+}
+
+export const GAINS_FOOTNOTE = 'Bale prices and CO\u2082e factors are estimates \u2014 see Assumptions.';

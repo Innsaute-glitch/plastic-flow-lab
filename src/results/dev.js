@@ -54,7 +54,9 @@ const states = {
   compare: () => store.set({ mode: 'compare', baseline, optimised, sweep, llm: { stage: 'done', text: proposal.raw, error: null } }),
   overbudget: () => {
     const o = structuredClone(optimised);
-    o.results.summary.cost.total = Math.round(rb.summary.cost.total * 1.4);
+    const oc = o.results.summary.cost;
+    oc.total = Math.round(rb.summary.cost.total * 1.4);
+    oc.net = oc.total - oc.baleRevenue;
     o.proposal.source = 'heuristic';
     o.proposal.clampNotes = ['n4.pickupIntervalDays 0 -> 1', 'n2.binCount 9 -> 6'];
     store.set({ mode: 'compare', baseline, optimised: o, sweep });

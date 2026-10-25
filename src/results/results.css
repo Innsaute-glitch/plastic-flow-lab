@@ -128,8 +128,10 @@
 .results-cmp-arrow { color: var(--text-faint); font-size: 16px; }
 .results-cmp-a { color: var(--text); }
 .results-cmp-unit { font: 500 13px/1 var(--font-ui); color: var(--text-muted); }
-.results-budget { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px; margin: 2px 0 6px; }
-.results-budget b { font-weight: 700; }
+.results-budget { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 3px 8px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px; margin: 2px 0 6px; }
+.results-budget svg { margin-top: 3px; }
+.results-budget b { font-weight: 700; line-height: 1.35; }
+.results-budget span { grid-column: 2; font-size: 12.5px; line-height: 1.35; }
 .results-budget span { color: var(--text-muted); }
 .results-budget--ok { background: color-mix(in srgb, var(--good) 12%, transparent); color: var(--good); }
 .results-budget--over { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
@@ -253,3 +255,37 @@
 .results-table-card .results-card-head { margin-bottom: 0; }
 .results-changes .results-card-head { flex-wrap: wrap; }
 .results-linkbtn { white-space: nowrap; }
+
+/* ---------- net cost card + "i" gains popover ---------- */
+.results-card-labelrow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 24px; }
+.results-card-labelrow .results-card-label { min-width: 0; }
+.results-infobtn { all: unset; box-sizing: border-box; cursor: pointer; display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; color: var(--text-muted); }
+.results-infobtn:hover, .results-infobtn[aria-expanded="true"] { color: var(--accent); background: var(--bg-elev-2); }
+.results-infobtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.results-numeral-word { font-size: var(--fs-md); }
+.results-numeral.is-long { font-size: 32px; }
+.results-metric--surplus .results-numeral, .results-metric--surplus .results-numeral-pre { color: var(--good); }
+.results-metric--surplus .results-numeral-unit { color: color-mix(in srgb, var(--good) 75%, var(--text-muted)); }
+.results-card-sub--faint { color: var(--text-faint); font-size: 12px; }
+.results-cmp-label--info { display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; }
+.results-cmp-label--info .results-infobtn { margin: -4px 0; }
+
+.results-gains {
+  position: fixed; z-index: 80; width: 330px; max-width: calc(100vw - 16px); overflow-y: auto; box-sizing: border-box;
+  background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); color: var(--text); font-family: var(--font-ui); font-size: 13.5px; outline: none;
+  animation: results-in 160ms var(--ease) both;
+}
+.results-gains *, .results-gains { box-sizing: border-box; }
+.results-gains-title { font: 600 12px/1 var(--font-ui); letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--space-2); }
+.results-gains-list { list-style: none; margin: 0; padding: 0; }
+.results-gains-row { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+.results-gains-row:first-child { border-top: 0; }
+.results-gains-ic { display: inline-grid; place-items: center; color: var(--text-faint); }
+.results-gains-lab { color: var(--text-muted); line-height: 1.25; }
+.results-gains-val { font: 700 14px/1.2 var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.results-gains-val--good { color: var(--good); }
+.results-gains-val--bad { color: var(--bad); }
+.results-gains-val--flat { color: var(--text-faint); font-weight: 500; }
+.results-gains-val--plain { color: var(--text); }
+.results-gains-foot { margin: var(--space-2) 0 0; padding-top: var(--space-2); border-top: 1px solid var(--line); font-size: 12px; line-height: 1.4; color: var(--text-faint); }

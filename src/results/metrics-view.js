@@ -1,6 +1,7 @@
 // Results mode: metric cards with ticking counters, Sankey, per-node table.
 import { h, svgIcon, ICONS } from './dom.js';
-import { METRICS, fmtInt, fmtDec1, fmtKg } from './format.js';
+import { METRICS, fmtInt, fmtDec1, fmtKg, fmtInr, gainsRows } from './format.js';
+import { createGainsButton, closeGains } from './gains.js';
 import { tick } from './counter.js';
 import { createSankey } from './sankey.js';
 
@@ -13,7 +14,7 @@ function subFor(key, s, days = 30) {
     case 'purity': return 'resin share of baled mass';
     case 'contamination': return 'of sorted mass';
     case 'km': return `${s.truckTrips} truck trips · ${s.pickups} bin pickups`;
-    case 'cost': return `transport ₹${fmtInt(s.cost.transport)} · bins ₹${fmtInt(s.cost.bins)} · sorting ₹${fmtInt(s.cost.sorting)}`;
+    case 'cost': return `spend ${fmtInr(s.cost.total)} − bales ${fmtInr(s.cost.baleRevenue)}`;
     default: return '';
   }
 }
@@ -21,18 +22,34 @@ function subFor(key, s, days = 30) {
 export function createMetricCards() {
   const root = h('div', 'results-cards');
   const refs = {};
+  let lastSummary = null;
   const make = (m, cls) => {
     const card = h('div', `results-card results-metric ${cls || ''}`);
-    card.appendChild(h('div', 'results-card-label', m.label));
+    if (m.key === 'cost') {
+      // net result: label row carries the "i" gains button
+      const row = h('div', 'results-card-labelrow');
+      row.appendChild(h('div', 'results-card-label', 'Net result'));
+      row.appendChild(createGainsButton({ title: 'Gains this run', ariaLabel: 'Show what this run gains: revenue, recycling, CO2e, landfill', getRows: () => gainsRows(lastSummary) }));
+      card.appendChild(row);
+    } else card.appendChild(h('div', 'results-card-label', m.label));
     const num = h('div', 'results-numeral');
     if (m.prefix) num.appendChild(h('span', 'results-numeral-pre', m.prefix));
     const val = h('span', 'results-numeral-val', '0');
     num.appendChild(val);
-    if (m.unit && m.unit !== 'INR') num.appendChild(h('span', 'results-numeral-unit', m.unit));
+    let unitEl = null;
+    if (m.key === 'cost') {
+      unitEl = h('span', 'results-numeral-unit results-numeral-word', '');
+      num.appendChild(unitEl);
+    } else if (m.unit && m.unit !== 'INR') num.appendChild(h('span', 'results-numeral-unit', m.unit));
     card.appendChild(num);
     const sub = h('div', 'results-card-sub');
     card.appendChild(sub);
-    refs[m.key] = { val, sub, m };
+    let sub2 = null;
+    if (m.key === 'cost') {
+      sub2 = h('div', 'results-card-sub results-card-sub--faint');
+      card.appendChild(sub2);
+    }
+    refs[m.key] = { val, sub, sub2, unitEl, card, num, m };
     return card;
   };
   const M = Object.fromEntries(METRICS.map((m) => [m.key, m]));
@@ -41,8 +58,22 @@ export function createMetricCards() {
   return {
     el: root,
     update(summary, { animate = true, days = 30 } = {}) {
+      lastSummary = summary;
       for (const k in refs) {
-        const { val, sub, m } = refs[k];
+        const { val, sub, sub2, unitEl, card, num, m } = refs[k];
+        if (k === 'cost') {
+          // headline is the NET: show its size with a word for the sign (surplus = recycling pays for the system)
+          const net = summary.cost.net;
+          const surplus = net < 0;
+          tick(val, Math.abs(net), { decimals: 0, duration: animate ? 1000 : 0 });
+          unitEl.textContent = surplus ? 'surplus' : 'net cost';
+          card.classList.toggle('results-metric--surplus', surplus);
+          num.classList.toggle('is-long', Math.abs(net) >= 1e6);
+          sub.textContent = subFor(k, summary, days);
+          const c = summary.cost;
+          sub2.textContent = `spend = transport ${fmtInr(c.transport)} + bins ${fmtInr(c.bins)} + sorting ${fmtInr(c.sorting)}`;
+          continue;
+        }
         tick(val, m.get(summary), { decimals: m.decimals, duration: animate ? 1000 : 0 });
         sub.textContent = subFor(k, summary, days);
       }
@@ -167,6 +198,7 @@ export function createResultsView(ctx) {
       }
     },
     destroy() {
+      closeGains();
       sk.destroy();
       el.remove();
     },

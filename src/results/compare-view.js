@@ -1,6 +1,7 @@
 // Compare mode: the before/after climax. Hero delta, metric table, budget, seed sweep, Sankey toggle, setup changes.
 import { h, svgIcon, ICONS, deltaChip } from './dom.js';
-import { METRICS, deltaFor, formatMetric, budgetStatus, sweepRange, sweepWins, setupChanges } from './format.js';
+import { METRICS, deltaFor, formatMetric, budgetStatus, sweepRange, sweepWins, setupChanges, gainsDeltaRows } from './format.js';
+import { createGainsButton, closeGains } from './gains.js';
 import { tick } from './counter.js';
 import { createSankeyCard } from './metrics-view.js';
 import { sourceBadgeEl } from './ai-activity.js';
@@ -48,6 +49,7 @@ export function createCompareView(ctx) {
   let skCard = null;
 
   function build(state) {
+    closeGains();
     el.textContent = '';
     sk?.destroy();
     const { baseline, optimised, sweep, scenario, ui, assumptions } = state;
@@ -85,11 +87,20 @@ export function createCompareView(ctx) {
       const m = M[k];
       const b = m.get(bs), a = m.get(os);
       const d = deltaFor(m, b, a);
-      const budget = m.isCost ? budgetStatus(bs.cost.total, os.cost.total, assumptions.llmLimits.budgetTolerance.value) : null;
+      const budget = m.isCost ? budgetStatus(bs.cost, os.cost, assumptions.llmLimits.budgetTolerance.value) : null;
       // cost increase inside the budget is an accepted trade-off: amber, not red
       const shown = budget && d.tone === 'bad' && budget.within ? { ...d, tone: 'warn' } : d;
       const row = h('div', 'results-cmp-row');
-      row.appendChild(h('span', 'results-cmp-label', m.label));
+      if (budget) {
+        // cost row: label + the "i" gains button (gains of the AI plan vs the baseline)
+        const lab = h('span', 'results-cmp-label results-cmp-label--info', m.label);
+        lab.appendChild(createGainsButton({
+          title: 'AI plan vs baseline',
+          ariaLabel: 'Show what the AI plan gains or loses versus the baseline',
+          getRows: () => gainsDeltaRows(bs, os),
+        }));
+        row.appendChild(lab);
+      } else row.appendChild(h('span', 'results-cmp-label', m.label));
       const vals = h('span', 'results-cmp-vals');
       vals.append(h('span', 'results-cmp-b', formatMetric(m, b)), h('span', 'results-cmp-arrow', '→'));
       const av = h('span', 'results-cmp-a', '');
@@ -108,7 +119,7 @@ export function createCompareView(ctx) {
         const pill = h('div', `results-budget results-budget--${budget.within ? 'ok' : 'over'}`);
         pill.appendChild(svgIcon(budget.within ? ICONS.check : ICONS.close, 13));
         pill.appendChild(h('b', '', budget.text));
-        pill.appendChild(h('span', '', budget.limitText));
+        pill.appendChild(h('span', '', 'Limit: ' + budget.limitText));
         tbl.appendChild(pill);
       }
     }
@@ -220,6 +231,7 @@ export function createCompareView(ctx) {
       build(state);
     },
     destroy() {
+      closeGains();
       sk?.destroy();
       el.remove();
     },

@@ -28,12 +28,12 @@ Made for the college assignment *"Plastic Waste Management: From Collection to R
 | Bale purity | 59.5% | 71.1% | 82.5% |
 | Plastic recycled | 1,322 kg | 1,875 kg | 2,010 kg |
 | CO₂e avoided | 1.25 t | 1.77 t | 1.90 t |
-| Sent to landfill | 1,270 kg | 806 kg | 1,036 kg |
+| Sent to landfill | 484 kg | 391 kg | 494 kg |
 | Spend | ₹47.0k | ₹47.7k | ₹57.0k |
 | Bale revenue | ₹51.6k | ₹73.1k | ₹78.5k |
 | Net | ₹4.5k surplus | ₹25.4k surplus | ₹21.4k surplus |
 
-Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements.
+Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. The AI's float-tank sorter loses a little more in processing, so its landfill is about the same as before (494 vs 484 kg). So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements.
 
 | Map editor | Where the plastic goes |
 |---|---|

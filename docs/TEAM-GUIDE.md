@@ -42,12 +42,12 @@ The cached AI answer is a real Claude Sonnet 5.5 answer for the 2023 campus. Res
 | Bale purity | 59.5% | 71.1% | 82.5% |
 | Plastic recycled | 1,322 kg | 1,875 kg | 2,010 kg |
 | CO₂e avoided | 1.25 t | 1.77 t | 1.90 t |
-| Sent to landfill | 1,270 kg | 806 kg | 1,036 kg |
+| Sent to landfill | 484 kg | 391 kg | 494 kg |
 | Spend | ₹47.0k | ₹47.7k | ₹57.0k |
 | Bale revenue | ₹51.6k | ₹73.1k | ₹78.5k |
 | Net | ₹4.5k surplus | ₹25.4k surplus | ₹21.4k surplus |
 
-Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements. The AI's improvement is also checked on 5 random seeds.
+Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. The AI's float-tank sorter loses a little more in processing, so its landfill is about the same as before (494 vs 484 kg). So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements. The AI's improvement is also checked on 5 random seeds.
 
 Screenshots in `docs/images/` were taken before the real map and may look different.
 
@@ -179,7 +179,7 @@ Each step is one hour, numbered `t = day × 24 + hour`, with days 0 to 29. Every
 **6. Sorting at the facility.** Everything collected joins a queue and is sorted the same day, up to the method's throughput (kg/day). What doesn't fit is **backlog**, sorted on later days. Sorting uses expected values (averages), not dice rolls:
 
 1. **Process loss** (3-5% depending on method) is rejected → landfill.
-2. **Contaminated** plastic is detected with the method's detection rate (60% manual, 75% float tank, 90% NIR). Detected material goes to the contaminated stream: half is a chemical recycling candidate, half goes to landfill. Undetected material slips into a bale as impurity.
+2. **Contaminated** plastic is detected with the method's detection rate (60% manual, 75% float tank, 90% NIR). Detected material goes to the contaminated stream: 90% is a chemical recycling / co-processing candidate (Thapar sends MRF rejects to a co-processing vendor), 10% goes to landfill. Undetected material slips into a bale as impurity.
 3. **Clean PET, HDPE and PP** go to the correct bale with the method's accuracy (80% manual, 90% float tank, 96% NIR); the rest lands in a wrong bale (impurity).
 4. **Clean mixed / multilayer plastic** becomes residue → chemical recycling candidate.
 5. Bales → **mechanical recycling route**.
@@ -366,7 +366,7 @@ Every number the model uses lives in **one file**, `config/assumptions.json`. No
 | Sorting: manual | 80% accuracy, 60% detection, 350 kg/day, 4% loss | MRF handles 1.5–1.75 t/day dry waste with 21 workers |
 | Sorting: manual + float tank | 90% accuracy, 75% detection, 500 kg/day, 5% loss | estimate |
 | Sorting: manual + NIR | 96% accuracy, 90% detection, 1,200 kg/day, 3% loss | estimate |
-| Contaminated → chemical route | 50% | the rest to landfill (estimate) |
+| Contaminated → chemical route | 90% | Thapar sends rejects to co-processing (case study p16); the rest to landfill (estimate) |
 | Road detour factor | 1.3 | road distance ÷ straight-line distance (estimate) |
 | Truck speed, stop time | 10 km/h, 2 min | estimate |
 | Transport cost | ₹12 | per km, e-loader |

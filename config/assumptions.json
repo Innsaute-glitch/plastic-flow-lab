@@ -198,9 +198,9 @@
       "estimate": true
     },
     "contaminatedToChemicalFraction": {
-      "value": 0.5,
+      "value": 0.9,
       "unit": "fraction of removed contaminated mass suitable for chemical recycling",
-      "source": "Estimate: half of the contaminated plastic is fit for chemical recycling / co-processing; Thapar sends MRF rejects to an authorised co-processing vendor (case study p16), so this may be higher in practice",
+      "source": "Thapar sends MRF reject waste to an authorised vendor for co-processing (case study p16), so most contaminated plastic avoids landfill; 10% assumed too wet or mixed to accept",
       "estimate": true
     }
   },

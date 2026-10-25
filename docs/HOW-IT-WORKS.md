@@ -37,7 +37,7 @@ On a pickup day the truck visits **only the nodes due that day**, starting and e
 Everything collected joins a queue and is sorted the same day, but only up to the method's **throughput** (kg per day). Whatever does not fit is the **backlog** and is sorted on later days. Sorting uses average (expected) values, not dice rolls:
 
 1. **Process loss** (3-5%) is rejected and goes to landfill.
-2. **Contaminated** material (food residue) is spotted with probability *detection*. Spotted material goes to the **contaminated** stream (half chemical recycling, half landfill). Missed material slips into a bale as an **impurity**.
+2. **Contaminated** material (food residue) is spotted with probability *detection*. Spotted material goes to the **contaminated** stream (90% to chemical recycling / co-processing, as Thapar sends rejects to a co-processing vendor; 10% to landfill). Missed material slips into a bale as an **impurity**.
 3. **Clean** PET/HDPE/PP goes to the right bale with probability *accuracy*; the rest lands in a wrong bale. Clean mixed plastic becomes **residue** for chemical recycling.
 4. Bales go to **mechanical recycling**.
 

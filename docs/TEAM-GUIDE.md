@@ -132,7 +132,7 @@ The screen has three columns: **controls on the left**, the **map in the centre*
 | **Select** | Click a node to edit it in the left panel; drag a node to move it. Delete key removes the selected node; Esc deselects. |
 | **Add** | Click the map to place a new node (maximum 40). |
 | **Place** | Click the map to place the sorting facility (it does not count toward the 40). |
-| **Calibrate** | Click two points on the map, then type the real distance between them in metres. This sets the map scale used for truck distances. |
+| **Calibrate** (Map card) | Click two points on the map, then type the real distance between them in metres. This sets the map scale used for truck distances, so it rescales every distance and cost. The Thapar map is already calibrated, so this is only needed after **Change image**. |
 | **Change image** | Load a different map screenshot (any campus or town). |
 | Node editor | Name, waste type (icon chips), rate in kg/day, optional peak window (start hour, end hour, multiplier), bin type (single or segregated), bin count, bin size (60/120/240/660 L), pickup interval in days. |
 | Sorting facility | Manual (350 kg/day), Manual + float tank (500 kg/day), Manual + NIR sensor (1,200 kg/day). |

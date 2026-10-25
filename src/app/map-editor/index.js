@@ -197,7 +197,7 @@ export function mount(el, store) {
     else if (unplaced && s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>Place: <b>${esc(unplaced.name)}</b></span></span>`;
     else if (s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>Click the map to add a node (${sc.nodes.length}/${MAX_NODES})</span></span>`;
     else if (s.tool === 'place-facility') hint = `<span class="ms-hint ms-hint--accent">${icon('factory', 15)}<span>Click the map to place the facility</span></span>`;
-    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? 'Click the first point' : 'Click the second point'}</span></span>`;
+    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? 'Click the first point · this rescales all distances and costs' : 'Click the second point'}</span></span>`;
     else if (unplaced) hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${sc.nodes.filter((n) => n.x == null).length} node(s) need a place. Use the pin tool.</span></span>`;
     else if (!sc.nodes.length && !sc.facility) hint = `<span class="ms-hint">${icon('info', 15)}<span>Pick a tool on the left, or load the demo.</span></span>`;
     else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them. Hover a marker for its name.</span></span>`;

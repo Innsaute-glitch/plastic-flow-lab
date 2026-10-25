@@ -176,7 +176,7 @@ button { cursor: pointer; }
 
 /* ---------- controls ---------- */
 .c-sec { flex: none; }
-.c-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); }
+.c-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); }
 .c-tool { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 9px 0 7px; border: 1px solid transparent; border-radius: 11px; background: transparent; color: var(--text-muted); font-size: var(--fs-xs); transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
 .c-tool:hover { background: var(--bg-elev-2); color: var(--text); }
 .c-tool.is-active { background: color-mix(in srgb, var(--accent) 13%, var(--bg-elev-2)); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }

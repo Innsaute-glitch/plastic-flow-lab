@@ -9,8 +9,8 @@ const TOOLS = [
   ['select', 'cursor', 'Select / move'],
   ['add-node', 'pin-plus', 'Add node'],
   ['place-facility', 'factory', 'Place facility'],
-  ['calibrate', 'ruler', 'Calibrate scale'],
 ];
+// Calibrate is not a toolbar tool: it is rare and rescales every distance, so it lives in the Map card only.
 
 export function mount(el, store) {
   el.innerHTML = `

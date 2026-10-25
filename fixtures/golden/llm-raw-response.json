@@ -1,0 +1,87 @@
+{
+  "nodes": [
+    {
+      "id": "n1",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins."
+    },
+    {
+      "id": "n2",
+      "binType": "segregated",
+      "binCount": 2,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 2,
+      "rationale": "Bottles are bulky; 2×240 L every 2 days keeps fill under 85%."
+    },
+    {
+      "id": "n3",
+      "binType": "segregated",
+      "binCount": 2,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 2,
+      "rationale": "Same pattern as Hostel A at a slightly lower rate."
+    },
+    {
+      "id": "n4",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 3,
+      "rationale": "Low rate; a bigger segregated bin on the existing 3-day cycle is enough."
+    },
+    {
+      "id": "n5",
+      "binType": "segregated",
+      "binCount": 2,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 2,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n6",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Evening spike plus food residue: daily pickup and segregated bins."
+    },
+    {
+      "id": "n7",
+      "binType": "single",
+      "binCount": 2,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 2,
+      "rationale": "Post-match bottle surge; double capacity on a 2-day cycle."
+    },
+    {
+      "id": "n8",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 2,
+      "rationale": "Cups and straws pile up mid-afternoon; segregated 240 L every 2 days."
+    },
+    {
+      "id": "n9",
+      "binType": "single",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 7,
+      "rationale": "Very low rate; current weekly pickup already fits."
+    },
+    {
+      "id": "n10",
+      "binType": "single",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 7,
+      "rationale": "Very low rate; keep weekly pickup to save truck km."
+    }
+  ],
+  "sortingMethod": "manual_float",
+  "sortingRationale": "Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.",
+  "summary": "Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting."
+}

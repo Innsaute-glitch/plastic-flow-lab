@@ -120,13 +120,17 @@
     "manual_float": "Manual + float tank",
     "manual_nir": "Manual + NIR",
     "single": "Single bin",
-    "segregated": "Segregated"
+    "segregated": "Segregated",
+    "revenue": "Revenue & environment",
+    "balePricePerKg": "Bale sale price",
+    "co2eAvoidedKgPerKg": "CO₂e avoided per kg recycled"
   },
   "editableAssumptions": [
     "cost.transportPerKm",
     "cost.binPerDay",
     "cost.segregatedBinMultiplier",
     "cost.sortingPerDay",
+    "revenue.balePricePerKg",
     "llmLimits.budgetTolerance"
   ]
 }

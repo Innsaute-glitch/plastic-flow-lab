@@ -6,11 +6,14 @@ import { notify } from './notify.js';
 const BASE = import.meta.env?.BASE_URL ?? '/';
 export const assetUrl = (src) => (/^(data:|blob:|https?:|\/)/.test(src) ? src : `${BASE}${src}`);
 
-export async function loadDemo(store) {
+const DEMO_FILES = { before: 'demo/demo-scenario.json', after: 'demo/demo-scenario-after.json' };
+
+export async function loadDemo(store, which = 'before') {
   try {
-    const res = await fetch(`${BASE}demo/demo-scenario.json`);
+    const res = await fetch(`${BASE}${DEMO_FILES[which] ?? DEMO_FILES.before}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    if (loadScenario(store, await res.json())) notify('info', 'Demo scenario loaded.');
+    const scenario = await res.json();
+    if (loadScenario(store, scenario)) notify('info', `Loaded ${scenario.name ?? 'demo scenario'}.`);
   } catch (err) {
     console.error('[app] loadDemo failed:', err.message);
     notify('error', `Could not load the demo scenario: ${err.message}`);

@@ -32,9 +32,9 @@ test('normaliseScenario rejects garbage', () => {
   assert.throws(() => normaliseScenario(null, assumptions));
 });
 
-test('nextNodeId picks lowest free id and stops at 10', () => {
+test('nextNodeId picks lowest free id and stops at 40', () => {
   assert.equal(nextNodeId([{ id: 'n1' }, { id: 'n3' }]), 'n2');
-  assert.equal(nextNodeId(Array.from({ length: 10 }, (_, i) => ({ id: `n${i + 1}` }))), null);
+  assert.equal(nextNodeId(Array.from({ length: 40 }, (_, i) => ({ id: `n${i + 1}` }))), null);
 });
 
 test('CSV template imports; positions optional', () => {

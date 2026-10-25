@@ -58,13 +58,15 @@ export function createAiDrawer(root, store) {
   facts.forEach(([k, v]) => dl.append(h('dt', '', k), h('dd', '', v)));
   body.appendChild(dl);
 
-  const tbl = h('div', 'results-mini');
+  const tbl = h('div', 'results-mini'); // scrolls inside the drawer when there are many nodes
   scenario.nodes.forEach((n) => {
     const row = h('div', 'results-mini-row');
     const dot = h('i');
     dot.style.background = ui.resinColors[ui.wasteTypeColorKey[n.wasteType]];
     const cfg = baseline?.setup?.nodes?.[n.id] || scenario.baselineSetup?.nodes?.[n.id];
-    row.append(dot, h('b', '', n.name), h('span', '', `${ui.wasteTypeLabels[n.wasteType]} · ${fmtKg(n.rateKgPerDay).replace(' kg', '')} kg/day`));
+    const nm = h('b', '', n.name);
+    nm.title = n.name;
+    row.append(dot, nm, h('span', '', `${ui.wasteTypeLabels[n.wasteType]} · ${fmtKg(n.rateKgPerDay).replace(' kg', '')} kg/day`));
     if (cfg) row.appendChild(h('span', 'results-mini-cfg', `${cfg.binCount}×${cfg.binCapacityL} L ${cfg.binType}, every ${cfg.pickupIntervalDays} d`));
     tbl.appendChild(row);
   });

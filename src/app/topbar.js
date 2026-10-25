@@ -19,7 +19,13 @@ export function mount(el, store) {
         <span class="app-switch"><input type="checkbox" id="tb-demo" aria-label="Demo mode" /><i></i></span>
       </label>
       <span class="tb-sep"></span>
-      <button class="app-btn" id="tb-load" title="Load the demo scenario">${icon('map', 16)}<span>Load demo</span></button>
+      <div class="tb-menu-wrap">
+        <button class="app-btn" id="tb-load" title="Load a demo scenario" aria-haspopup="menu" aria-expanded="false" aria-controls="tb-demo-menu">${icon('map', 16)}<span>Load demo</span><span class="tb-chev">${icon('chevron', 14)}</span></button>
+        <div class="tb-menu" id="tb-demo-menu" role="menu" hidden>
+          <button class="tb-menu__item" role="menuitem" data-demo="before"><b>Thapar 2023 · before Saahas</b><span>Mixed bins, the starting point</span></button>
+          <button class="tb-menu__item" role="menuitem" data-demo="after"><b>Thapar 2024 · after Saahas</b><span>Segregated bins, what Thapar did</span></button>
+        </div>
+      </div>
       <button class="app-btn app-btn--icon" id="tb-import" title="Import scenario (.json) or nodes (.csv)" aria-label="Import">${icon('upload', 17)}</button>
       <button class="app-btn app-btn--icon" id="tb-export" title="Export scenario as JSON" aria-label="Export">${icon('download', 17)}</button>
       <button class="app-btn" id="tb-assume" title="Show model assumptions">${icon('sliders', 16)}<span>Assumptions</span></button>
@@ -28,7 +34,32 @@ export function mount(el, store) {
   const $ = (id) => el.querySelector('#' + id);
   const file = $('tb-file');
 
-  $('tb-load').addEventListener('click', () => loadDemo(store));
+  const loadBtn = $('tb-load');
+  const menu = $('tb-demo-menu');
+  const setMenu = (open, focusBtn = false) => {
+    menu.hidden = !open;
+    loadBtn.setAttribute('aria-expanded', String(open));
+    if (open) menu.querySelector('[role="menuitem"]').focus();
+    else if (focusBtn) loadBtn.focus();
+  };
+  loadBtn.addEventListener('click', () => setMenu(menu.hidden));
+  menu.addEventListener('click', (e) => {
+    const item = e.target.closest('[data-demo]');
+    if (!item) return;
+    setMenu(false, true);
+    loadDemo(store, item.dataset.demo);
+  });
+  menu.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const items = [...menu.querySelectorAll('[role="menuitem"]')];
+    const i = items.indexOf(document.activeElement);
+    items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus();
+  });
+  const onDocClick = (e) => { if (!menu.hidden && !e.target.closest('.tb-menu-wrap')) setMenu(false); };
+  const onKey = (e) => { if (e.key === 'Escape' && !menu.hidden) { e.stopPropagation(); setMenu(false, true); } };
+  document.addEventListener('click', onDocClick);
+  document.addEventListener('keydown', onKey);
   $('tb-import').addEventListener('click', () => file.click());
   file.addEventListener('change', () => {
     importFile(store, file.files[0]);
@@ -49,5 +80,10 @@ export function mount(el, store) {
     $('tb-assume').classList.toggle('is-active', s.panel === 'assumptions');
   }
   render(store.get());
-  return store.subscribe(render);
+  const unsub = store.subscribe(render);
+  return () => {
+    unsub();
+    document.removeEventListener('click', onDocClick);
+    document.removeEventListener('keydown', onKey);
+  };
 }

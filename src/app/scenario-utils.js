@@ -1,5 +1,5 @@
 // Pure helpers (no DOM) so they can be tested under node:test.
-export const MAX_NODES = 10;
+export const MAX_NODES = 40;
 
 export function emptyScenario(assumptions, mapDefaults = {}) {
   return {
@@ -7,11 +7,11 @@ export function emptyScenario(assumptions, mapDefaults = {}) {
     id: 'scenario-new',
     name: 'New scenario',
     map: {
-      src: 'maps/placeholder-campus.svg',
-      widthPx: 1600,
-      heightPx: 1000,
-      metresPerPixel: assumptions?.map?.defaultMetresPerPixel?.value ?? 0.5,
-      attribution: 'Placeholder map. Replace with Google Maps screenshot (keep attribution).',
+      src: 'maps/campus.jpg',
+      widthPx: 2960,
+      heightPx: 1840,
+      metresPerPixel: assumptions?.map?.defaultMetresPerPixel?.value ?? 0.5153,
+      attribution: 'Imagery ©2026 Airbus, Maxar Technologies · Map data ©2026 Google',
       ...mapDefaults,
     },
     facility: null,

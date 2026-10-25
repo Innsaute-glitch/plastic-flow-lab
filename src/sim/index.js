@@ -180,7 +180,9 @@ export function simulate(scenario, setup, assumptions, seed) {
     Math.abs(so.sorted - (baleMass + so.residue + so.contaminated + so.rejected));
 
   const routeDistanceKm = routeM / 1000;
-  const cost = computeCost({ routeDistanceKm, days }, setup, A);
+  const cost = computeCost({ routeDistanceKm, days, correctKgByResin: so.correctByResin }, setup, A);
+  const co2 = A.revenue.co2eAvoidedKgPerKg.value;
+  const co2eAvoidedKg = ['pet', 'hdpe', 'pp'].reduce((a, r) => a + so.correctByResin[r] * co2[r], 0);
 
   const summary = {
     generatedKg: r4(generated), collectedKg: r4(collectedTotal), litterKg: r4(litter), inBinsEndKg: r4(inBinsEnd), backlogEndKg: r4(backlog),
@@ -189,6 +191,7 @@ export function simulate(scenario, setup, assumptions, seed) {
     contaminationRate: so.sorted > 0 ? r4(so.contaminated / so.sorted) : 0,
     overflowBinDays, overflowCalendarDays,
     routeDistanceKm: r3(routeDistanceKm), truckTrips: trips.length, pickups,
+    recycledKg: r4(so.correct), landfillKg: r4(so.contaminatedToLandfill + so.rejected), co2eAvoidedKg: r4(co2eAvoidedKg),
     cost, massBalanceErrorKg: Math.round(massBalanceErrorKg * 1e9) / 1e9,
   };
 

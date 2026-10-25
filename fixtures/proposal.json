@@ -3,86 +3,296 @@
   "model": "claude-sonnet-5-5",
   "createdAt": "2026-10-25T12:00:00Z",
   "round": 1,
-  "scenarioId": "campus-demo-v1",
+  "scenarioId": "thapar-2023-before-saahas",
   "setup": {
     "nodes": {
       "n1": {
         "binType": "segregated",
-        "binCount": 3,
+        "binCount": 1,
         "binCapacityL": 240,
         "pickupIntervalDays": 1
       },
       "n2": {
         "binType": "segregated",
-        "binCount": 2,
-        "binCapacityL": 240,
-        "pickupIntervalDays": 2
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       },
       "n3": {
         "binType": "segregated",
-        "binCount": 2,
-        "binCapacityL": 240,
-        "pickupIntervalDays": 2
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       },
       "n4": {
         "binType": "segregated",
         "binCount": 1,
-        "binCapacityL": 240,
-        "pickupIntervalDays": 3
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       },
       "n5": {
         "binType": "segregated",
-        "binCount": 2,
+        "binCount": 1,
         "binCapacityL": 240,
-        "pickupIntervalDays": 2
+        "pickupIntervalDays": 1
       },
       "n6": {
         "binType": "segregated",
-        "binCount": 3,
+        "binCount": 1,
         "binCapacityL": 240,
         "pickupIntervalDays": 1
       },
       "n7": {
-        "binType": "single",
-        "binCount": 2,
+        "binType": "segregated",
+        "binCount": 1,
         "binCapacityL": 240,
-        "pickupIntervalDays": 2
+        "pickupIntervalDays": 1
       },
       "n8": {
         "binType": "segregated",
         "binCount": 1,
         "binCapacityL": 240,
-        "pickupIntervalDays": 2
+        "pickupIntervalDays": 1
       },
       "n9": {
-        "binType": "single",
+        "binType": "segregated",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 7
+        "pickupIntervalDays": 2
       },
       "n10": {
-        "binType": "single",
+        "binType": "segregated",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 7
+        "pickupIntervalDays": 1
+      },
+      "n11": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n12": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n13": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n14": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n15": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n16": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 2
+      },
+      "n17": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n18": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n19": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n20": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n21": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n22": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n23": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n24": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n25": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n26": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n27": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n28": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n29": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n30": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n31": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n32": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n33": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n34": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n35": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n36": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n37": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n38": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n39": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n40": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       }
     },
-    "sortingMethod": "manual_float"
+    "sortingMethod": "manual"
   },
   "rationales": {
     "n1": "Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.",
     "n2": "Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.",
-    "n3": "Same pattern as Hostel A at a slightly lower rate.",
+    "n3": "Same pattern as Hostel J at a slightly lower rate.",
     "n4": "Low rate; a bigger segregated bin on the existing 3-day cycle is enough.",
     "n5": "Steady mixed stream; segregation cuts cross-contamination.",
     "n6": "Evening spike plus food residue: daily pickup and segregated bins.",
     "n7": "Post-match bottle surge; double capacity on a 2-day cycle.",
     "n8": "Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.",
     "n9": "Very low rate; current weekly pickup already fits.",
-    "n10": "Very low rate; keep weekly pickup to save truck km."
+    "n10": "Very low rate; keep weekly pickup to save truck km.",
+    "n11": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n12": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n13": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n14": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n15": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n16": "Very low rate; weekly pickup already fits.",
+    "n17": "Event cups pile up; segregated bin on a 2-day cycle.",
+    "n18": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n19": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n20": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n21": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n22": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n23": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n24": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n25": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n26": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n27": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n28": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n29": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n30": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n31": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n32": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days.",
+    "n33": "Food residue and a meal-time spike: daily pickup, segregated bins.",
+    "n34": "Food residue and a meal-time spike: daily pickup, segregated bins.",
+    "n35": "Food residue and a meal-time spike: daily pickup, segregated bins.",
+    "n36": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n37": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n38": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n39": "Steady mixed stream; segregation cuts cross-contamination.",
+    "n40": "Steady mixed stream; segregation cuts cross-contamination."
   },
   "sortingRationale": "Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.",
   "summary": "Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting.",
   "clampNotes": [],
-  "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Same pattern as Hostel A at a slightly lower rate.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 3,\n      \"rationale\": \"Low rate; a bigger segregated bin on the existing 3-day cycle is enough.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Evening spike plus food residue: daily pickup and segregated bins.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Post-match bottle surge; double capacity on a 2-day cycle.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 7,\n      \"rationale\": \"Very low rate; current weekly pickup already fits.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 7,\n      \"rationale\": \"Very low rate; keep weekly pickup to save truck km.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.\",\n  \"summary\": \"Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting.\"\n}"
+  "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Same pattern as Hostel J at a slightly lower rate.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Low rate; a bigger segregated bin on the existing 3-day cycle is enough.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Evening spike plus food residue: daily pickup and segregated bins.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Post-match bottle surge; double capacity on a 2-day cycle.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Very low rate; current weekly pickup already fits.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Very low rate; keep weekly pickup to save truck km.\"\n    },\n    {\n      \"id\": \"n11\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n12\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n13\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n14\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n15\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n16\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Very low rate; weekly pickup already fits.\"\n    },\n    {\n      \"id\": \"n17\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Event cups pile up; segregated bin on a 2-day cycle.\"\n    },\n    {\n      \"id\": \"n18\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n19\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n20\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n21\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n22\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n23\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n24\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n25\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n26\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n27\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n28\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n29\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n30\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n31\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n32\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Bulky bottles from a full hostel; segregated 2×240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n33\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Food residue and a meal-time spike: daily pickup, segregated bins.\"\n    },\n    {\n      \"id\": \"n34\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Food residue and a meal-time spike: daily pickup, segregated bins.\"\n    },\n    {\n      \"id\": \"n35\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Food residue and a meal-time spike: daily pickup, segregated bins.\"\n    },\n    {\n      \"id\": \"n36\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n37\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n38\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n39\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n40\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.\",\n  \"summary\": \"Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting.\"\n}"
 }

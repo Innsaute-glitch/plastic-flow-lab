@@ -6,7 +6,8 @@ export const readJson = (rel) => JSON.parse(fs.readFileSync(path.join(ROOT, rel)
 export const loadAll = () => ({
   scenario: readJson('fixtures/scenario.demo.json'),
   proposal: readJson('fixtures/proposal.json'),
-  assumptions: readJson('config/assumptions.json'),
+  // frozen placeholder values: the golden tests below hand-compute results from them
+  assumptions: readJson('fixtures/golden/assumptions.json'),
 });
 
 // Small hand-computable world: one node 300 px from the facility, no noise, capacity 25 kg

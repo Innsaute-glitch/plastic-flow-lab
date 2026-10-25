@@ -11,6 +11,7 @@ const RES = ['pet', 'hdpe', 'pp'];
 export function sortPools(pools, method, assumptions) {
   const keep = 1 - method.processLossFraction;
   const bale = { pet: 0, hdpe: 0, pp: 0 };
+  const correctByResin = { pet: 0, hdpe: 0, pp: 0 };
   let residue = 0, contaminated = 0, correct = 0, sorted = 0;
   for (const r of ['pet', 'hdpe', 'pp', 'mixed']) sorted += pools.clean[r] + pools.cont[r];
 
@@ -18,6 +19,7 @@ export function sortPools(pools, method, assumptions) {
     const c = pools.clean[r] * keep;
     bale[r] += c * method.accuracy;
     correct += c * method.accuracy;
+    correctByResin[r] += c * method.accuracy;
     const wrong = RES.filter((x) => x !== r);
     for (const w of wrong) bale[w] += (c * (1 - method.accuracy)) / wrong.length;
   }
@@ -30,5 +32,5 @@ export function sortPools(pools, method, assumptions) {
   }
   const rejected = sorted * method.processLossFraction;
   const chem = assumptions.sorting.contaminatedToChemicalFraction.value;
-  return { sorted, bale, residue, contaminated, rejected, correct, contaminatedToChemical: contaminated * chem, contaminatedToLandfill: contaminated * (1 - chem) };
+  return { sorted, bale, residue, contaminated, rejected, correct, correctByResin, contaminatedToChemical: contaminated * chem, contaminatedToLandfill: contaminated * (1 - chem) };
 }

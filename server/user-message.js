@@ -1,5 +1,6 @@
 // Builds the compact JSON user message. Positions are converted to metres from the facility.
 import { readFileSync } from 'node:fs';
+import { budgetCap } from '../src/shared/budget.js';
 
 const ROOT = new URL('..', import.meta.url);
 export const loadJson = (rel) => JSON.parse(readFileSync(new URL(rel, ROOT), 'utf8'));
@@ -32,7 +33,6 @@ export function buildUserMessage({ scenario, baselineSetup, baselineSummary, per
     };
   });
   const s = baselineSummary;
-  const budget = r1(s.cost.total * (1 + a.llmLimits.budgetTolerance.value));
   const input = {
     days: a.simulation.days.value,
     nodes,
@@ -41,9 +41,17 @@ export function buildUserMessage({ scenario, baselineSetup, baselineSummary, per
       overflowBinDays: s.overflowBinDays, overflowCalendarDays: s.overflowCalendarDays, litterKg: s.litterKg,
       generatedKg: s.generatedKg, recoveryRate: s.recoveryRate, purity: s.purity, contaminationRate: s.contaminationRate,
       routeDistanceKm: s.routeDistanceKm, truckTrips: s.truckTrips, cost: s.cost,
+      recycledKg: s.recycledKg, landfillKg: s.landfillKg, co2eAvoidedKg: s.co2eAvoidedKg,
     },
-    budget: { baselineTotalInr: s.cost.total, tolerance: a.llmLimits.budgetTolerance.value, maxTotalInr: budget },
-    unitPrices: { transportInrPerKm: a.cost.transportPerKm.value, binInrPerDayByCapacityL: a.cost.binPerDay.value, segregatedBinMultiplier: a.cost.segregatedBinMultiplier.value, sortingInrPerDay: a.cost.sortingPerDay.value },
+    budget: {
+      rule: 'netCost = total spend - bale revenue; your plan must have netCost <= maxNetCostInr',
+      baselineSpendInr: s.cost.total,
+      baselineBaleRevenueInr: s.cost.baleRevenue,
+      baselineNetCostInr: s.cost.net,
+      tolerance: a.llmLimits.budgetTolerance.value,
+      maxNetCostInr: budgetCap(s.cost, a.llmLimits.budgetTolerance.value),
+    },
+    unitPrices: { transportInrPerKm: a.cost.transportPerKm.value, binInrPerDayByCapacityL: a.cost.binPerDay.value, segregatedBinMultiplier: a.cost.segregatedBinMultiplier.value, sortingInrPerDay: a.cost.sortingPerDay.value, baleSalePriceInrPerKg: a.revenue.balePricePerKg.value, co2eAvoidedKgPerKgRecycled: a.revenue.co2eAvoidedKgPerKg.value },
     limits: {
       pickupIntervalDays: a.llmLimits.pickupIntervalDays.value,
       binCount: a.llmLimits.binCount.value,

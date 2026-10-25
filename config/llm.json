@@ -1,9 +1,9 @@
 {
   "provider": "claude-cli",
   "model": "claude-sonnet-5-5",
-  "timeoutMs": 90000,
+  "timeoutMs": 240000,
   "maxRetries": 1,
-  "maxTokens": 4000,
+  "maxTokens": 12000,
   "anthropicApiUrl": "https://api.anthropic.com/v1/messages",
   "anthropicVersion": "2023-06-01"
 }

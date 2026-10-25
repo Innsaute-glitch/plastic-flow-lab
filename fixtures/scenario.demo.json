@@ -1,83 +1,80 @@
 {
   "version": 1,
-  "id": "campus-demo-v1",
-  "name": "Campus baseline",
+  "id": "thapar-2023-before-saahas",
+  "name": "Thapar 2023 · before Saahas",
   "map": {
-    "src": "maps/placeholder-campus.svg",
-    "widthPx": 1600,
-    "heightPx": 1000,
-    "metresPerPixel": 0.5,
-    "attribution": "Placeholder map. Replace with Google Maps screenshot (keep attribution)."
+    "src": "maps/campus.jpg",
+    "widthPx": 2960,
+    "heightPx": 1840,
+    "metresPerPixel": 0.5153,
+    "attribution": "Imagery ©2026 Airbus, Maxar Technologies · Map data ©2026 Google"
   },
   "facility": {
     "id": "facility",
-    "name": "Sorting facility",
-    "x": 1380,
-    "y": 860
+    "name": "MRF (sorting facility)",
+    "x": 510,
+    "y": 359
   },
   "nodes": [
     {
       "id": "n1",
-      "name": "Main canteen",
-      "x": 520,
-      "y": 330,
+      "name": "G Block Canteen",
+      "x": 1971,
+      "y": 1180,
       "wasteType": "food_contaminated",
       "rateKgPerDay": 14,
       "peak": {
         "startHour": 12,
         "endHour": 14,
-        "multiplier": 3
+        "multiplier": 2.5
       },
-      "observed": {
-        "overflowDays": 18,
-        "fillPctAtPickup": 100
-      }
+      "observed": null
     },
     {
       "id": "n2",
-      "name": "Hostel A",
-      "x": 230,
-      "y": 180,
-      "wasteType": "pet_bottles",
-      "rateKgPerDay": 6,
+      "name": "Hostel J (Tejas Hall)",
+      "x": 934,
+      "y": 1163,
+      "wasteType": "mixed",
+      "rateKgPerDay": 12.9,
       "peak": null,
       "observed": null
     },
     {
       "id": "n3",
-      "name": "Hostel B",
-      "x": 260,
-      "y": 560,
-      "wasteType": "pet_bottles",
-      "rateKgPerDay": 5,
+      "name": "Hostel O (Vyom Hall)",
+      "x": 784,
+      "y": 1498,
+      "wasteType": "mixed",
+      "rateKgPerDay": 10.2,
       "peak": null,
       "observed": null
     },
     {
       "id": "n4",
-      "name": "Central library",
-      "x": 800,
-      "y": 300,
-      "wasteType": "mixed",
-      "rateKgPerDay": 3,
-      "peak": null,
-      "observed": null
-    },
-    {
-      "id": "n5",
-      "name": "Academic block",
-      "x": 980,
-      "y": 480,
+      "name": "Nava Nalanda Library",
+      "x": 2088,
+      "y": 879,
       "wasteType": "mixed",
       "rateKgPerDay": 4,
       "peak": null,
       "observed": null
     },
     {
+      "id": "n5",
+      "name": "C Block",
+      "x": 2368,
+      "y": 1066,
+      "wasteType": "mixed",
+      "rateKgPerDay": 5,
+      "peak": null,
+      "observed": null
+    },
+    {
       "id": "n6",
-      "name": "Food court",
-      "x": 700,
-      "y": 640,
+      "name": "H canteen",
+      "x": 1225,
+      "y": 1261,
       "wasteType": "food_contaminated",
       "rateKgPerDay": 10,
       "peak": {
@@ -89,37 +86,37 @@
     },
     {
       "id": "n7",
-      "name": "Sports complex",
-      "x": 1250,
-      "y": 250,
+      "name": "Badminton Hall",
+      "x": 1288,
+      "y": 744,
       "wasteType": "pet_bottles",
       "rateKgPerDay": 4,
       "peak": {
         "startHour": 17,
         "endHour": 19,
-        "multiplier": 3
+        "multiplier": 2
       },
       "observed": null
     },
     {
       "id": "n8",
-      "name": "Juice stall",
-      "x": 620,
-      "y": 470,
+      "name": "Wrapchik",
+      "x": 678,
+      "y": 847,
       "wasteType": "pp",
-      "rateKgPerDay": 3,
+      "rateKgPerDay": 6,
       "peak": {
-        "startHour": 15,
-        "endHour": 17,
+        "startHour": 17,
+        "endHour": 19,
         "multiplier": 2
       },
       "observed": null
     },
     {
       "id": "n9",
-      "name": "Admin building",
-      "x": 1100,
-      "y": 700,
+      "name": "Health Center",
+      "x": 1918,
+      "y": 515,
       "wasteType": "hdpe",
       "rateKgPerDay": 1.5,
       "peak": null,
@@ -127,11 +124,323 @@
     },
     {
       "id": "n10",
-      "name": "Print shop",
-      "x": 880,
-      "y": 820,
+      "name": "Auditorium",
+      "x": 2335,
+      "y": 1359,
       "wasteType": "pp",
+      "rateKgPerDay": 2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n11",
+      "name": "Hostel M (Anantam Hall)",
+      "x": 389,
+      "y": 1237,
+      "wasteType": "mixed",
+      "rateKgPerDay": 12.6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n12",
+      "name": "Hostel B (Amritam Hall)",
+      "x": 899,
+      "y": 1550,
+      "wasteType": "mixed",
+      "rateKgPerDay": 8,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n13",
+      "name": "Hostel H (Vyan Hall)",
+      "x": 1143,
+      "y": 1190,
+      "wasteType": "mixed",
+      "rateKgPerDay": 7.5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n14",
+      "name": "Hostel D (Neeram Hall)",
+      "x": 345,
+      "y": 1557,
+      "wasteType": "mixed",
+      "rateKgPerDay": 10.2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n15",
+      "name": "Hostel Q (Vahni Hall)",
+      "x": 1748,
+      "y": 1304,
+      "wasteType": "mixed",
+      "rateKgPerDay": 10.2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n16",
+      "name": "Guest House",
+      "x": 2068,
+      "y": 1362,
+      "wasteType": "mixed",
       "rateKgPerDay": 1.5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n17",
+      "name": "TAN Auditorium",
+      "x": 1898,
+      "y": 1015,
+      "wasteType": "pp",
+      "rateKgPerDay": 2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n18",
+      "name": "B Block",
+      "x": 2400,
+      "y": 1138,
+      "wasteType": "mixed",
+      "rateKgPerDay": 4,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n19",
+      "name": "D Block",
+      "x": 2326,
+      "y": 935,
+      "wasteType": "mixed",
+      "rateKgPerDay": 4,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n20",
+      "name": "E Block",
+      "x": 2603,
+      "y": 1020,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n21",
+      "name": "F Block",
+      "x": 2534,
+      "y": 960,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n22",
+      "name": "Hostel K (Ambaram Hall)",
+      "x": 977,
+      "y": 274,
+      "wasteType": "mixed",
+      "rateKgPerDay": 6.6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n23",
+      "name": "Hostel L (Viyat Hall)",
+      "x": 1480,
+      "y": 207,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3.3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n24",
+      "name": "Hostel E (Vasudha)",
+      "x": 1539,
+      "y": 740,
+      "wasteType": "mixed",
+      "rateKgPerDay": 2.6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n25",
+      "name": "Hostel G (Vasudha Hall)",
+      "x": 1554,
+      "y": 858,
+      "wasteType": "mixed",
+      "rateKgPerDay": 2.6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n26",
+      "name": "Hostel I (Ira Hall)",
+      "x": 1746,
+      "y": 725,
+      "wasteType": "mixed",
+      "rateKgPerDay": 4.8,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n27",
+      "name": "Hostel N (Ananta Hall)",
+      "x": 1746,
+      "y": 851,
+      "wasteType": "mixed",
+      "rateKgPerDay": 5.5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n28",
+      "name": "Hostel C (Prithvi Hall)",
+      "x": 540,
+      "y": 1520,
+      "wasteType": "mixed",
+      "rateKgPerDay": 4.3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n29",
+      "name": "Hostel A (Agira Hall)",
+      "x": 1150,
+      "y": 1460,
+      "wasteType": "mixed",
+      "rateKgPerDay": 10.2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n30",
+      "name": "Hostel PG-1 (Dhriti Hall)",
+      "x": 1550,
+      "y": 1400,
+      "wasteType": "mixed",
+      "rateKgPerDay": 10.2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n31",
+      "name": "Hostel PG-2 (Pavani Hall)",
+      "x": 1376,
+      "y": 1406,
+      "wasteType": "mixed",
+      "rateKgPerDay": 5.3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n32",
+      "name": "Hostel F",
+      "x": 1760,
+      "y": 1040,
+      "wasteType": "mixed",
+      "rateKgPerDay": 5.3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n33",
+      "name": "Kravings food court",
+      "x": 1590,
+      "y": 1030,
+      "wasteType": "food_contaminated",
+      "rateKgPerDay": 10,
+      "peak": {
+        "startHour": 19,
+        "endHour": 21,
+        "multiplier": 2.5
+      },
+      "observed": null
+    },
+    {
+      "id": "n34",
+      "name": "TSLAS canteen",
+      "x": 2420,
+      "y": 330,
+      "wasteType": "food_contaminated",
+      "rateKgPerDay": 5,
+      "peak": {
+        "startHour": 12,
+        "endHour": 14,
+        "multiplier": 2.5
+      },
+      "observed": null
+    },
+    {
+      "id": "n35",
+      "name": "Aahar canteen",
+      "x": 2520,
+      "y": 1170,
+      "wasteType": "food_contaminated",
+      "rateKgPerDay": 8,
+      "peak": {
+        "startHour": 12,
+        "endHour": 14,
+        "multiplier": 2.5
+      },
+      "observed": null
+    },
+    {
+      "id": "n36",
+      "name": "G Block",
+      "x": 2050,
+      "y": 1030,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n37",
+      "name": "Lecture complex (LT, LP, CS)",
+      "x": 2050,
+      "y": 700,
+      "wasteType": "mixed",
+      "rateKgPerDay": 6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n38",
+      "name": "Mechanical Workshop",
+      "x": 2400,
+      "y": 814,
+      "wasteType": "mixed",
+      "rateKgPerDay": 2,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n39",
+      "name": "Faculty Residences (west)",
+      "x": 250,
+      "y": 850,
+      "wasteType": "mixed",
+      "rateKgPerDay": 5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n40",
+      "name": "Faculty Residences I/J",
+      "x": 1258,
+      "y": 281,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3,
       "peak": null,
       "observed": null
     }
@@ -140,63 +449,243 @@
     "nodes": {
       "n1": {
         "binType": "single",
-        "binCount": 2,
-        "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
       },
       "n2": {
         "binType": "single",
-        "binCount": 2,
+        "binCount": 3,
         "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "pickupIntervalDays": 1
       },
       "n3": {
         "binType": "single",
-        "binCount": 2,
-        "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
       },
       "n4": {
         "binType": "single",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "pickupIntervalDays": 1
       },
       "n5": {
         "binType": "single",
-        "binCount": 2,
+        "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "pickupIntervalDays": 1
       },
       "n6": {
         "binType": "single",
-        "binCount": 2,
+        "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "pickupIntervalDays": 1
       },
       "n7": {
         "binType": "single",
         "binCount": 1,
-        "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
       },
       "n8": {
         "binType": "single",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 3
+        "pickupIntervalDays": 1
       },
       "n9": {
         "binType": "single",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 7
+        "pickupIntervalDays": 1
       },
       "n10": {
         "binType": "single",
         "binCount": 1,
         "binCapacityL": 120,
-        "pickupIntervalDays": 7
+        "pickupIntervalDays": 1
+      },
+      "n11": {
+        "binType": "single",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n12": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n13": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n14": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n15": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n16": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n17": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n18": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n19": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n20": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n21": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n22": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n23": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n24": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n25": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n26": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n27": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n28": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n29": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n30": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n31": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n32": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n33": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n34": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n35": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n36": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n37": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n38": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n39": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n40": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       }
     },
     "sortingMethod": "manual"

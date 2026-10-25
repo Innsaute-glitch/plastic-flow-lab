@@ -1,7 +1,7 @@
 // Generates shape-exact FAKE fixtures for UI/consumer tasks (plan.md §3.3).
 // This is NOT the simulation: numbers are plausible-looking but not modelled.
 // Run: npm run fixtures
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,47 +16,99 @@ const r3 = (x) => Math.round(x * 1000) / 1000;
 const r1 = (x) => Math.round(x * 10) / 10;
 
 // ---------- Scenario ----------
+// Thapar Institute (TIET), Patiala. Positions are pixels on public/maps/campus.jpg.
+// Hostel rates scale with bed capacity (thapar.edu / Shiksha hostel list) at PLASTIC_KG_PER_BED;
+// campus total ≈ 250 kg/day plastic (≈5–6% of 4.63 t/day total waste; ≥200 kg/day recycled, Thapar docs).
+const PLASTIC_KG_PER_BED = 0.011;
+const hostel = (id, name, x, y, beds) => ({ id, name, x, y, wasteType: 'mixed', rateKgPerDay: Math.round(beds * PLASTIC_KG_PER_BED * 10) / 10, peak: null, observed: null });
+const node = (id, name, x, y, wasteType, rateKgPerDay, peak = null) => ({ id, name, x, y, wasteType, rateKgPerDay, peak, observed: null });
+const lunch = { startHour: 12, endHour: 14, multiplier: 2.5 };
+const dinner = { startHour: 19, endHour: 21, multiplier: 2.5 };
+const evening = { startHour: 17, endHour: 19, multiplier: 2 };
 const nodes = [
-  { id: 'n1', name: 'Main canteen', x: 520, y: 330, wasteType: 'food_contaminated', rateKgPerDay: 14, peak: { startHour: 12, endHour: 14, multiplier: 3 }, observed: { overflowDays: 18, fillPctAtPickup: 100 } },
-  { id: 'n2', name: 'Hostel A', x: 230, y: 180, wasteType: 'pet_bottles', rateKgPerDay: 6, peak: null, observed: null },
-  { id: 'n3', name: 'Hostel B', x: 260, y: 560, wasteType: 'pet_bottles', rateKgPerDay: 5, peak: null, observed: null },
-  { id: 'n4', name: 'Central library', x: 800, y: 300, wasteType: 'mixed', rateKgPerDay: 3, peak: null, observed: null },
-  { id: 'n5', name: 'Academic block', x: 980, y: 480, wasteType: 'mixed', rateKgPerDay: 4, peak: null, observed: null },
-  { id: 'n6', name: 'Food court', x: 700, y: 640, wasteType: 'food_contaminated', rateKgPerDay: 10, peak: { startHour: 19, endHour: 21, multiplier: 2.5 }, observed: null },
-  { id: 'n7', name: 'Sports complex', x: 1250, y: 250, wasteType: 'pet_bottles', rateKgPerDay: 4, peak: { startHour: 17, endHour: 19, multiplier: 3 }, observed: null },
-  { id: 'n8', name: 'Juice stall', x: 620, y: 470, wasteType: 'pp', rateKgPerDay: 3, peak: { startHour: 15, endHour: 17, multiplier: 2 }, observed: null },
-  { id: 'n9', name: 'Admin building', x: 1100, y: 700, wasteType: 'hdpe', rateKgPerDay: 1.5, peak: null, observed: null },
-  { id: 'n10', name: 'Print shop', x: 880, y: 820, wasteType: 'pp', rateKgPerDay: 1.5, peak: null, observed: null },
+  node('n1', 'G Block Canteen', 1971, 1180, 'food_contaminated', 14, lunch),
+  hostel('n2', 'Hostel J (Tejas Hall)', 934, 1163, 1170),
+  hostel('n3', 'Hostel O (Vyom Hall)', 784, 1498, 928),
+  node('n4', 'Nava Nalanda Library', 2088, 879, 'mixed', 4),
+  node('n5', 'C Block', 2368, 1066, 'mixed', 5),
+  node('n6', 'H canteen', 1225, 1261, 'food_contaminated', 10, dinner),
+  node('n7', 'Badminton Hall', 1288, 744, 'pet_bottles', 4, evening),
+  node('n8', 'Wrapchik', 678, 847, 'pp', 6, evening),
+  node('n9', 'Health Center', 1918, 515, 'hdpe', 1.5),
+  node('n10', 'Auditorium', 2335, 1359, 'pp', 2),
+  hostel('n11', 'Hostel M (Anantam Hall)', 389, 1237, 1148),
+  hostel('n12', 'Hostel B (Amritam Hall)', 899, 1550, 723),
+  hostel('n13', 'Hostel H (Vyan Hall)', 1143, 1190, 680),
+  hostel('n14', 'Hostel D (Neeram Hall)', 345, 1557, 928),
+  hostel('n15', 'Hostel Q (Vahni Hall)', 1748, 1304, 928),
+  node('n16', 'Guest House', 2068, 1362, 'mixed', 1.5),
+  node('n17', 'TAN Auditorium', 1898, 1015, 'pp', 2),
+  node('n18', 'B Block', 2400, 1138, 'mixed', 4),
+  node('n19', 'D Block', 2326, 935, 'mixed', 4),
+  node('n20', 'E Block', 2603, 1020, 'mixed', 3),
+  node('n21', 'F Block', 2534, 960, 'mixed', 3),
+  hostel('n22', 'Hostel K (Ambaram Hall)', 977, 274, 600),
+  hostel('n23', 'Hostel L (Viyat Hall)', 1480, 207, 300),
+  hostel('n24', 'Hostel E (Vasudha)', 1539, 740, 234),
+  hostel('n25', 'Hostel G (Vasudha Hall)', 1554, 858, 234),
+  hostel('n26', 'Hostel I (Ira Hall)', 1746, 725, 436),
+  hostel('n27', 'Hostel N (Ananta Hall)', 1746, 851, 500),
+  hostel('n28', 'Hostel C (Prithvi Hall)', 540, 1520, 387),
+  hostel('n29', 'Hostel A (Agira Hall)', 1150, 1460, 928),
+  hostel('n30', 'Hostel PG-1 (Dhriti Hall)', 1550, 1400, 928),
+  hostel('n31', 'Hostel PG-2 (Pavani Hall)', 1376, 1406, 480),
+  hostel('n32', 'Hostel F', 1760, 1040, 480),
+  node('n33', 'Kravings food court', 1590, 1030, 'food_contaminated', 10, dinner),
+  node('n34', 'TSLAS canteen', 2420, 330, 'food_contaminated', 5, lunch),
+  node('n35', 'Aahar canteen', 2520, 1170, 'food_contaminated', 8, lunch),
+  node('n36', 'G Block', 2050, 1030, 'mixed', 3),
+  node('n37', 'Lecture complex (LT, LP, CS)', 2050, 700, 'mixed', 6),
+  node('n38', 'Mechanical Workshop', 2400, 814, 'mixed', 2),
+  node('n39', 'Faculty Residences (west)', 250, 850, 'mixed', 5),
+  node('n40', 'Faculty Residences I/J', 1258, 281, 'mixed', 3),
 ];
-const facility = { id: 'facility', name: 'Sorting facility', x: 1380, y: 860 };
+const facility = { id: 'facility', name: 'MRF (sorting facility)', x: 510, y: 359 };
 
 const bin = (binType, binCount, binCapacityL, pickupIntervalDays) => ({ binType, binCount, binCapacityL, pickupIntervalDays });
+const ASSUMPTIONS = JSON.parse(readFileSync(join(ROOT, 'config/assumptions.json'), 'utf8'));
+const BULK = ASSUMPTIONS.bins.bulkDensityKgPerL.value;
+// Smallest standard single-type bin set (120/240/660 L, at most 6 bins) holding `litres`; ties -> fewer bins.
+function binsFor(litres) {
+  let best = null;
+  for (const cap of [120, 240, 660]) for (let n = 1; n <= 6; n++) {
+    const total = n * cap;
+    if (total >= litres && (!best || total < best.total || (total === best.total && n < best.n))) best = { n, cap, total };
+  }
+  return best ?? { n: 6, cap: 660 };
+}
+// Before Saahas (2023 audit): one unlabelled mixed bin type per point, emptied daily (frequency is an estimate),
+// sized to an average day's volume with no headroom for peaks or busy days.
+const beforeSize = (n) => binsFor(n.rateKgPerDay / BULK[n.wasteType]);
 const baselineSetup = {
-  nodes: {
-    n1: bin('single', 2, 120, 3), n2: bin('single', 2, 120, 3), n3: bin('single', 2, 120, 3),
-    n4: bin('single', 1, 120, 3), n5: bin('single', 2, 120, 3), n6: bin('single', 2, 120, 3),
-    n7: bin('single', 1, 120, 3), n8: bin('single', 1, 120, 3), n9: bin('single', 1, 120, 7),
-    n10: bin('single', 1, 120, 7),
-  },
+  nodes: Object.fromEntries(nodes.map((n) => { const b = beforeSize(n); return [n.id, bin('single', b.n, b.cap, 1)]; })),
   sortingMethod: 'manual',
 };
+// After Saahas (2024): labelled wet/dry/hazardous sets at every point (case study p16), same capacity and schedule.
+const afterSaahasSetup = {
+  nodes: Object.fromEntries(nodes.map((n) => [n.id, { ...baselineSetup.nodes[n.id], binType: 'segregated' }])),
+  sortingMethod: 'manual',
+};
+// Fake "optimised" fixture for UI tests only: segregated, one size up, small nodes every 2 days.
 const optimisedSetup = {
-  nodes: {
-    n1: bin('segregated', 3, 240, 1), n2: bin('segregated', 2, 240, 2), n3: bin('segregated', 2, 240, 2),
-    n4: bin('segregated', 1, 240, 3), n5: bin('segregated', 2, 240, 2), n6: bin('segregated', 3, 240, 1),
-    n7: bin('single', 2, 240, 2), n8: bin('segregated', 1, 240, 2), n9: bin('single', 1, 120, 7),
-    n10: bin('single', 1, 120, 7),
-  },
-  sortingMethod: 'manual_float',
+  nodes: Object.fromEntries(nodes.map((n) => {
+    const b = binsFor((n.rateKgPerDay / BULK[n.wasteType]) * 1.3);
+    return [n.id, bin('segregated', b.n, b.cap, n.rateKgPerDay < 2 ? 2 : 1)];
+  })),
+  sortingMethod: 'manual',
 };
 
 const scenario = {
   version: 1,
-  id: 'campus-demo-v1',
-  name: 'Campus baseline',
+  id: 'thapar-2023-before-saahas',
+  name: 'Thapar 2023 · before Saahas',
   map: {
-    src: 'maps/placeholder-campus.svg', widthPx: 1600, heightPx: 1000, metresPerPixel: 0.5,
-    attribution: 'Placeholder map. Replace with Google Maps screenshot (keep attribution).',
+    src: 'maps/campus.jpg', widthPx: 2960, heightPx: 1840, metresPerPixel: 0.5153,
+    attribution: 'Imagery ©2026 Airbus, Maxar Technologies · Map data ©2026 Google',
   },
   facility,
   nodes,
@@ -197,7 +249,12 @@ function fakeResults(setup, seed, quality) {
       overflowCalendarDays: overflowDaySet.size,
       routeDistanceKm: r1(routeDistanceKm), truckTrips: trips.length,
       pickups: nodes.reduce((a, n) => a + perNode[n.id].pickups, 0),
-      cost: { transport: Math.round(transport), bins: binsCost, sorting: sortingCost, total: Math.round(transport + binsCost + sortingCost), currency: 'INR' },
+      recycledKg: r1(correct), landfillKg: r1(split.rejected + split.contaminated * 0.5), co2eAvoidedKg: r1(correct * 1),
+      cost: (() => {
+        const total = Math.round(transport + binsCost + sortingCost);
+        const baleRevenue = Math.round(correct * 40);
+        return { transport: Math.round(transport), bins: binsCost, sorting: sortingCost, total, baleRevenue, net: total - baleRevenue, currency: 'INR' };
+      })(),
       massBalanceErrorKg: 0,
     },
     perNode: Object.fromEntries(nodes.map((n) => {
@@ -222,7 +279,7 @@ const optimised = fakeResults(optimisedSetup, 42, QO);
 const rationale = {
   n1: 'Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.',
   n2: 'Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.',
-  n3: 'Same pattern as Hostel A at a slightly lower rate.',
+  n3: 'Same pattern as Hostel J at a slightly lower rate.',
   n4: 'Low rate; a bigger segregated bin on the existing 3-day cycle is enough.',
   n5: 'Steady mixed stream; segregation cuts cross-contamination.',
   n6: 'Evening spike plus food residue: daily pickup and segregated bins.',
@@ -230,6 +287,36 @@ const rationale = {
   n8: 'Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.',
   n9: 'Very low rate; current weekly pickup already fits.',
   n10: 'Very low rate; keep weekly pickup to save truck km.',
+  n11: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n12: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n13: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n14: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n15: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n16: 'Very low rate; weekly pickup already fits.',
+  n17: 'Event cups pile up; segregated bin on a 2-day cycle.',
+  n18: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n19: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n20: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n21: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n22: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n23: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n24: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n25: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n26: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n27: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n28: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n29: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n30: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n31: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n32: 'Bulky bottles from a full hostel; segregated 2×240 L every 2 days.',
+  n33: 'Food residue and a meal-time spike: daily pickup, segregated bins.',
+  n34: 'Food residue and a meal-time spike: daily pickup, segregated bins.',
+  n35: 'Food residue and a meal-time spike: daily pickup, segregated bins.',
+  n36: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n37: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n38: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n39: 'Steady mixed stream; segregation cuts cross-contamination.',
+  n40: 'Steady mixed stream; segregation cuts cross-contamination.',
 };
 const raw = {
   nodes: nodes.map((n) => ({ id: n.id, ...optimisedSetup.nodes[n.id], rationale: rationale[n.id] })),
@@ -262,6 +349,13 @@ const sweep = {
 };
 
 out('fixtures/scenario.demo.json', scenario);
+out('public/demo/demo-scenario.json', scenario);
+out('public/demo/demo-scenario-after.json', {
+  ...scenario,
+  id: 'thapar-2024-after-saahas',
+  name: 'Thapar 2024 · after Saahas',
+  baselineSetup: afterSaahasSetup,
+});
 out('fixtures/results.baseline.json', baseline);
 out('fixtures/results.optimised.json', optimised);
 out('fixtures/proposal.json', proposal);

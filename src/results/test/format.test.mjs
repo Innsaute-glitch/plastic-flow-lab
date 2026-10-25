@@ -31,20 +31,23 @@ test('parseRationales finds only complete strings, attaches ids', () => {
   const r = parseRationales(raw);
   assert.deepEqual(r, [{ key: 'n1', text: 'Lunch "spike".' }]);
   const all = parseRationales(j('proposal.json').raw);
-  assert.equal(all.length, 11);
-  assert.equal(all[10].key, 'sorting');
+  const n = j('scenario.demo.json').nodes.length;
+  assert.equal(all.length, n + 1);
+  assert.equal(all[n].key, 'sorting');
 });
 
 test('fixture: summary metrics and diff', () => {
   const b = j('results.baseline.json').summary;
   const o = j('results.optimised.json').summary;
-  assert.equal(formatMetric(M.overflow, M.overflow.get(b)), '162');
+  assert.equal(formatMetric(M.overflow, M.overflow.get(b)), String(b.overflowBinDays));
   assert.equal(deltaFor(M.overflow, b.overflowBinDays, o.overflowBinDays).tone, 'good');
   const s = j('scenario.demo.json');
   const p = j('proposal.json');
   const ch = setupChanges(s, s.baselineSetup, p.setup);
-  assert.equal(ch.length, 10);
-  assert.ok(ch[0].parts.some((x) => x.includes('interval 3→1')));
+  const differs = s.nodes.filter((n) => JSON.stringify(s.baselineSetup.nodes[n.id]) !== JSON.stringify(p.setup.nodes[n.id])).length;
+  assert.equal(ch.length, s.nodes.length);
+  assert.equal(ch.filter((c) => c.changed).length, differs);
+  assert.ok(ch.filter((c) => c.changed).every((c) => c.parts.length > 0));
   const sw = sweepWins(j('sweep.json'), M.overflow);
   assert.equal(sw.total, 5);
   assert.equal(sw.wins, 5);

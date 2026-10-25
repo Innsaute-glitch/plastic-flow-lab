@@ -37,7 +37,7 @@ export function mount(el, store) {
     const px = (m / map.metresPerPixel) * k;
     scaleEl.innerHTML = `<span class="ms-bar" style="width:${px.toFixed(0)}px"></span><span class="ms-lbl">${m >= 1000 ? m / 1000 + ' km' : m + ' m'}</span>`;
   }
-  const ro = new ResizeObserver(fit);
+  const ro = new ResizeObserver(() => { fit(); redrawLabels(); });
   ro.observe(wrap);
 
   /* ---------- helpers ---------- */
@@ -47,37 +47,111 @@ export function mount(el, store) {
     return [((e.clientX - r.left) / r.width) * map.widthPx, ((e.clientY - r.top) / r.height) * map.heightPx];
   };
   const round = (v) => Math.round(v * 10) / 10;
-  const markerStyle = (x, y) => `transform: translate(${x}px, ${y}px) scale(var(--inv))`;
-  const labelW = (t) => Math.round(t.length * 6.8 + 18);
+  // Marker size shrinks smoothly as the node count grows (0.85 at 10 nodes, 0.60 at 40). Keep in sync with src/anim/player.js.
+  // On a small map frame (laptop) dense scenarios shrink a little more (up to x0.8).
+  const markerScale = (n, frameW) => {
+    const base = Math.min(0.85, Math.max(0.6, 0.85 - (n - 10) * 0.25 / 30));
+    const f = Math.min(1, Math.max(0, (n - 15) / 10));
+    return base * (1 - f * (1 - Math.min(1, Math.max(0.8, frameW / 1100))));
+  };
+  let ms = 0.85;
+  const facScale = () => Math.max(ms, 0.72); // the facility marker never shrinks as far as the nodes
+  const markerStyle = (x, y, sc = ms) => `transform: translate(${x}px, ${y}px) scale(calc(var(--inv) * ${sc}))`;
+  const labelStyle = (x, y) => `transform: translate(${x}px, ${y}px) scale(var(--inv))`;
+  const mctx = document.createElement('canvas').getContext('2d');
+  const labelW = (t) => {
+    let w = t.length * 6.3;
+    try { mctx.font = '500 11.5px Inter, system-ui, sans-serif'; w = mctx.measureText(t).width; } catch { /* estimate */ }
+    return Math.ceil(w + 16);
+  };
+  const clip = (t, max) => (t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t);
+  const LABEL_CHARS = 17; // auto labels are shortened; hover / selection shows the full name
+  const LABEL_H = 20;
+  let hoverId = null;
+
+  // Greedy label placement in screen px: facility first, then the selected node, then by waste rate.
+  // A label is kept only if its pill clears every marker and every label already placed.
+  function placeLabels(sc, s, live) {
+    const placed = sc.nodes.filter((n) => n.x != null);
+    const R = 20 * ms + 3; // marker clearance radius (screen px)
+    const W = sc.map.widthPx * k, H = sc.map.heightPx * k;
+    const boxes = [];
+    const hitsBox = (b) => boxes.some((o) => b.x < o.x + o.w && b.x + b.w > o.x && b.y < o.y + o.h && b.y + b.h > o.y);
+    const circ = (x, y, r) => ({ x: x - r, y: y - r, w: r * 2, h: r * 2 });
+    const obstacles = placed.map((n) => circ(n.x * k, n.y * k, R));
+    if (live) for (const n of placed) obstacles.push({ x: n.x * k + 13 * ms + 2, y: n.y * k - 15, w: 14, h: 30 }); // replay fill meter
+    if (sc.facility) obstacles.push(circ(sc.facility.x * k, sc.facility.y * k, 30 * facScale() + 4));
+    const out = new Map();
+    const tryPlace = (id, x, y, text, cands, force) => {
+      const w = labelW(text);
+      let best = null;
+      for (const [cx, cy] of cands) {
+        let px = x * k + cx - w / 2;
+        px = Math.max(4, Math.min(W - w - 4, px));
+        const py = Math.max(4, Math.min(H - LABEL_H - 4, y * k + cy - LABEL_H / 2));
+        const b = { x: px, y: py, w, h: LABEL_H };
+        const clash = hitsBox(b) || obstacles.some((o) => o.x < b.x + b.w && o.x + o.w > b.x && o.y < b.y + b.h && o.y + o.h > b.y);
+        if (!clash) { best = b; break; }
+        if (force && !best) best = b;
+      }
+      if (!best) return;
+      boxes.push(best);
+      out.set(id, { dx: best.x + best.w / 2 - x * k, dy: best.y + best.h / 2 - y * k, w, text });
+    };
+    const d = 22 * ms + 10;
+    if (sc.facility) {
+      const f = 30 * facScale() + 14;
+      tryPlace('facility', sc.facility.x, sc.facility.y, sc.facility.name || 'Sorting facility', [[0, -f], [0, f], [f + 30, 0]], true);
+    }
+    const order = placed.slice().sort((a, b) => (b.id === s.selectedNodeId) - (a.id === s.selectedNodeId) || (Number(b.rateKgPerDay) || 0) - (Number(a.rateKgPerDay) || 0));
+    for (const n of order) {
+      const full = n.id === s.selectedNodeId;
+      const text = full ? clip(n.name, 34) : clip(n.name, LABEL_CHARS);
+      const w = labelW(text) / 2;
+      const cands = [[0, d], [0, -d], ...(live ? [] : [[w + d - 4, 0]]), [-(w + d - 4), 0]];
+      tryPlace(n.id, n.x, n.y, text, cands, full);
+    }
+    return out;
+  }
 
   /* ---------- svg render ---------- */
   function drawSvg(s) {
     const { scenario: sc, ui } = s;
     const live = s.mode !== 'edit';
+    ms = markerScale(sc.nodes.length, sc.map.widthPx * k);
+    hoverId = null;
+    const labels = placeLabels(sc, s, live);
     const parts = [];
-    for (const n of sc.nodes) {
-      if (n.x == null) continue;
+    const nodes = sc.nodes.filter((n) => n.x != null).sort((a, b) => (a.id === s.selectedNodeId) - (b.id === s.selectedNodeId));
+    for (const n of nodes) {
       const key = ui.wasteTypeColorKey[n.wasteType];
       const sel = n.id === s.selectedNodeId;
-      const w = labelW(n.name);
       parts.push(`<g class="mk mk-node ${sel ? 'is-selected' : ''}" data-id="${n.id}" style="--c:var(--resin-${key}); ${markerStyle(n.x, n.y)}">
+        <title>${esc(n.name)}</title>
         ${sel ? '<circle class="mk-pulse" r="24"/><circle class="mk-pulse mk-pulse--2" r="24"/>' : ''}
-        <circle class="mk-halo" r="20"/><circle class="mk-ring" r="12"/><circle class="mk-core" r="7"/>
+        <circle class="mk-halo" r="20"/><circle class="mk-ring" r="12"/><circle class="mk-core" r="6.5"/>
         ${sel ? '<circle class="mk-sel" r="19"/>' : ''}
-        <g class="mk-label" transform="translate(0 27)"><rect x="${-w / 2}" y="-10" width="${w}" height="21" rx="10.500"/><text y="4.500" text-anchor="middle">${esc(n.name)}</text></g>
+        <circle class="mk-hit" r="${(Math.max(19, 14 / ms)).toFixed(1)}"/>
       </g>`);
     }
     if (sc.facility) {
       const f = sc.facility;
       const sel = s.selectedNodeId === 'facility';
-      parts.push(`<g class="mk mk-facility ${sel ? 'is-selected' : ''}" data-id="facility" style="${markerStyle(f.x, f.y)}">
+      parts.push(`<g class="mk mk-facility ${sel ? 'is-selected' : ''}" data-id="facility" style="${markerStyle(f.x, f.y, facScale())}">
+        <title>${esc(f.name || 'Sorting facility')}</title>
         <circle class="mk-pulse mk-pulse--fac" r="30"/>
         <rect class="mk-fac-halo" x="-27" y="-27" width="54" height="54" rx="18"/>
         <rect class="mk-fac" x="-19" y="-19" width="38" height="38" rx="12"/>
         <g class="mk-fac-ico" transform="translate(-11 -11) scale(0.9167)" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l6 3V9l6 3V5h3a1 1 0 0 1 1 1v15z"/><path d="M8 17h2M13 17h2"/></g>
-        <g class="mk-label mk-label--fac" transform="translate(0 -40)"><rect x="-52" y="-10" width="104" height="21" rx="10.500"/><text y="4.500" text-anchor="middle">${esc(f.name || 'Sorting facility')}</text></g>
+        <rect class="mk-hit" x="-24" y="-24" width="48" height="48"/>
       </g>`);
     }
+    // labels live in their own top layer so a pill never hides behind a neighbouring marker
+    const lab = [];
+    const pill = (id, x, y, l, cls) => `<g class="mk-label ${cls} ${l ? '' : 'is-off'}" data-for="${id}" ${l ? `data-dx="${l.dx.toFixed(1)}" data-dy="${l.dy.toFixed(1)}"` : ''} style="${labelStyle(x, y)}"><g transform="translate(${l ? l.dx.toFixed(1) : 0} ${l ? l.dy.toFixed(1) : 22})"><rect x="${l ? -l.w / 2 : 0}" y="-10" width="${l ? l.w : 0}" height="${LABEL_H}" rx="10"/><text y="4" text-anchor="middle">${l ? esc(l.text) : ''}</text></g></g>`;
+    for (const n of nodes) lab.push(pill(n.id, n.x, n.y, labels.get(n.id), 'mk-label--node'));
+    if (sc.facility) lab.push(pill('facility', sc.facility.x, sc.facility.y, labels.get('facility'), 'mk-label--fac'));
+    parts.push(`<g class="mk-labels">${lab.join('')}</g>`);
     if (s.tool === 'calibrate' && calib.length) {
       const [a, b] = calib;
       if (b) parts.push(`<line class="cal-line" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke-width: calc(2px * var(--inv))"/>`);
@@ -86,6 +160,25 @@ export function mount(el, store) {
     svg.innerHTML = parts.join('');
     svg.classList.toggle('is-live', live);
   }
+
+  // hover reveals the full name: one tiny label pill is built on demand (labels hidden by collision have no text)
+  function showHover(id) {
+    hoverId = id;
+    svg.querySelectorAll('.mk-label.is-hover').forEach((g) => { g.classList.remove('is-hover'); g.querySelector('.mk-hover')?.remove(); });
+    if (!id) return;
+    const g = svg.querySelector(`.mk-label[data-for="${id}"]`);
+    if (!g) return;
+    const sc = store.get().scenario;
+    const it = id === 'facility' ? { name: sc.facility?.name || 'Sorting facility' } : sc.nodes.find((n) => n.id === id);
+    if (!it) return;
+    const text = clip(it.name, 34), w = labelW(text);
+    const above = id !== 'facility' ? -(22 * ms + 10) : -(30 * facScale() + 14);
+    const dx = g.dataset.dx ?? 0, dy = g.dataset.dy ?? above;
+    g.classList.add('is-hover');
+    g.insertAdjacentHTML('beforeend', `<g class="mk-hover" transform="translate(${dx} ${dy})"><rect x="${-w / 2}" y="-10" width="${w}" height="${LABEL_H}" rx="10"/><text y="4" text-anchor="middle">${esc(text)}</text></g>`);
+  }
+
+  function redrawLabels() { if (!drag) drawSvg(store.get()); }
 
   /* ---------- strip + hint ---------- */
   function drawStrip(s) {
@@ -99,7 +192,7 @@ export function mount(el, store) {
     else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? 'Click the first point' : 'Click the second point'}</span></span>`;
     else if (unplaced) hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${sc.nodes.filter((n) => n.x == null).length} node(s) need a place. Use the pin tool.</span></span>`;
     else if (!sc.nodes.length && !sc.facility) hint = `<span class="ms-hint">${icon('info', 15)}<span>Pick a tool on the left, or load the demo.</span></span>`;
-    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them</span></span>`;
+    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them. Hover a marker for its name.</span></span>`;
     strip.innerHTML = `<div class="ms-left">${hint}</div>`;
     const legend = Object.entries(ui.wasteTypeColorKey).map(([w, key]) =>
       `<span class="ms-leg"><i style="--c:var(--resin-${key})"></i>${esc(ui.wasteTypeLabels[w])}</span>`).join('');
@@ -179,7 +272,10 @@ export function mount(el, store) {
     const [x, y] = toImage(e);
     drag.pos = [round(Math.min(map.widthPx, Math.max(0, x))), round(Math.min(map.heightPx, Math.max(0, y)))];
     const g = svg.querySelector(`.mk[data-id="${drag.id}"]`);
-    if (g) g.setAttribute('style', g.getAttribute('style').replace(/transform:[^;]*/, markerStyle(drag.pos[0], drag.pos[1])));
+    if (g) g.setAttribute('style', g.getAttribute('style').replace(/transform:[^;]*/, markerStyle(drag.pos[0], drag.pos[1], drag.id === 'facility' ? facScale() : ms)));
+    const lg = svg.querySelector(`.mk-label[data-for="${drag.id}"]`);
+    if (lg) lg.setAttribute('style', labelStyle(drag.pos[0], drag.pos[1]));
+    if (hoverId !== drag.id) showHover(drag.id);
     svg.classList.add('is-dragging');
   });
   svg.addEventListener('pointerup', (e) => {
@@ -211,6 +307,8 @@ export function mount(el, store) {
       render(store.get());
     } else if (s.selectedNodeId) store.set({ selectedNodeId: null });
   });
+  svg.addEventListener('pointerover', (e) => { const id = e.target.closest?.('.mk')?.dataset.id ?? null; if (id !== hoverId && !drag) showHover(id); });
+  svg.addEventListener('pointerleave', () => { if (!drag) showHover(null); });
   svg.addEventListener('pointercancel', () => { drag = null; svg.classList.remove('is-dragging'); });
 
   const onKey = (e) => {

@@ -103,8 +103,13 @@ test('route geometry and cost are hand-checkable', () => {
   assert.equal(trip.distanceM, 390); // 600 px * 0.5 m/px * 1.3
   assert.equal(trip.durationMin, 7); // 390 / 250 m/min = 1.56 + 5 stop = 6.56
   near(r.summary.routeDistanceKm, 0.39 * 30, 1e-9);
-  assert.deepEqual(r.summary.cost, { transport: 292.5, bins: 90, sorting: 27000, total: 27382.5, currency: 'INR' });
-  assert.deepEqual(computeCost({ routeDistanceKm: 10, days: 30 }, setup, assumptions), { transport: 250, bins: 90, sorting: 27000, total: 27340, currency: 'INR' });
+  // revenue: 300 kg mixed, 65% clean (0.2 base + 0.15 cross), x 0.96 kept x 0.8 accuracy = 149.76 kg x resin share
+  // PET 0.30 -> 44.928 kg x 25 + HDPE 0.20 -> 29.952 x 30 + PP 0.25 -> 37.44 x 20 = 2770.56 INR
+  assert.deepEqual(r.summary.cost, { transport: 292.5, bins: 90, sorting: 27000, total: 27382.5, baleRevenue: 2770.56, net: 24611.94, currency: 'INR' });
+  near(r.summary.recycledKg, 112.32, 1e-6);
+  near(r.summary.co2eAvoidedKg, 44.928 * 1.5 + 29.952 + 37.44, 1e-6);
+  // no sorted mass given (cost preview) -> no revenue
+  assert.deepEqual(computeCost({ routeDistanceKm: 10, days: 30 }, setup, assumptions), { transport: 250, bins: 90, sorting: 27000, total: 27340, baleRevenue: 0, net: 27340, currency: 'INR' });
 });
 
 test('hourly generation profile: active hours only, peak weighted, day total = rate', () => {
@@ -158,7 +163,7 @@ test('timeline has the contract shape and bounded values', () => {
   assert.deepEqual(tl.nodeOrder, scenario.nodes.map((n) => n.id));
   tl.frames.forEach((f, i) => {
     assert.equal(f.t, i); assert.equal(f.day, Math.floor(i / 24)); assert.equal(f.hour, i % 24);
-    assert.equal(f.nodes.length, 10);
+    assert.equal(f.nodes.length, scenario.nodes.length);
     for (const n of f.nodes) {
       assert.deepEqual(Object.keys(n), ['genKg', 'fillKg', 'fillPct', 'overflowKg', 'litterKg']);
       assert.ok(n.fillPct >= 0 && n.fillPct <= 100);
@@ -191,13 +196,15 @@ test('timeline has the contract shape and bounded values', () => {
 
 test('routing: exact route beats a worse order; > 8 stops still valid', () => {
   const { scenario, assumptions } = loadAll();
-  // all 10 nodes due every day -> 10 stops -> NN + 2-opt
+  // every node due every day -> more than 8 stops -> NN + 2-opt
   const setup = structuredClone(scenario.baselineSetup);
   for (const id of Object.keys(setup.nodes)) setup.nodes[id].pickupIntervalDays = 1;
   const r = simulate(scenario, setup, assumptions, 1);
   const trip = r.timeline.trips[0];
-  assert.equal(trip.route.length, 12);
-  assert.equal(new Set(trip.route.slice(1, -1)).size, 10);
+  const n = scenario.nodes.length;
+  assert.ok(n > 8);
+  assert.equal(trip.route.length, n + 2);
+  assert.equal(new Set(trip.route.slice(1, -1)).size, n);
   // 2-opt tour must be no longer than the naive scenario-order tour
   const px = (path) => path.slice(1).reduce((a, p, i) => a + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0);
   const naive = [[1380, 860], ...scenario.nodes.map((n) => [n.x, n.y]), [1380, 860]];
@@ -227,7 +234,8 @@ test('v0.2 bin cost: by capacity, segregated multiplier, missing price is an err
   assert.equal(computeCost({ routeDistanceKm: 0, days: 30 }, setup, assumptions).bins, 300);
   const a = structuredClone(assumptions);
   delete a.cost.binPerDay.value['240'];
-  const errs = validateInputs(scenario, { nodes: { ...scenario.baselineSetup.nodes, n1: { binType: 'single', binCount: 1, binCapacityL: 240, pickupIntervalDays: 1 } }, sortingMethod: 'manual' }, a);
+  const one = { ...scenario, nodes: [scenario.nodes[0]] };
+  const errs = validateInputs(one, { nodes: { n1: { binType: 'single', binCount: 1, binCapacityL: 240, pickupIntervalDays: 1 } }, sortingMethod: 'manual' }, a);
   assert.equal(errs.length, 1);
   assert.match(errs[0], /no bin price/);
 });

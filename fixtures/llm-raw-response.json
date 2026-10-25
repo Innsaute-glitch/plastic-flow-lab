@@ -3,7 +3,7 @@
     {
       "id": "n1",
       "binType": "segregated",
-      "binCount": 3,
+      "binCount": 1,
       "binCapacityL": 240,
       "pickupIntervalDays": 1,
       "rationale": "Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins."
@@ -11,49 +11,49 @@
     {
       "id": "n2",
       "binType": "segregated",
-      "binCount": 2,
-      "binCapacityL": 240,
-      "pickupIntervalDays": 2,
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
       "rationale": "Bottles are bulky; 2×240 L every 2 days keeps fill under 85%."
     },
     {
       "id": "n3",
       "binType": "segregated",
-      "binCount": 2,
-      "binCapacityL": 240,
-      "pickupIntervalDays": 2,
-      "rationale": "Same pattern as Hostel A at a slightly lower rate."
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Same pattern as Hostel J at a slightly lower rate."
     },
     {
       "id": "n4",
       "binType": "segregated",
       "binCount": 1,
-      "binCapacityL": 240,
-      "pickupIntervalDays": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
       "rationale": "Low rate; a bigger segregated bin on the existing 3-day cycle is enough."
     },
     {
       "id": "n5",
       "binType": "segregated",
-      "binCount": 2,
+      "binCount": 1,
       "binCapacityL": 240,
-      "pickupIntervalDays": 2,
+      "pickupIntervalDays": 1,
       "rationale": "Steady mixed stream; segregation cuts cross-contamination."
     },
     {
       "id": "n6",
       "binType": "segregated",
-      "binCount": 3,
+      "binCount": 1,
       "binCapacityL": 240,
       "pickupIntervalDays": 1,
       "rationale": "Evening spike plus food residue: daily pickup and segregated bins."
     },
     {
       "id": "n7",
-      "binType": "single",
-      "binCount": 2,
+      "binType": "segregated",
+      "binCount": 1,
       "binCapacityL": 240,
-      "pickupIntervalDays": 2,
+      "pickupIntervalDays": 1,
       "rationale": "Post-match bottle surge; double capacity on a 2-day cycle."
     },
     {
@@ -61,24 +61,264 @@
       "binType": "segregated",
       "binCount": 1,
       "binCapacityL": 240,
-      "pickupIntervalDays": 2,
+      "pickupIntervalDays": 1,
       "rationale": "Cups and straws pile up mid-afternoon; segregated 240 L every 2 days."
     },
     {
       "id": "n9",
-      "binType": "single",
+      "binType": "segregated",
       "binCount": 1,
       "binCapacityL": 120,
-      "pickupIntervalDays": 7,
+      "pickupIntervalDays": 2,
       "rationale": "Very low rate; current weekly pickup already fits."
     },
     {
       "id": "n10",
-      "binType": "single",
+      "binType": "segregated",
       "binCount": 1,
       "binCapacityL": 120,
-      "pickupIntervalDays": 7,
+      "pickupIntervalDays": 1,
       "rationale": "Very low rate; keep weekly pickup to save truck km."
+    },
+    {
+      "id": "n11",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n12",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n13",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n14",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n15",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n16",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 2,
+      "rationale": "Very low rate; weekly pickup already fits."
+    },
+    {
+      "id": "n17",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Event cups pile up; segregated bin on a 2-day cycle."
+    },
+    {
+      "id": "n18",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n19",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n20",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n21",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n22",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n23",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n24",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n25",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n26",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n27",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n28",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n29",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n30",
+      "binType": "segregated",
+      "binCount": 3,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n31",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n32",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Bulky bottles from a full hostel; segregated 2×240 L every 2 days."
+    },
+    {
+      "id": "n33",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Food residue and a meal-time spike: daily pickup, segregated bins."
+    },
+    {
+      "id": "n34",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Food residue and a meal-time spike: daily pickup, segregated bins."
+    },
+    {
+      "id": "n35",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Food residue and a meal-time spike: daily pickup, segregated bins."
+    },
+    {
+      "id": "n36",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n37",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n38",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n39",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 240,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
+    },
+    {
+      "id": "n40",
+      "binType": "segregated",
+      "binCount": 1,
+      "binCapacityL": 120,
+      "pickupIntervalDays": 1,
+      "rationale": "Steady mixed stream; segregation cuts cross-contamination."
     }
   ],
   "sortingMethod": "manual_float",

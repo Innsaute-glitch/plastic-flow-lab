@@ -13,7 +13,7 @@ export function validateInputs(scenario, setup, assumptions) {
   else if (!isNum(scenario.facility.x) || !isNum(scenario.facility.y)) e.push('The sorting facility has an invalid position.');
   const nodes = Array.isArray(scenario.nodes) ? scenario.nodes : [];
   if (nodes.length < 1) e.push('Add at least one node.');
-  if (nodes.length > 10) e.push('At most 10 nodes are supported.');
+  if (nodes.length > 40) e.push('At most 40 nodes are supported.');
   if (!(scenario.map && isNum(scenario.map.metresPerPixel) && scenario.map.metresPerPixel > 0)) e.push('Map scale (metres per pixel) must be a positive number.');
 
   const methods = assumptions.sorting?.methods?.value ?? {};

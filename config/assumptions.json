@@ -70,24 +70,24 @@
     },
     "mixed": {
       "value": {
-        "pet": 0.3,
-        "hdpe": 0.2,
-        "pp": 0.25,
-        "mixed": 0.25
+        "pet": 0.14,
+        "hdpe": 0.12,
+        "pp": 0.16,
+        "mixed": 0.58
       },
       "unit": "mass fraction",
-      "source": "Placeholder estimate",
-      "estimate": true
+      "source": "CPCB SOP for plastic waste characterisation (pwm.cpcb.gov.in/uploads/content_manager/80.pdf): Indian cities PET 14%, HDPE 11.7%, PP 15.6%; LDPE film 28.3% + multilayer 22.2% + PS 4.9% + PVC 3.2% counted as \"mixed\"",
+      "estimate": false
     },
     "food_contaminated": {
       "value": {
-        "pet": 0.15,
-        "hdpe": 0.1,
-        "pp": 0.35,
-        "mixed": 0.4
+        "pet": 0.1,
+        "hdpe": 0.05,
+        "pp": 0.25,
+        "mixed": 0.6
       },
       "unit": "mass fraction",
-      "source": "Placeholder: takeaway containers mostly PP + multilayer",
+      "source": "Estimate: canteen plastic dominated by films, multilayer packets and cups (~60%); PP cups/containers ~25%",
       "estimate": true
     }
   },
@@ -97,24 +97,24 @@
         "pet_bottles": 0.05,
         "hdpe": 0.08,
         "pp": 0.1,
-        "mixed": 0.2,
+        "mixed": 0.15,
         "food_contaminated": 0.55
       },
       "unit": "mass fraction contaminated at source",
-      "source": "Placeholder estimate",
+      "source": "Estimate, tuned with singleBinCrossContamination to the 30–50% (mixed bins) / 10–20% (segregated) soiled range",
       "estimate": true
     },
     "singleBinCrossContamination": {
-      "value": 0.15,
+      "value": 0.25,
       "unit": "added fraction (absolute) in single mixed bins",
-      "source": "Placeholder estimate",
+      "source": "Estimate: puts unsegregated plastic at ~35–40% too soiled to recycle and segregated at ~15–20% (published MRF reject rates 10–30%, e.g. PMC8931185)",
       "estimate": true
     },
     "segregatedCompliance": {
-      "value": 0.7,
+      "value": 0.9,
       "unit": "fraction of users who segregate correctly",
-      "source": "Placeholder estimate",
-      "estimate": true
+      "source": "Thapar case study \"From theory to practice\" (pdfs/) p18: \"90% segregation at source achieved\"",
+      "estimate": false
     },
     "sideWasteContaminated": {
       "value": 1.0,
@@ -125,9 +125,9 @@
   },
   "overflow": {
     "lossFraction": {
-      "value": 0.4,
+      "value": 0.2,
       "unit": "fraction of overflow that becomes litter",
-      "source": "Placeholder: wind/animals/drains carry part of overflow away",
+      "source": "Estimate (no published Indian figure): 10–30% of overflowing waste is scattered, blown or pulled out by animals",
       "estimate": true
     }
   },
@@ -158,7 +158,7 @@
         "food_contaminated": 0.09
       },
       "unit": "kg/L (loose, uncompacted)",
-      "source": "Placeholder estimate",
+      "source": "Estimate: loose uncompacted plastic ~15–60 kg/m³ (PET bottles 15–30 kg/m³); food-contaminated higher due to wet residue. No credible Indian source found",
       "estimate": true
     },
     "sizingHeadroom": {
@@ -175,26 +175,26 @@
           "label": "Manual",
           "accuracy": 0.8,
           "contaminantDetection": 0.6,
-          "throughputKgPerDay": 90,
+          "throughputKgPerDay": 350,
           "processLossFraction": 0.04
         },
         "manual_float": {
           "label": "Manual + float tank",
           "accuracy": 0.9,
           "contaminantDetection": 0.75,
-          "throughputKgPerDay": 150,
+          "throughputKgPerDay": 500,
           "processLossFraction": 0.05
         },
         "manual_nir": {
           "label": "Manual + NIR sensor",
           "accuracy": 0.96,
           "contaminantDetection": 0.9,
-          "throughputKgPerDay": 400,
+          "throughputKgPerDay": 1200,
           "processLossFraction": 0.03
         }
       },
       "unit": "accuracy/detection/loss: fraction; throughput: kg/day",
-      "source": "Placeholder estimates. Accuracy = share of clean resin placed in correct bale; detection = share of contaminated mass removed before baling",
+      "source": "Manual throughput: Thapar case study \"From theory to practice\" (pdfs/) p16–17, MRF sorts 1.5–1.75 t/day dry waste by hand with 21 workers; plastic ≈20% of recycled tonnage (DOC1 p4) → ~350 kg/day plastic capacity. Float-tank and NIR capacities, and all accuracy/loss values, are estimates",
       "estimate": true
     },
     "contaminatedToChemicalFraction": {
@@ -212,24 +212,24 @@
       "estimate": true
     },
     "truckSpeedKmh": {
-      "value": 15,
+      "value": 10,
       "unit": "km/h",
-      "source": "Placeholder: campus speed limit",
+      "source": "Estimate: e-loader on narrow campus roads (8–12 km/h)",
       "estimate": true
     },
     "stopMinutes": {
-      "value": 5,
+      "value": 2,
       "unit": "min per bin stop",
-      "source": "Placeholder estimate",
+      "source": "Estimate: 1–3 min per bin stop for a crew emptying wheeled bins",
       "estimate": true
     }
   },
   "map": {
     "defaultMetresPerPixel": {
-      "value": 0.5,
+      "value": 0.5153,
       "unit": "m/px",
-      "source": "Placeholder until map is calibrated",
-      "estimate": true
+      "source": "Google Maps zoom 17 at 30.354°N, captured at 2x pixel density (Web Mercator: 156543.03 × cos(lat) / 2^17 / 2); matches the 100 m scale bar within 2%",
+      "estimate": false
     }
   },
   "cost": {
@@ -240,36 +240,58 @@
       "estimate": false
     },
     "transportPerKm": {
-      "value": 25,
+      "value": 12,
       "unit": "INR/km",
-      "source": "Placeholder: small vehicle fuel + driver share",
+      "source": "Estimate for a battery e-loader (IndiaMART ₹85k, 500 kg): electricity + maintenance ₹2–4/km plus driver time at ~₹440/day and 10 km/h",
       "estimate": true
     },
     "binPerDay": {
       "value": {
-        "60": 2,
-        "120": 3,
-        "240": 5,
-        "660": 12
+        "60": 0.4,
+        "120": 0.7,
+        "240": 1.2,
+        "660": 6.5
       },
       "unit": "INR per bin per day by capacity in L (single bin; amortised)",
-      "source": "Placeholder estimate",
+      "source": "IndiaMART list prices (120–240 L wheeled HDPE ₹1,450–3,650; 660 L ₹18,500; 60 L ~₹650 est.) amortised over an estimated 5–8 year life",
       "estimate": true
     },
     "sortingPerDay": {
       "value": {
-        "manual": 900,
-        "manual_float": 1050,
-        "manual_nir": 1800
+        "manual": 1450,
+        "manual_float": 1750,
+        "manual_nir": 3000
       },
       "unit": "INR/day (labour + amortised equipment)",
-      "source": "Placeholder estimate",
+      "source": "Manual: 21 workers × ~₹440/day (Punjab unskilled minimum wage, w.e.f. 01.03.2025) × plastic share of MRF mass (~14%) + baler amortised (~₹3.5 lakh / 7 y). Float tank and NIR add estimated equipment and running costs",
       "estimate": true
     },
     "segregatedBinMultiplier": {
       "value": 1.6,
       "unit": "× bin cost for a segregated set",
       "source": "Placeholder estimate",
+      "estimate": true
+    }
+  },
+  "revenue": {
+    "balePricePerKg": {
+      "value": {
+        "pet": 40,
+        "hdpe": 45,
+        "pp": 35
+      },
+      "unit": "INR per kg of correctly sorted resin (sold to recyclers)",
+      "source": "Indian dealer bale prices Oct 2026, set conservatively below asking prices: PET baled ₹44–50/kg city rates (scrapc.com), ₹35–55 (IndiaMART); HDPE ₹55–71 (scrapo.com, IndiaMART); PP ₹58 (scrapo.com). Only correctly sorted resin earns (bale grading by target-resin fraction, NAPCOR)",
+      "estimate": true
+    },
+    "co2eAvoidedKgPerKg": {
+      "value": {
+        "pet": 1.15,
+        "hdpe": 0.85,
+        "pp": 0.85
+      },
+      "unit": "kg CO2e avoided per kg recycled",
+      "source": "US EPA WARM, recycling vs landfill (PET −1.04/+0.02, HDPE −0.76, PP −0.79 MTCO2E per short ton), converted per kg; US model, Indian grid differs",
       "estimate": true
     }
   },

@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateAndClamp } from '../schema.js';
 import { heuristicProposal } from '../heuristic.js';
-import { scenario, baseline, assumptions, rawResponse } from './fixtures.mjs';
+import { golden } from './fixtures.mjs';
+
+const { scenario, baseline, assumptions, rawResponse } = golden;
 
 const bs = scenario.baselineSetup;
 const mk = (over) => ({ ...rawResponse, nodes: rawResponse.nodes.map((n) => (n.id === 'n4' ? { ...n, ...over } : n)) });

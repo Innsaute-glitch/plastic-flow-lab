@@ -5,9 +5,10 @@ import { readFileSync } from 'node:fs';
 import { createHandler } from '../api.js';
 
 const j = (p) => JSON.parse(readFileSync(new URL(`../../${p}`, import.meta.url), 'utf8'));
-const scenario = j('fixtures/scenario.demo.json');
-const results = j('fixtures/results.baseline.json');
-const good = readFileSync(new URL('../../fixtures/proposal.json', import.meta.url), 'utf8') && JSON.parse(readFileSync(new URL('../../fixtures/proposal.json', import.meta.url), 'utf8')).raw;
+// frozen 10-node inputs: the sizing assertion below is hand-computed from them (fixtures/golden/README.md)
+const scenario = j('fixtures/golden/scenario.demo.json');
+const results = j('fixtures/golden/results.baseline.json');
+const good = j('fixtures/golden/proposal.json').raw;
 const body = { scenario, baselineSetup: scenario.baselineSetup, baselineSummary: results.summary, perNode: results.perNode, history: [] };
 
 async function withServer(callModel, fn) {
@@ -41,7 +42,8 @@ test('optimise streams status/delta/result, user message has metres and prices',
   });
   assert.match(seenUser, /roadDistanceToFacilityM/);
   assert.match(seenUser, /transportInrPerKm/);
-  assert.match(seenUser, /maxTotalInr/);
+  assert.match(seenUser, /maxNetCostInr/);
+  assert.match(seenUser, /baleSalePriceInrPerKg/);
 });
 
 test('invalid reply triggers one retry with the errors fed back, then succeeds', async () => {

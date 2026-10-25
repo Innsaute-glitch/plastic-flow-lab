@@ -37,6 +37,9 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
   const reduced = prefersReduced();
 
   let W = 0, H = 0, dpr = 1, scale = 1, u = 1;
+  // node-attached effects shrink with the node count so up to 40 nodes stay readable. Same curve as the editor markers (src/app/map-editor).
+  let ms = 0.85, nk = 1;
+  let un = 1; // u * nk
   let s = 0, playing = false, speed = 1, done = false, raf = 0, lastTs = 0, clock = 0, lastWrite = -1e9;
   let which = 'baseline';
 
@@ -104,6 +107,11 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
     canvas.height = Math.max(1, Math.round(H * dpr));
     scale = W / scenario.map.widthPx;
     u = Math.max(0.7, Math.min(1.3, W / 1000));
+    const base = Math.min(0.85, Math.max(0.6, 0.85 - (N - 10) * 0.25 / 30));
+    const f = Math.min(1, Math.max(0, (N - 15) / 10));
+    ms = base * (1 - f * (1 - Math.min(1, Math.max(0.8, W / 1100))));
+    nk = ms / 0.85;
+    un = u * nk;
     render();
   }
 
@@ -206,7 +214,7 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
       ctx.globalAlpha = a;
       ctx.fillStyle = rgba(nodeRgb[sp.j], 1);
       ctx.beginPath();
-      ctx.arc(n.x * scale + sp.ox * u, n.y * scale + sp.oy * u, sp.r * 1.5 * u, 0, 6.2832);
+      ctx.arc(n.x * scale + sp.ox * un, n.y * scale + sp.oy * un, sp.r * 1.5 * un, 0, 6.2832);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -265,7 +273,7 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
       const ox = m * m * d.sx + 2 * m * e * d.cx + e * e * d.ex;
       const oy = m * m * d.sy + 2 * m * e * d.cy + e * e * d.ey;
       const rgb = d.kind === 0 ? nodeRgb[d.j] : lerpRgb(nodeRgb[d.j], [233, 228, 216], 0.4);
-      drawGlow(rgb, n.x * scale + ox * u, n.y * scale + oy * u, d.size * 5 * u, alpha);
+      drawGlow(rgb, n.x * scale + ox * un, n.y * scale + oy * un, d.size * 5 * un, alpha);
     }
     ctx.globalAlpha = 1;
 
@@ -276,21 +284,21 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
       const pct = dispFill[j];
       const col = fillColor(pct);
       ctx.globalCompositeOperation = 'lighter';
-      if (flash[j] > 0.01) drawGlow(nodeRgb[j], nx, ny, 22 * u, flash[j] * 0.55);
+      if (flash[j] > 0.01) drawGlow(nodeRgb[j], nx, ny, 22 * un, flash[j] * 0.55);
       if (ovI[j] > 0.03) {
-        drawGlow(red, nx, ny, (26 + 3 * Math.sin(pulseT * 4.2)) * u, ovI[j] * 0.34);
-        ctx.lineWidth = 1.6 * u;
+        drawGlow(red, nx, ny, (26 + 3 * Math.sin(pulseT * 4.2)) * un, ovI[j] * 0.34);
+        ctx.lineWidth = 1.6 * un;
         for (let r = 0; r < 2; r++) {
           const ph = (pulseT * 0.72 + r * 0.5 + j * 0.13) % 1;
           ctx.globalAlpha = (1 - ph) * (1 - ph) * 0.7 * ovI[j];
           ctx.strokeStyle = rgba(red, 1);
-          ctx.beginPath(); ctx.arc(nx, ny, (10 + 26 * ph) * u, 0, 6.2832); ctx.stroke();
+          ctx.beginPath(); ctx.arc(nx, ny, (10 + 26 * ph) * un, 0, 6.2832); ctx.stroke();
         }
         ctx.globalAlpha = 1;
       }
       ctx.globalCompositeOperation = 'source-over';
       // meter
-      const mw = 7 * u, mh = 34 * u, mx = nx + 17 * u, my = ny - mh / 2;
+      const mw = 6.5 * un + 1, mh = 34 * un, mx = nx + 13 * ms + 4, my = ny - mh / 2;
       ctx.fillStyle = 'rgba(8,20,16,0.62)'; rrect(mx - 1.5, my - 1.5, mw + 3, mh + 3, (mw + 3) / 2); ctx.fill();
       ctx.strokeStyle = ovI[j] > 0.3 ? rgba(red, 0.35 + 0.4 * ovI[j]) : 'rgba(239,234,224,0.22)';
       ctx.lineWidth = 1; ctx.stroke();
@@ -304,7 +312,7 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
         ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(mx, my + mh - fh, mw, 1.2);
         ctx.restore();
         ctx.globalCompositeOperation = 'lighter';
-        drawGlow(col, mx + mw / 2, my + mh - fh, 9 * u, 0.22);
+        drawGlow(col, mx + mw / 2, my + mh - fh, 9 * un, 0.22);
         ctx.globalCompositeOperation = 'source-over';
       }
     }

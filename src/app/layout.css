@@ -27,6 +27,7 @@ button { cursor: pointer; }
 
 /* ---------- top bar ---------- */
 #topbar {
+  position: relative; z-index: 20;
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
   padding: 0 var(--space-4);
   border-bottom: 1px solid var(--line);
@@ -39,6 +40,15 @@ button { cursor: pointer; }
 .tb-name { color: var(--text-faint); padding-left: var(--space-3); border-left: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; }
 .tb-right { display: flex; align-items: center; gap: var(--space-2); }
 .tb-sep { width: 1px; height: 22px; background: var(--line); margin: 0 var(--space-2); }
+.tb-menu-wrap { position: relative; }
+.tb-chev { display: grid; margin-left: -2px; color: var(--text-muted); transform: rotate(-90deg); }
+.tb-menu { position: absolute; z-index: 50; top: calc(100% + 6px); right: 0; min-width: 270px; display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
+.tb-menu[hidden] { display: none; }
+.tb-menu__item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); text-align: left; cursor: pointer; transition: background var(--dur-fast) var(--ease); }
+.tb-menu__item b { font-weight: 500; white-space: nowrap; }
+.tb-menu__item span { color: var(--text-muted); font-size: var(--fs-xs); }
+.tb-menu__item:hover, .tb-menu__item:focus-visible { background: var(--bg-elev-2); outline: none; }
+.tb-menu__item:focus-visible { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 .tb-mode { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg-elev-1); color: var(--text-muted); font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
 .tb-mode i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); }
 .tb-mode[data-mode="running"] i, .tb-mode[data-mode="optimising"] i { background: var(--accent); box-shadow: var(--glow-accent); animation: app-blink 1.1s ease-in-out infinite; }
@@ -106,12 +116,13 @@ button { cursor: pointer; }
 #map-edit-layer[data-tool="add-node"], #map-edit-layer[data-tool="place-facility"], #map-edit-layer[data-tool="calibrate"] { cursor: crosshair; }
 #map-edit-layer.is-dragging { cursor: grabbing; }
 #map-edit-layer.is-live { pointer-events: none; }
+#map-edit-layer.is-live .mk-hit { pointer-events: all; cursor: default; }
 /* replay: keep a calm marker (core + ring) so nodes stay identifiable; drop pulses and selection */
 #map-edit-layer.is-live .mk-halo, #map-edit-layer.is-live .mk-pulse, #map-edit-layer.is-live .mk-sel { display: none; }
 #map-edit-layer.is-live .mk-ring, #map-edit-layer.is-live .mk-core { opacity: 0.85; }
-#map-edit-layer.is-live .mk-label { opacity: 0.8; }
+#map-edit-layer.is-live .mk-label { opacity: 0.85; }
 
-#map-attribution { position: absolute; right: 8px; bottom: 8px; z-index: 3; max-width: 62%; padding: 2px 10px; border-radius: 999px; font-size: 11px; line-height: 1.6; color: var(--text-muted); background: color-mix(in srgb, var(--bg) 82%, transparent); border: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+#map-attribution { position: absolute; right: 8px; bottom: 8px; z-index: 3; max-width: max(120px, calc(100% - 290px)); padding: 2px 10px; border-radius: 999px; font-size: 11px; line-height: 1.6; color: var(--text-muted); background: color-mix(in srgb, var(--bg) 82%, transparent); border: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
 #map-scale { position: absolute; left: 12px; bottom: 10px; z-index: 3; display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 11px; pointer-events: none; }
 /* Foot: room reserved for the animation HUD (Task 4 overlays it while a run plays); shows the legend while editing. */
 #map-foot { flex: none; height: var(--hud-reserve, 116px); display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding: 4px 6px 0; }
@@ -133,8 +144,13 @@ button { cursor: pointer; }
 .mk-pulse { fill: var(--c); opacity: 0; animation: mk-pulse 2s ease-out infinite; }
 .mk-pulse--2 { animation-delay: 1s; }
 @keyframes mk-pulse { 0% { transform: scale(0.55); opacity: 0.45; } 100% { transform: scale(1.7); opacity: 0; } }
-.mk-label rect { fill: color-mix(in srgb, var(--bg) 80%, transparent); stroke: var(--line); stroke-width: 1; }
-.mk-label text { fill: var(--text); font: 500 12px var(--font-ui); pointer-events: none; }
+.mk-hit { fill: transparent; stroke: none; }
+.mk-labels, .mk-label, .mk-label * { pointer-events: none; }
+.mk-label rect { fill: color-mix(in srgb, var(--bg) 84%, transparent); stroke: color-mix(in srgb, var(--text) 18%, var(--line)); stroke-width: 1; }
+.mk-label text { fill: var(--text); font: 500 11.5px var(--font-ui); }
+.mk-label.is-off:not(.is-hover) { display: none; }
+.mk-label.is-hover > g:not(.mk-hover) { display: none; }
+.mk-label.is-hover rect { fill: color-mix(in srgb, var(--bg) 94%, transparent); stroke: color-mix(in srgb, var(--accent) 55%, var(--line)); }
 .mk-node:hover .mk-halo { opacity: 0.32; }
 .mk-facility { --c: var(--accent); }
 .mk-fac-halo { fill: var(--accent); opacity: 0.14; }
@@ -201,8 +217,12 @@ button { cursor: pointer; }
 .c-method.is-active .c-method__dot { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 38%, transparent 42%); }
 
 /* node list */
-.c-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.c-row { display: flex; align-items: center; gap: 10px; width: 100%; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid transparent; background: transparent; text-align: left; color: var(--text); }
+.c-sec--fill { flex: 1 1 260px; min-height: 198px; display: flex; flex-direction: column; }
+.c-sec--fill > .app-card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.c-sec--fill .app-card__head { flex: none; }
+.c-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-right: 2px; }
+.c-list > li { flex: none; }
+.c-row { display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid transparent; background: transparent; text-align: left; color: var(--text); }
 .c-row:hover { background: var(--bg-elev-2); }
 .c-row__name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .c-row__meta { color: var(--text-faint); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
@@ -264,6 +284,16 @@ button { cursor: pointer; }
 .app-toast__x { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 8px; background: transparent; color: var(--text-faint); }
 .app-toast__x:hover { color: var(--text); background: var(--bg-elev-1); }
 @keyframes app-toast-in { from { opacity: 0; transform: translateY(-8px); } }
+
+/* short screens (1366x768 laptops): tighten the left column so the Nodes list gets more rows */
+@media (max-height: 820px) {
+  #controls { gap: 10px; }
+  .c-tool { padding: 7px 0 5px; }
+  .c-method { height: 34px; }
+  .c-methods { gap: 4px; }
+  #controls .app-card { padding: 12px 14px; }
+  #controls .app-card__head { margin-bottom: 8px; min-height: 28px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .mk-pulse, .tb-mode i { animation: none; }

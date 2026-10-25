@@ -1,9 +1,9 @@
 {
   "source": "cached",
   "model": "claude-sonnet-5-5",
-  "createdAt": "2026-10-25T09:31:21.264Z",
+  "createdAt": "2026-10-25T16:20:01.083Z",
   "round": 1,
-  "scenarioId": "campus-demo-v1",
+  "scenarioId": "thapar-2023-before-saahas",
   "setup": {
     "nodes": {
       "n1": {
@@ -13,33 +13,33 @@
         "pickupIntervalDays": 1
       },
       "n2": {
-        "binType": "single",
+        "binType": "segregated",
+        "binCount": 2,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n3": {
+        "binType": "segregated",
         "binCount": 3,
         "binCapacityL": 120,
         "pickupIntervalDays": 1
       },
-      "n3": {
-        "binType": "single",
-        "binCount": 1,
-        "binCapacityL": 240,
-        "pickupIntervalDays": 1
-      },
       "n4": {
-        "binType": "single",
+        "binType": "segregated",
         "binCount": 1,
         "binCapacityL": 120,
         "pickupIntervalDays": 1
       },
       "n5": {
-        "binType": "single",
-        "binCount": 1,
-        "binCapacityL": 120,
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
         "pickupIntervalDays": 1
       },
       "n6": {
         "binType": "segregated",
-        "binCount": 1,
-        "binCapacityL": 240,
+        "binCount": 3,
+        "binCapacityL": 60,
         "pickupIntervalDays": 1
       },
       "n7": {
@@ -50,8 +50,8 @@
       },
       "n8": {
         "binType": "single",
-        "binCount": 1,
-        "binCapacityL": 120,
+        "binCount": 3,
+        "binCapacityL": 60,
         "pickupIntervalDays": 1
       },
       "n9": {
@@ -65,25 +65,235 @@
         "binCount": 1,
         "binCapacityL": 120,
         "pickupIntervalDays": 2
+      },
+      "n11": {
+        "binType": "segregated",
+        "binCount": 2,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n12": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n13": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n14": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n15": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n16": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 2
+      },
+      "n17": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 2
+      },
+      "n18": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n19": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n20": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n21": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n22": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n23": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n24": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n25": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n26": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n27": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n28": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n29": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n30": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n31": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n32": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n33": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n34": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n35": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n36": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n37": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n38": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n39": {
+        "binType": "segregated",
+        "binCount": 3,
+        "binCapacityL": 60,
+        "pickupIntervalDays": 1
+      },
+      "n40": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
       }
     },
     "sortingMethod": "manual_float"
   },
   "rationales": {
-    "n1": "14 kg/day food waste, 18-20 overflow days, 0.55 contamination; daily pickup: needs ~224 L -> 1x240 L.",
-    "n2": "6 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~288 L -> 3x120 L.",
-    "n3": "5 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~240 L -> 1x240 L.",
-    "n4": "3 kg/day mixed overflowed 16 of 30 days; daily pickup: needs ~87 L -> 1x120 L.",
-    "n5": "4 kg/day mixed overflowed 4 of 30 days; daily pickup: needs ~115 L -> 1x120 L.",
-    "n6": "10 kg/day food waste, 11 overflow days, evening peak x2.5; daily pickup: needs ~160 L -> 1x240 L.",
-    "n7": "4 kg/day PET with x3 peak overflowed 26 of 30 days; daily pickup: needs ~192 L -> 1x240 L.",
-    "n8": "3 kg/day PP with x2 peak overflowed 10 of 30 days; daily pickup: needs ~72 L -> 1x120 L.",
-    "n9": "1.5 kg/day HDPE overflowed 13 of 30 days on 7-day pickup; 2-day pickup: needs ~86 L -> 1x120 L.",
-    "n10": "1.5 kg/day PP overflowed 12 of 30 days on 7-day pickup; 2-day pickup: needs ~72 L -> 1x120 L."
+    "n1": "14 kg/day food waste, 0 overflow days, contamination 0.55; segregated; needs ~224 L -> 1x240 L.",
+    "n2": "12.9 kg/day mixed, 0 overflow days, max fill 81.9%; needs ~371 L -> 2x240 L.",
+    "n3": "10.2 kg/day mixed, 0 overflow days, max fill 94.9%; needs ~293 L -> 3x120 L.",
+    "n4": "4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.",
+    "n5": "5 kg/day mixed, 0 overflow days, max fill 93.5%; needs ~144 L -> 3x60 L.",
+    "n6": "10 kg/day food waste, 19-21h peak, overflowed 10 of 30 days; needs ~160 L -> 3x60 L.",
+    "n7": "4 kg/day PET, 0 overflow days, low-volume bottles; needs ~192 L -> 1x240 L.",
+    "n8": "6 kg/day PP, 0 overflow days, max fill 95.1%; needs ~144 L -> 3x60 L.",
+    "n9": "1.5 kg/day HDPE, 0 overflow days, 25% fill; 2-day pickup needs ~86 L -> 1x120 L.",
+    "n10": "2 kg/day PP, 0 overflow days, 28% fill; 2-day pickup needs ~96 L -> 1x120 L.",
+    "n11": "12.6 kg/day mixed, 0 overflow days, max fill 79.5%; needs ~362 L -> 2x240 L.",
+    "n12": "8 kg/day mixed, 0 overflow days; needs ~230 L -> 1x240 L.",
+    "n13": "7.5 kg/day mixed, 0 overflow days; needs ~216 L -> 1x240 L.",
+    "n14": "10.2 kg/day mixed, 0 overflow days, max fill 97.7%; needs ~293 L -> 3x120 L.",
+    "n15": "10.2 kg/day mixed, 0 overflow days, max fill 97.5%; needs ~293 L -> 3x120 L.",
+    "n16": "1.5 kg/day mixed, 0 overflow days, 25% fill; 2-day pickup needs ~86 L -> 1x120 L.",
+    "n17": "2 kg/day PP, 0 overflow days, 28% fill; 2-day pickup needs ~96 L -> 1x120 L.",
+    "n18": "4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.",
+    "n19": "4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.",
+    "n20": "3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.",
+    "n21": "3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.",
+    "n22": "6.6 kg/day mixed, 0 overflow days; needs ~190 L -> 1x240 L.",
+    "n23": "3.3 kg/day mixed, 0 overflow days; needs ~95 L -> 1x120 L.",
+    "n24": "2.6 kg/day mixed, 0 overflow days; needs ~75 L -> 1x120 L.",
+    "n25": "2.6 kg/day mixed, 0 overflow days; needs ~75 L -> 1x120 L.",
+    "n26": "4.8 kg/day mixed, 0 overflow days, max fill 91.9%; needs ~138 L -> 3x60 L.",
+    "n27": "5.5 kg/day mixed, overflowed 8 of 30 days; needs ~158 L -> 3x60 L.",
+    "n28": "4.3 kg/day mixed, 0 overflow days, max fill 82%; needs ~124 L -> 3x60 L.",
+    "n29": "10.2 kg/day mixed, 0 overflow days, max fill 97.4%; needs ~293 L -> 3x120 L.",
+    "n30": "10.2 kg/day mixed, 0 overflow days, max fill 93.3%; needs ~293 L -> 3x120 L.",
+    "n31": "5.3 kg/day mixed, overflowed 2 of 30 days; needs ~152 L -> 3x60 L.",
+    "n32": "5.3 kg/day mixed, overflowed 4 of 30 days; needs ~152 L -> 3x60 L.",
+    "n33": "10 kg/day food waste, 19-21h peak, overflowed 8 of 30 days; needs ~160 L -> 3x60 L.",
+    "n34": "5 kg/day food waste, 0 overflow days, contamination 0.55; needs ~80 L -> 1x120 L.",
+    "n35": "8 kg/day food waste, 12-14h peak, max fill 84.3%; needs ~128 L -> 3x60 L.",
+    "n36": "3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.",
+    "n37": "6 kg/day mixed, overflowed 12 of 30 days; needs ~173 L -> 3x60 L.",
+    "n38": "2 kg/day mixed, 0 overflow days, 34% fill; needs ~58 L -> 1x60 L.",
+    "n39": "5 kg/day mixed, 0 overflow days, max fill 95.7%; needs ~144 L -> 3x60 L.",
+    "n40": "3 kg/day mixed, 0 overflow days, 51% fill; needs ~86 L -> 1x120 L."
   },
-  "sortingRationale": "Peak daily load is about 52 kg, within 150 kg/day throughput; float raises accuracy to 0.9 for 1050 INR/day, within budget.",
-  "summary": "Daily pickups at most nodes, bins sized to the minimum needed litres, segregated bins at food nodes, manual_float sorting, 2-day pickup for small admin and print nodes.",
+  "sortingRationale": "Peak day ~250 kg is under 500 kg/day throughput; +9,000 INR over manual, while NIR at +46,500 INR exceeds the budget.",
+  "summary": "Resized bins to the minimum needed, segregated bins on food and mixed nodes, 2-day pickups for four tiny nodes, and manual_float sorting for higher accuracy.",
   "clampNotes": [],
-  "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"14 kg/day food waste, 18-20 overflow days, 0.55 contamination; daily pickup: needs ~224 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"single\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"6 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~288 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~240 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed overflowed 16 of 30 days; daily pickup: needs ~87 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day mixed overflowed 4 of 30 days; daily pickup: needs ~115 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10 kg/day food waste, 11 overflow days, evening peak x2.5; daily pickup: needs ~160 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day PET with x3 peak overflowed 26 of 30 days; daily pickup: needs ~192 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day PP with x2 peak overflowed 10 of 30 days; daily pickup: needs ~72 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day HDPE overflowed 13 of 30 days on 7-day pickup; 2-day pickup: needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day PP overflowed 12 of 30 days on 7-day pickup; 2-day pickup: needs ~72 L -> 1x120 L.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Peak daily load is about 52 kg, within 150 kg/day throughput; float raises accuracy to 0.9 for 1050 INR/day, within budget.\",\n  \"summary\": \"Daily pickups at most nodes, bins sized to the minimum needed litres, segregated bins at food nodes, manual_float sorting, 2-day pickup for small admin and print nodes.\"\n}",
-  "fingerprint": "378a203c"
+  "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"14 kg/day food waste, 0 overflow days, contamination 0.55; segregated; needs ~224 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"12.9 kg/day mixed, 0 overflow days, max fill 81.9%; needs ~371 L -> 2x240 L.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10.2 kg/day mixed, 0 overflow days, max fill 94.9%; needs ~293 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5 kg/day mixed, 0 overflow days, max fill 93.5%; needs ~144 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10 kg/day food waste, 19-21h peak, overflowed 10 of 30 days; needs ~160 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day PET, 0 overflow days, low-volume bottles; needs ~192 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"single\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"6 kg/day PP, 0 overflow days, max fill 95.1%; needs ~144 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day HDPE, 0 overflow days, 25% fill; 2-day pickup needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"2 kg/day PP, 0 overflow days, 28% fill; 2-day pickup needs ~96 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n11\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"12.6 kg/day mixed, 0 overflow days, max fill 79.5%; needs ~362 L -> 2x240 L.\"\n    },\n    {\n      \"id\": \"n12\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"8 kg/day mixed, 0 overflow days; needs ~230 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n13\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"7.5 kg/day mixed, 0 overflow days; needs ~216 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n14\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10.2 kg/day mixed, 0 overflow days, max fill 97.7%; needs ~293 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n15\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10.2 kg/day mixed, 0 overflow days, max fill 97.5%; needs ~293 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n16\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day mixed, 0 overflow days, 25% fill; 2-day pickup needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n17\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"2 kg/day PP, 0 overflow days, 28% fill; 2-day pickup needs ~96 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n18\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n19\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day mixed, 0 overflow days; needs ~115 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n20\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n21\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n22\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"6.6 kg/day mixed, 0 overflow days; needs ~190 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n23\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3.3 kg/day mixed, 0 overflow days; needs ~95 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n24\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"2.6 kg/day mixed, 0 overflow days; needs ~75 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n25\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"2.6 kg/day mixed, 0 overflow days; needs ~75 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n26\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4.8 kg/day mixed, 0 overflow days, max fill 91.9%; needs ~138 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n27\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5.5 kg/day mixed, overflowed 8 of 30 days; needs ~158 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n28\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4.3 kg/day mixed, 0 overflow days, max fill 82%; needs ~124 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n29\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10.2 kg/day mixed, 0 overflow days, max fill 97.4%; needs ~293 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n30\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10.2 kg/day mixed, 0 overflow days, max fill 93.3%; needs ~293 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n31\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5.3 kg/day mixed, overflowed 2 of 30 days; needs ~152 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n32\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5.3 kg/day mixed, overflowed 4 of 30 days; needs ~152 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n33\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10 kg/day food waste, 19-21h peak, overflowed 8 of 30 days; needs ~160 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n34\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5 kg/day food waste, 0 overflow days, contamination 0.55; needs ~80 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n35\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"8 kg/day food waste, 12-14h peak, max fill 84.3%; needs ~128 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n36\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed, 0 overflow days, 50% fill; needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n37\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"6 kg/day mixed, overflowed 12 of 30 days; needs ~173 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n38\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"2 kg/day mixed, 0 overflow days, 34% fill; needs ~58 L -> 1x60 L.\"\n    },\n    {\n      \"id\": \"n39\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 60,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5 kg/day mixed, 0 overflow days, max fill 95.7%; needs ~144 L -> 3x60 L.\"\n    },\n    {\n      \"id\": \"n40\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed, 0 overflow days, 51% fill; needs ~86 L -> 1x120 L.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Peak day ~250 kg is under 500 kg/day throughput; +9,000 INR over manual, while NIR at +46,500 INR exceeds the budget.\",\n  \"summary\": \"Resized bins to the minimum needed, segregated bins on food and mixed nodes, 2-day pickups for four tiny nodes, and manual_float sorting for higher accuracy.\"\n}",
+  "fingerprint": "04f0d206"
 }

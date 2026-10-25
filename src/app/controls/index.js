@@ -33,7 +33,7 @@ export function mount(el, store) {
   const sigs = {
     tools: (s) => s.tool,
     run: (s) => [s.mode, !!s.baseline, s.scenario.nodes.length, !!s.scenario.facility].join('|'),
-    facility: (s) => [!!s.scenario.facility, s.scenario.baselineSetup.sortingMethod, s.mode === 'optimising'].join('|'),
+    facility: (s) => [!!s.scenario.facility, s.scenario.baselineSetup.sortingMethod, s.mode === 'optimising', s.mode === 'compare' ? s.optimised?.proposal?.setup?.sortingMethod : ''].join('|'),
     nodes: (s) => (node(s)
       ? ['edit', s.selectedNodeId, s.scenario.nodes.length].join('|')
       : ['list', s.scenario.id, JSON.stringify(s.scenario.nodes.map((n) => [n.id, n.name, n.wasteType, n.rateKgPerDay, n.x == null]))].join('|')),
@@ -87,6 +87,7 @@ export function mount(el, store) {
   /* ---------- nodes: list or editor ---------- */
   function renderNodes(host, s) {
     const n = node(s);
+    host.classList.toggle('c-sec--fill', !n);
     if (n) return renderEditor(host, s, n);
     const items = s.scenario.nodes;
     host.innerHTML = `<div class="app-card">
@@ -95,7 +96,7 @@ export function mount(el, store) {
       ${items.length ? `<ul class="c-list">${items.map((it) => {
         const key = s.ui.wasteTypeColorKey[it.wasteType];
         return `<li><button class="c-row" data-select="${it.id}"><span class="c-dot" style="--c:var(--resin-${key})"></span>
-          <span class="c-row__name">${esc(it.name)}</span>
+          <span class="c-row__name" title="${esc(it.name)}">${esc(it.name)}</span>
           ${it.x == null ? `<span class="app-pill app-pill--warn">place</span>` : `<span class="c-row__meta">${it.rateKgPerDay} kg/d</span>`}</button></li>`;
       }).join('')}</ul>` : `<p class="c-empty">${icon('map', 28)}<span>Click the map to add nodes, or load the demo.</span></p>`}
     </div>`;

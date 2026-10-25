@@ -179,10 +179,20 @@ export function createCompareView(ctx) {
     if (proposal.sortingRationale) sortRow.appendChild(h('p', 'results-chg-why', proposal.sortingRationale));
     chg.appendChild(sortRow);
 
-    for (const c of setupChanges(scenario, baseline.setup, proposal.setup)) {
+    // per-node changes scroll inside the card so 30 nodes do not turn the panel into a wall of text
+    const changes = setupChanges(scenario, baseline.setup, proposal.setup);
+    const nChanged = changes.filter((c) => c.changed).length;
+    const listHead = h('div', 'results-chg-listhead');
+    listHead.append(h('b', '', 'Per-node changes'), h('span', '', `${nChanged} of ${changes.length} nodes changed`));
+    chg.appendChild(listHead);
+    const list = h('div', 'results-chg-list');
+    chg.appendChild(list);
+    for (const c of changes) {
       const row = h('div', `results-chg${c.changed ? '' : ' is-same'}`);
       const hh = h('div', 'results-chg-head');
-      hh.appendChild(h('b', '', c.name));
+      const nameEl = h('b', '', c.name);
+      nameEl.title = c.name;
+      hh.appendChild(nameEl);
       const ps = h('span', 'results-chg-parts');
       if (c.changed) c.parts.forEach((p) => ps.appendChild(h('span', 'results-chip-set', p)));
       else ps.appendChild(h('span', 'results-same', 'no change'));
@@ -190,7 +200,7 @@ export function createCompareView(ctx) {
       row.appendChild(hh);
       const why = proposal.rationales?.[c.id];
       if (why) row.appendChild(h('p', 'results-chg-why', why));
-      chg.appendChild(row);
+      list.appendChild(row);
     }
     if (proposal.clampNotes?.length) {
       const cl = h('div', 'results-clamps');

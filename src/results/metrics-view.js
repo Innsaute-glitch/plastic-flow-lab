@@ -52,15 +52,24 @@ export function createMetricCards() {
 
 export function createNodeTable() {
   const card = h('section', 'results-card results-table-card');
-  card.appendChild(h('h3', 'results-h3', 'Per-node results'));
-  const body = h('div', 'results-table');
-  card.appendChild(body);
+  const th = h('div', 'results-card-head');
+  const cnt = h('span', 'results-count');
+  th.append(h('h3', 'results-h3', 'Per-node results'), cnt);
+  card.appendChild(th);
+  const body = h('div', 'results-table'); // scrolls inside the card (30 nodes); header row is sticky
+  const caption = h('p', 'results-tcaption');
+  card.append(body, caption);
   return {
     el: card,
     update(scenario, results, ui) {
       body.textContent = '';
+      cnt.textContent = `${scenario.nodes.filter((n) => results.perNode[n.id]).length} nodes`;
       const head = h('div', 'results-trow results-thead');
-      for (const t of ['Node', 'kg', 'Overflow days', 'Load at pickup']) head.appendChild(h('span', '', t));
+      for (const [t, tip] of [['Node', ''], ['kg', 'Plastic generated over the run'], ['Overflow', 'Days with overflow, out of ' + results.meta.days], ['Load', 'Load at pickup: plastic arrived since the last pickup as % of bin capacity']]) {
+        const c = h('span', '', t);
+        if (tip) c.title = tip;
+        head.appendChild(c);
+      }
       body.appendChild(head);
       const days = results.meta.days;
       // load = plastic that arrived since the last pickup as % of bin capacity (uncapped); >100% means it overflowed
@@ -69,7 +78,9 @@ export function createNodeTable() {
         const p = results.perNode[n.id];
         if (!p) continue;
         const row = h('div', 'results-trow');
-        row.appendChild(h('span', 'results-tname', n.name));
+        const nm = h('span', 'results-tname', n.name);
+        nm.title = n.name;
+        row.appendChild(nm);
         row.appendChild(h('span', 'results-tnum', fmtKg(p.generatedKg).replace(/\s*kg$/, '')));
         const ov = h('span', 'results-tov');
         const bar = h('span', 'results-tbar');
@@ -94,7 +105,8 @@ export function createNodeTable() {
           body.appendChild(note);
         }
       }
-      body.appendChild(h('p', 'results-tcaption', `kg = plastic generated over ${days} days. Load at pickup = plastic that arrived since the last pickup, as % of the bin's capacity; over 100% means the bin overflowed. Bar = days with overflow, out of ${days}.`));
+      body.scrollTop = 0;
+      caption.textContent = (`kg = plastic generated over ${days} days. Load at pickup = plastic that arrived since the last pickup, as % of the bin's capacity; over 100% means the bin overflowed. Bar = days with overflow, out of ${days}.`);
     },
   };
 }

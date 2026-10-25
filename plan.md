@@ -70,10 +70,10 @@ All examples use real field names. Fields marked `?` may be `null`.
   "settings": { "days": 30, "seed": 42 }
 }
 ```
-- `facility` is `null` until it is placed. The sim refuses to run without a facility and at least 1 node. There can be at most 10 nodes, and the facility does not count toward them.
+- `facility` is `null` until it is placed. The sim refuses to run without a facility and at least 1 node. There can be at most 40 nodes, and the facility does not count toward them.
 - `peak?` and `observed?` may be `null`. `observed` is used only for an "observed vs model" note in the results; it never drives the sim.
 - `assumptionOverrides` (may be missing in old files, so treat it as `{}`) holds runtime edits of assumptions, keyed by dotted path. See "Assumption overrides" below.
-- Node ids are `n1`…`n10`, assigned in creation order and never reused within a scenario. The facility id is always `"facility"`.
+- Node ids are `n1`…`n40`, assigned in creation order and never reused within a scenario. The facility id is always `"facility"`.
 
 **Setup** (what the user configures as the baseline, and what the LLM proposes)
 ```json
@@ -99,6 +99,8 @@ All examples use real field names. Fields marked `?` may be `null`.
 
 **Bin cost** (v0.2): the cost per bin per day = `cost.binPerDay.value[String(binCapacityL)]` × (`cost.segregatedBinMultiplier` if `binType === "segregated"`, else 1). Total bin cost = Σ nodes `binCount × that × days`.
 
+**Revenue and environment** (v0.3): `cost.total` is spend (transport + bins + sorting). `cost.baleRevenue` = Σ resin (correctly sorted kg × `revenue.balePricePerKg`); impurities in a bale earn nothing. `cost.net = total − baleRevenue` (negative = surplus). `summary.recycledKg` = correctly sorted PET/HDPE/PP kg, `summary.landfillKg` = contaminated-to-landfill + process rejects, `summary.co2eAvoidedKg` = Σ correct kg × `revenue.co2eAvoidedKgPerKg`. `computeCost` takes an optional `correctKgByResin` in `summaryParts`; without it revenue is 0.
+
 **Bin sizing rule** (v0.2; for the LLM prompt and the heuristic):
 - Choose the **smallest** total capacity (`binCount × binCapacityL`) that holds the expected accumulation between pickups at peak-day rate with `bins.sizingHeadroom` spare, using `rateKgPerDay × intervalDays × (1 + dailyNoise) / bulkDensity / (1 − headroom)` litres.
 - Use at most 3 bins per node. Among options within about 25% of the smallest capacity, prefer fewer bins (needs ~288 L → 3×120 L rather than 5×60 L).
@@ -113,7 +115,8 @@ All examples use real field names. Fields marked `?` may be `null`.
     "recoveryRate": 0.41, "purity": 0.78, "contaminationRate": 0.31,
     "overflowBinDays": 96, "overflowCalendarDays": 27,
     "routeDistanceKm": 31.8, "truckTrips": 15, "pickups": 88,
-    "cost": { "transport": 795, "bins": 1500, "sorting": 27000, "total": 29295, "currency": "INR" },
+    "recycledKg": 820.4, "landfillKg": 95.1, "co2eAvoidedKg": 870.2,
+    "cost": { "transport": 795, "bins": 1500, "sorting": 27000, "total": 29295, "baleRevenue": 31200, "net": -1905, "currency": "INR" },
     "massBalanceErrorKg": 0
   },
   "perNode": {
@@ -357,7 +360,7 @@ Does:
   - Inputs: nodes (rates, types, peaks, positions in metres), the current setup, baseline summary + perNode, and the allowed values and limits taken from assumptions.
   - Output: JSON only, matching the raw response schema.
   - Priorities, in order: overflow, then contamination, then recovery.
-  - **Budget rule:** projected cost ≤ baseline cost × (1 + `llmLimits.budgetTolerance`). The prompt includes the cost unit prices.
+  - **Budget rule (v0.3, net of bale revenue):** `net(plan) ≤ net(baseline) + llmLimits.budgetTolerance × total(baseline)`, where `net = total − baleRevenue` (helper: `src/shared/budget.js` `budgetCap`/`budgetCheck`). The prompt includes the cost unit prices and bale sale prices.
   - One-line rationale per node.
 - User message builder: compact JSON input with positions converted to metres from the facility.
 - `src/llm/schema.js` `validateAndClamp`; `src/llm/heuristic.js` `heuristicProposal` (rule-based: an interval that keeps the expected fill ≤ 85% at peak-adjusted rates, segregated bins where base contamination is ≥ 0.2, and the cheapest sorting method whose throughput covers the peak daily collection while staying within budget).

@@ -1,5 +1,6 @@
 // Pure rule-based fallback. Contract: plan.md §3.1 heuristicProposal. source: "heuristic".
 import { validateAndClamp } from './schema.js';
+import { budgetCap } from '../shared/budget.js';
 
 
 export function binCostPerDay(s, a) {
@@ -70,7 +71,10 @@ function chooseNode(n, base, a, segregate) {
 export function heuristicProposal(scenario, baselineSetup, baselineResults, assumptions) {
   const a = assumptions;
   const tol = a.llmLimits.budgetTolerance.value;
-  const budget = baselineResults.summary.cost.total * (1 + tol);
+  // Net budget (src/shared/budget.js). The projection cannot know the new bale revenue, so it assumes the baseline's,
+  // which is conservative: segregation and better sorting only raise it.
+  const baseCost = baselineResults.summary.cost;
+  const budget = budgetCap(baseCost, tol) + (baseCost.baleRevenue ?? 0);
   const base = a.contamination.baseFraction.value;
   const nodes = {};
   const why = {};

@@ -176,6 +176,14 @@ export function mount(el, store) {
     const dx = g.dataset.dx ?? 0, dy = g.dataset.dy ?? above;
     g.classList.add('is-hover');
     g.insertAdjacentHTML('beforeend', `<g class="mk-hover" transform="translate(${dx} ${dy})"><rect x="${-w / 2}" y="-10" width="${w}" height="${LABEL_H}" rx="10"/><text y="4" text-anchor="middle">${esc(text)}</text></g>`);
+    // keep the pill inside the map: shift it sideways off the edges, flip it below the marker near the top.
+    // Label units are screen px (labelStyle scales by --inv), so client-rect overshoot maps 1:1.
+    const pill = g.lastElementChild, r = pill.getBoundingClientRect(), b = svg.getBoundingClientRect(), pad = 4;
+    let sx = 0, fy = Number(dy);
+    if (r.left < b.left + pad) sx = b.left + pad - r.left;
+    else if (r.right > b.right - pad) sx = b.right - pad - r.right;
+    if (r.top < b.top + pad) fy = -fy;
+    if (sx || fy !== Number(dy)) pill.setAttribute('transform', `translate(${Number(dx) + sx} ${fy})`);
   }
 
   function redrawLabels() { if (!drag) drawSvg(store.get()); }

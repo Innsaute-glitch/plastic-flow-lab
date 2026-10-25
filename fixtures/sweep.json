@@ -1,0 +1,243 @@
+{
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "baseline": [
+    {
+      "generatedKg": 1559,
+      "collectedKg": 1297.8,
+      "litterKg": 254.8,
+      "inBinsEndKg": 6.3,
+      "backlogEndKg": 30,
+      "recoveryRate": 0.285,
+      "purity": 0.78,
+      "contaminationRate": 0.31,
+      "overflowBinDays": 162,
+      "overflowCalendarDays": 30,
+      "routeDistanceKm": 26.6,
+      "truckTrips": 13,
+      "pickups": 88,
+      "cost": {
+        "transport": 666,
+        "bins": 1350,
+        "sorting": 27000,
+        "total": 29016,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1557.8,
+      "collectedKg": 1296.6,
+      "litterKg": 255.6,
+      "inBinsEndKg": 5.6,
+      "backlogEndKg": 33,
+      "recoveryRate": 0.285,
+      "purity": 0.78,
+      "contaminationRate": 0.31,
+      "overflowBinDays": 155,
+      "overflowCalendarDays": 29,
+      "routeDistanceKm": 26.6,
+      "truckTrips": 13,
+      "pickups": 88,
+      "cost": {
+        "transport": 666,
+        "bins": 1350,
+        "sorting": 27000,
+        "total": 29016,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1553.6,
+      "collectedKg": 1294,
+      "litterKg": 253.5,
+      "inBinsEndKg": 6.2,
+      "backlogEndKg": 31.1,
+      "recoveryRate": 0.285,
+      "purity": 0.78,
+      "contaminationRate": 0.31,
+      "overflowBinDays": 154,
+      "overflowCalendarDays": 30,
+      "routeDistanceKm": 26.6,
+      "truckTrips": 13,
+      "pickups": 88,
+      "cost": {
+        "transport": 666,
+        "bins": 1350,
+        "sorting": 27000,
+        "total": 29016,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1550.1,
+      "collectedKg": 1292.1,
+      "litterKg": 252.1,
+      "inBinsEndKg": 5.8,
+      "backlogEndKg": 31.9,
+      "recoveryRate": 0.285,
+      "purity": 0.78,
+      "contaminationRate": 0.31,
+      "overflowBinDays": 154,
+      "overflowCalendarDays": 28,
+      "routeDistanceKm": 26.6,
+      "truckTrips": 13,
+      "pickups": 88,
+      "cost": {
+        "transport": 666,
+        "bins": 1350,
+        "sorting": 27000,
+        "total": 29016,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1587,
+      "collectedKg": 1314,
+      "litterKg": 267,
+      "inBinsEndKg": 6,
+      "backlogEndKg": 34.2,
+      "recoveryRate": 0.283,
+      "purity": 0.78,
+      "contaminationRate": 0.31,
+      "overflowBinDays": 156,
+      "overflowCalendarDays": 30,
+      "routeDistanceKm": 26.6,
+      "truckTrips": 13,
+      "pickups": 88,
+      "cost": {
+        "transport": 666,
+        "bins": 1350,
+        "sorting": 27000,
+        "total": 29016,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    }
+  ],
+  "optimised": [
+    {
+      "generatedKg": 1559,
+      "collectedKg": 1539.9,
+      "litterKg": 12.7,
+      "inBinsEndKg": 6.3,
+      "backlogEndKg": 0,
+      "recoveryRate": 0.525,
+      "purity": 0.9,
+      "contaminationRate": 0.17,
+      "overflowBinDays": 27,
+      "overflowCalendarDays": 15,
+      "routeDistanceKm": 56.7,
+      "truckTrips": 30,
+      "pickups": 153,
+      "cost": {
+        "transport": 1418,
+        "bins": 2460,
+        "sorting": 31500,
+        "total": 35378,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1557.8,
+      "collectedKg": 1539.3,
+      "litterKg": 12.9,
+      "inBinsEndKg": 5.6,
+      "backlogEndKg": 0,
+      "recoveryRate": 0.525,
+      "purity": 0.9,
+      "contaminationRate": 0.17,
+      "overflowBinDays": 26,
+      "overflowCalendarDays": 14,
+      "routeDistanceKm": 56.7,
+      "truckTrips": 30,
+      "pickups": 153,
+      "cost": {
+        "transport": 1418,
+        "bins": 2460,
+        "sorting": 31500,
+        "total": 35378,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1553.6,
+      "collectedKg": 1534.6,
+      "litterKg": 12.9,
+      "inBinsEndKg": 6.2,
+      "backlogEndKg": 0,
+      "recoveryRate": 0.524,
+      "purity": 0.9,
+      "contaminationRate": 0.17,
+      "overflowBinDays": 25,
+      "overflowCalendarDays": 14,
+      "routeDistanceKm": 56.7,
+      "truckTrips": 30,
+      "pickups": 153,
+      "cost": {
+        "transport": 1418,
+        "bins": 2460,
+        "sorting": 31500,
+        "total": 35378,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1550.1,
+      "collectedKg": 1531.3,
+      "litterKg": 12.9,
+      "inBinsEndKg": 5.8,
+      "backlogEndKg": 0,
+      "recoveryRate": 0.525,
+      "purity": 0.9,
+      "contaminationRate": 0.17,
+      "overflowBinDays": 26,
+      "overflowCalendarDays": 15,
+      "routeDistanceKm": 56.7,
+      "truckTrips": 30,
+      "pickups": 153,
+      "cost": {
+        "transport": 1418,
+        "bins": 2460,
+        "sorting": 31500,
+        "total": 35378,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    },
+    {
+      "generatedKg": 1587,
+      "collectedKg": 1568.6,
+      "litterKg": 12.4,
+      "inBinsEndKg": 6,
+      "backlogEndKg": 0,
+      "recoveryRate": 0.525,
+      "purity": 0.9,
+      "contaminationRate": 0.17,
+      "overflowBinDays": 27,
+      "overflowCalendarDays": 15,
+      "routeDistanceKm": 56.7,
+      "truckTrips": 30,
+      "pickups": 153,
+      "cost": {
+        "transport": 1418,
+        "bins": 2460,
+        "sorting": 31500,
+        "total": 35378,
+        "currency": "INR"
+      },
+      "massBalanceErrorKg": 0
+    }
+  ]
+}

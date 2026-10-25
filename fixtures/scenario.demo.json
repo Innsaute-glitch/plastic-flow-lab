@@ -1,0 +1,209 @@
+{
+  "version": 1,
+  "id": "campus-demo-v1",
+  "name": "Campus baseline",
+  "map": {
+    "src": "maps/placeholder-campus.svg",
+    "widthPx": 1600,
+    "heightPx": 1000,
+    "metresPerPixel": 0.5,
+    "attribution": "Placeholder map. Replace with Google Maps screenshot (keep attribution)."
+  },
+  "facility": {
+    "id": "facility",
+    "name": "Sorting facility",
+    "x": 1380,
+    "y": 860
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "Main canteen",
+      "x": 520,
+      "y": 330,
+      "wasteType": "food_contaminated",
+      "rateKgPerDay": 14,
+      "peak": {
+        "startHour": 12,
+        "endHour": 14,
+        "multiplier": 3
+      },
+      "observed": {
+        "overflowDays": 18,
+        "fillPctAtPickup": 100
+      }
+    },
+    {
+      "id": "n2",
+      "name": "Hostel A",
+      "x": 230,
+      "y": 180,
+      "wasteType": "pet_bottles",
+      "rateKgPerDay": 6,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n3",
+      "name": "Hostel B",
+      "x": 260,
+      "y": 560,
+      "wasteType": "pet_bottles",
+      "rateKgPerDay": 5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n4",
+      "name": "Central library",
+      "x": 800,
+      "y": 300,
+      "wasteType": "mixed",
+      "rateKgPerDay": 3,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n5",
+      "name": "Academic block",
+      "x": 980,
+      "y": 480,
+      "wasteType": "mixed",
+      "rateKgPerDay": 4,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n6",
+      "name": "Food court",
+      "x": 700,
+      "y": 640,
+      "wasteType": "food_contaminated",
+      "rateKgPerDay": 10,
+      "peak": {
+        "startHour": 19,
+        "endHour": 21,
+        "multiplier": 2.5
+      },
+      "observed": null
+    },
+    {
+      "id": "n7",
+      "name": "Sports complex",
+      "x": 1250,
+      "y": 250,
+      "wasteType": "pet_bottles",
+      "rateKgPerDay": 4,
+      "peak": {
+        "startHour": 17,
+        "endHour": 19,
+        "multiplier": 3
+      },
+      "observed": null
+    },
+    {
+      "id": "n8",
+      "name": "Juice stall",
+      "x": 620,
+      "y": 470,
+      "wasteType": "pp",
+      "rateKgPerDay": 3,
+      "peak": {
+        "startHour": 15,
+        "endHour": 17,
+        "multiplier": 2
+      },
+      "observed": null
+    },
+    {
+      "id": "n9",
+      "name": "Admin building",
+      "x": 1100,
+      "y": 700,
+      "wasteType": "hdpe",
+      "rateKgPerDay": 1.5,
+      "peak": null,
+      "observed": null
+    },
+    {
+      "id": "n10",
+      "name": "Print shop",
+      "x": 880,
+      "y": 820,
+      "wasteType": "pp",
+      "rateKgPerDay": 1.5,
+      "peak": null,
+      "observed": null
+    }
+  ],
+  "baselineSetup": {
+    "nodes": {
+      "n1": {
+        "binType": "single",
+        "binCount": 2,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n2": {
+        "binType": "single",
+        "binCount": 2,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n3": {
+        "binType": "single",
+        "binCount": 2,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n4": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n5": {
+        "binType": "single",
+        "binCount": 2,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n6": {
+        "binType": "single",
+        "binCount": 2,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n7": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n8": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 3
+      },
+      "n9": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 7
+      },
+      "n10": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 7
+      }
+    },
+    "sortingMethod": "manual"
+  },
+  "lastProposal": null,
+  "settings": {
+    "days": 30,
+    "seed": 42
+  }
+}

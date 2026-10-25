@@ -1,0 +1,6 @@
+/* Local fonts from the installed @fontsource packages. No CDN, so the app works offline. */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";

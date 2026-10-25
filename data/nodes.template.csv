@@ -1,0 +1,4 @@
+name,waste_type,rate_kg_per_day,peak_start_hour,peak_end_hour,peak_multiplier,bin_type,bin_count,bin_capacity_l,pickup_interval_days,x,y,observed_overflow_days,observed_fill_pct_at_pickup
+Main canteen,food_contaminated,14,12,14,3,single,2,120,3,,,18,100
+Hostel A,pet_bottles,6,,,,single,2,120,3,,,,
+Central library,mixed,3,,,,single,1,120,3,,,,

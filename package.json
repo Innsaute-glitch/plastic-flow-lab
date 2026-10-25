@@ -1,0 +1,28 @@
+{
+  "name": "plastic-waste-sim",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "npm run build && node server/index.js",
+    "test": "npm run test:sim && npm run test:llm && npm run test:app",
+    "test:sim": "node --test \"src/sim/test/*.test.mjs\" && node src/sim/test/run-sample.mjs",
+    "test:llm": "node --test \"src/llm/test/*.test.mjs\" \"server/test/*.test.mjs\"",
+    "fixtures": "node fixtures/make-fixtures.mjs",
+    "test:app": "node --test \"src/app/test/*.test.mjs\" \"src/anim/test/*.test.mjs\" \"src/results/test/*.test.mjs\""
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "d3-sankey": "0.12.3",
+    "d3-shape": "3.2.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.5"
+  }
+}

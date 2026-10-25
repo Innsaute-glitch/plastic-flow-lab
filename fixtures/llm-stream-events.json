@@ -1,0 +1,321 @@
+[
+  {
+    "type": "status",
+    "stage": "sending"
+  },
+  {
+    "type": "status",
+    "stage": "thinking"
+  },
+  {
+    "type": "delta",
+    "text": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"bi"
+  },
+  {
+    "type": "delta",
+    "text": "nType\": \"segregated\",\n      \"binCount\": 3,\n     "
+  },
+  {
+    "type": "delta",
+    "text": " \"binCapacityL\": 240,\n      \"pickupIntervalDays\""
+  },
+  {
+    "type": "delta",
+    "text": ": 1,\n      \"rationale\": \"Lunch spike overfills t"
+  },
+  {
+    "type": "delta",
+    "text": "wo 120 L bins by 2 pm; daily pickup with 3×240 L"
+  },
+  {
+    "type": "delta",
+    "text": " segregated bins.\"\n    },\n    {\n      \"id\": \"n2\""
+  },
+  {
+    "type": "delta",
+    "text": ",\n      \"binType\": \"segregated\",\n      \"binCount"
+  },
+  {
+    "type": "delta",
+    "text": "\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIn"
+  },
+  {
+    "type": "delta",
+    "text": "tervalDays\": 2,\n      \"rationale\": \"Bottles are "
+  },
+  {
+    "type": "delta",
+    "text": "bulky; 2×240 L every 2 days keeps fill under 85%"
+  },
+  {
+    "type": "delta",
+    "text": ".\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType"
+  },
+  {
+    "type": "delta",
+    "text": "\": \"segregated\",\n      \"binCount\": 2,\n      \"bin"
+  },
+  {
+    "type": "delta",
+    "text": "CapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n"
+  },
+  {
+    "type": "delta",
+    "text": "      \"rationale\": \"Same pattern as Hostel A at "
+  },
+  {
+    "type": "delta",
+    "text": "a slightly lower rate.\"\n    },\n    {\n      \"id\":"
+  },
+  {
+    "type": "delta",
+    "text": " \"n4\",\n      \"binType\": \"segregated\",\n      \"bin"
+  },
+  {
+    "type": "delta",
+    "text": "Count\": 1,\n      \"binCapacityL\": 240,\n      \"pic"
+  },
+  {
+    "type": "delta",
+    "text": "kupIntervalDays\": 3,\n      \"rationale\": \"Low rat"
+  },
+  {
+    "type": "delta",
+    "text": "e; a bigger segregated bin on the existing 3-day"
+  },
+  {
+    "type": "delta",
+    "text": " cycle is enough.\"\n    },\n    {\n      \"id\": \"n5\""
+  },
+  {
+    "type": "delta",
+    "text": ",\n      \"binType\": \"segregated\",\n      \"binCount"
+  },
+  {
+    "type": "delta",
+    "text": "\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIn"
+  },
+  {
+    "type": "delta",
+    "text": "tervalDays\": 2,\n      \"rationale\": \"Steady mixed"
+  },
+  {
+    "type": "delta",
+    "text": " stream; segregation cuts cross-contamination.\"\n"
+  },
+  {
+    "type": "delta",
+    "text": "    },\n    {\n      \"id\": \"n6\",\n      \"binType\": "
+  },
+  {
+    "type": "delta",
+    "text": "\"segregated\",\n      \"binCount\": 3,\n      \"binCap"
+  },
+  {
+    "type": "delta",
+    "text": "acityL\": 240,\n      \"pickupIntervalDays\": 1,\n   "
+  },
+  {
+    "type": "delta",
+    "text": "   \"rationale\": \"Evening spike plus food residue"
+  },
+  {
+    "type": "delta",
+    "text": ": daily pickup and segregated bins.\"\n    },\n    "
+  },
+  {
+    "type": "delta",
+    "text": "{\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n "
+  },
+  {
+    "type": "delta",
+    "text": "     \"binCount\": 2,\n      \"binCapacityL\": 240,\n "
+  },
+  {
+    "type": "delta",
+    "text": "     \"pickupIntervalDays\": 2,\n      \"rationale\":"
+  },
+  {
+    "type": "delta",
+    "text": " \"Post-match bottle surge; double capacity on a "
+  },
+  {
+    "type": "delta",
+    "text": "2-day cycle.\"\n    },\n    {\n      \"id\": \"n8\",\n   "
+  },
+  {
+    "type": "delta",
+    "text": "   \"binType\": \"segregated\",\n      \"binCount\": 1,"
+  },
+  {
+    "type": "delta",
+    "text": "\n      \"binCapacityL\": 240,\n      \"pickupInterva"
+  },
+  {
+    "type": "delta",
+    "text": "lDays\": 2,\n      \"rationale\": \"Cups and straws p"
+  },
+  {
+    "type": "delta",
+    "text": "ile up mid-afternoon; segregated 240 L every 2 d"
+  },
+  {
+    "type": "delta",
+    "text": "ays.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binT"
+  },
+  {
+    "type": "delta",
+    "text": "ype\": \"single\",\n      \"binCount\": 1,\n      \"binC"
+  },
+  {
+    "type": "delta",
+    "text": "apacityL\": 120,\n      \"pickupIntervalDays\": 7,\n "
+  },
+  {
+    "type": "delta",
+    "text": "     \"rationale\": \"Very low rate; current weekly"
+  },
+  {
+    "type": "delta",
+    "text": " pickup already fits.\"\n    },\n    {\n      \"id\": "
+  },
+  {
+    "type": "delta",
+    "text": "\"n10\",\n      \"binType\": \"single\",\n      \"binCoun"
+  },
+  {
+    "type": "delta",
+    "text": "t\": 1,\n      \"binCapacityL\": 120,\n      \"pickupI"
+  },
+  {
+    "type": "delta",
+    "text": "ntervalDays\": 7,\n      \"rationale\": \"Very low ra"
+  },
+  {
+    "type": "delta",
+    "text": "te; keep weekly pickup to save truck km.\"\n    }\n"
+  },
+  {
+    "type": "delta",
+    "text": "  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sorti"
+  },
+  {
+    "type": "delta",
+    "text": "ngRationale\": \"Float tank separates PET from PP/"
+  },
+  {
+    "type": "delta",
+    "text": "HDPE by density, lifting purity within budget; N"
+  },
+  {
+    "type": "delta",
+    "text": "IR exceeds it.\",\n  \"summary\": \"Shorter intervals"
+  },
+  {
+    "type": "delta",
+    "text": " at high-rate food nodes, larger segregated bins"
+  },
+  {
+    "type": "delta",
+    "text": " elsewhere, float-tank sorting.\"\n}"
+  },
+  {
+    "type": "status",
+    "stage": "validating"
+  },
+  {
+    "type": "result",
+    "proposal": {
+      "source": "llm",
+      "model": "claude-sonnet-5-5",
+      "createdAt": "2026-10-25T12:00:00Z",
+      "round": 1,
+      "scenarioId": "campus-demo-v1",
+      "setup": {
+        "nodes": {
+          "n1": {
+            "binType": "segregated",
+            "binCount": 3,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 1
+          },
+          "n2": {
+            "binType": "segregated",
+            "binCount": 2,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 2
+          },
+          "n3": {
+            "binType": "segregated",
+            "binCount": 2,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 2
+          },
+          "n4": {
+            "binType": "segregated",
+            "binCount": 1,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 3
+          },
+          "n5": {
+            "binType": "segregated",
+            "binCount": 2,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 2
+          },
+          "n6": {
+            "binType": "segregated",
+            "binCount": 3,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 1
+          },
+          "n7": {
+            "binType": "single",
+            "binCount": 2,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 2
+          },
+          "n8": {
+            "binType": "segregated",
+            "binCount": 1,
+            "binCapacityL": 240,
+            "pickupIntervalDays": 2
+          },
+          "n9": {
+            "binType": "single",
+            "binCount": 1,
+            "binCapacityL": 120,
+            "pickupIntervalDays": 7
+          },
+          "n10": {
+            "binType": "single",
+            "binCount": 1,
+            "binCapacityL": 120,
+            "pickupIntervalDays": 7
+          }
+        },
+        "sortingMethod": "manual_float"
+      },
+      "rationales": {
+        "n1": "Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.",
+        "n2": "Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.",
+        "n3": "Same pattern as Hostel A at a slightly lower rate.",
+        "n4": "Low rate; a bigger segregated bin on the existing 3-day cycle is enough.",
+        "n5": "Steady mixed stream; segregation cuts cross-contamination.",
+        "n6": "Evening spike plus food residue: daily pickup and segregated bins.",
+        "n7": "Post-match bottle surge; double capacity on a 2-day cycle.",
+        "n8": "Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.",
+        "n9": "Very low rate; current weekly pickup already fits.",
+        "n10": "Very low rate; keep weekly pickup to save truck km."
+      },
+      "sortingRationale": "Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.",
+      "summary": "Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting.",
+      "clampNotes": [],
+      "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Lunch spike overfills two 120 L bins by 2 pm; daily pickup with 3×240 L segregated bins.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Bottles are bulky; 2×240 L every 2 days keeps fill under 85%.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Same pattern as Hostel A at a slightly lower rate.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 3,\n      \"rationale\": \"Low rate; a bigger segregated bin on the existing 3-day cycle is enough.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"segregated\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Steady mixed stream; segregation cuts cross-contamination.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 3,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"Evening spike plus food residue: daily pickup and segregated bins.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n      \"binCount\": 2,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Post-match bottle surge; double capacity on a 2-day cycle.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"Cups and straws pile up mid-afternoon; segregated 240 L every 2 days.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 7,\n      \"rationale\": \"Very low rate; current weekly pickup already fits.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 7,\n      \"rationale\": \"Very low rate; keep weekly pickup to save truck km.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Float tank separates PET from PP/HDPE by density, lifting purity within budget; NIR exceeds it.\",\n  \"summary\": \"Shorter intervals at high-rate food nodes, larger segregated bins elsewhere, float-tank sorting.\"\n}"
+    }
+  },
+  {
+    "type": "status",
+    "stage": "done"
+  }
+]

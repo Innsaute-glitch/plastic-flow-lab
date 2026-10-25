@@ -1,0 +1,132 @@
+{
+  "playbackSeconds": 30,
+  "sweepSeeds": 5,
+  "fillThresholds": {
+    "amberPct": 60,
+    "redPct": 90
+  },
+  "fillColors": {
+    "green": "#5BD18B",
+    "amber": "#F2B544",
+    "red": "#F0605D"
+  },
+  "resinColors": {
+    "pet": "#4FB3FF",
+    "hdpe": "#B48CFF",
+    "pp": "#FFB35C",
+    "mixed": "#9AA7A0",
+    "contaminated": "#C2705A"
+  },
+  "resinLabels": {
+    "pet": "PET",
+    "hdpe": "HDPE",
+    "pp": "PP",
+    "mixed": "Mixed",
+    "contaminated": "Contaminated"
+  },
+  "wasteTypeColorKey": {
+    "pet_bottles": "pet",
+    "hdpe": "hdpe",
+    "pp": "pp",
+    "mixed": "mixed",
+    "food_contaminated": "contaminated"
+  },
+  "wasteTypeLabels": {
+    "pet_bottles": "PET bottles",
+    "hdpe": "HDPE",
+    "pp": "PP",
+    "mixed": "Mixed plastic",
+    "food_contaminated": "Food-contaminated"
+  },
+  "sortingMethodLabels": {
+    "manual": "Manual",
+    "manual_float": "Manual + float tank",
+    "manual_nir": "Manual + NIR"
+  },
+  "flowLabels": {
+    "generated": "Generated",
+    "litter": "Overflow → litter",
+    "in_bins_end": "Still in bins",
+    "collected": "Collected",
+    "backlog_end": "Unsorted backlog",
+    "sorted": "Sorted",
+    "bale_pet": "PET bales",
+    "bale_hdpe": "HDPE bales",
+    "bale_pp": "PP bales",
+    "residue_mixed": "Mixed / multilayer residue",
+    "contaminated": "Contaminated",
+    "rejected": "Rejected",
+    "route_mechanical": "Mechanical route",
+    "route_chemical": "Chemical recycling candidate",
+    "route_landfill": "Landfill"
+  },
+  "flowColors": {
+    "generated": "#E9E4D8",
+    "litter": "#F0605D",
+    "in_bins_end": "#6E7F76",
+    "collected": "#C6F36B",
+    "backlog_end": "#F2B544",
+    "sorted": "#C6F36B",
+    "bale_pet": "#4FB3FF",
+    "bale_hdpe": "#B48CFF",
+    "bale_pp": "#FFB35C",
+    "residue_mixed": "#9AA7A0",
+    "contaminated": "#C2705A",
+    "rejected": "#6E5A55",
+    "route_mechanical": "#5BD18B",
+    "route_chemical": "#7FB8C9",
+    "route_landfill": "#7A6A64"
+  },
+  "assumptionLabels": {
+    "resinMix": "Resin mix",
+    "llmLimits": "AI proposal limits",
+    "pet": "PET",
+    "hdpe": "HDPE",
+    "pp": "PP",
+    "mixed": "Mixed",
+    "pet_bottles": "PET bottles",
+    "food_contaminated": "Food-contaminated",
+    "truckSpeedKmh": "Truck speed",
+    "bulkDensityKgPerL": "Bulk density",
+    "allowedCapacitiesL": "Allowed bin sizes",
+    "defaultCapacityL": "Default bin size",
+    "binPerDay": "Bin cost",
+    "sortingPerDay": "Sorting cost",
+    "transportPerKm": "Transport cost",
+    "defaultMetresPerPixel": "Default map scale",
+    "singleBinCrossContamination": "Single-bin cross-contamination",
+    "sideWasteContaminated": "Overflow side-waste contaminated",
+    "contaminatedToChemicalFraction": "Contaminated → chemical route",
+    "pickupIntervalDays": "Pickup interval",
+    "binCount": "Bins per node",
+    "budgetTolerance": "Budget tolerance",
+    "detourFactor": "Road detour factor",
+    "stopMinutes": "Time per stop",
+    "hoursPerDay": "Hours per day",
+    "activeHours": "Active hours",
+    "dailyNoise": "Daily variation",
+    "lossFraction": "Overflow lost as litter",
+    "baseFraction": "Contamination at source",
+    "segregatedCompliance": "Segregation compliance",
+    "methods": "Sorting methods",
+    "currency": "Currency",
+    "segregatedBinMultiplier": "Segregated bin cost ×",
+    "sizingHeadroom": "Bin sizing headroom",
+    "60": "60 L",
+    "120": "120 L",
+    "240": "240 L",
+    "660": "660 L",
+    "manual": "Manual",
+    "manual_float": "Manual + float tank",
+    "manual_nir": "Manual + NIR",
+    "single": "Single bin",
+    "segregated": "Segregated"
+  },
+  "editableAssumptions": [
+    "cost.transportPerKm",
+    "cost.binPerDay",
+    "cost.segregatedBinMultiplier",
+    "cost.sortingPerDay",
+    "llmLimits.budgetTolerance"
+  ]
+}

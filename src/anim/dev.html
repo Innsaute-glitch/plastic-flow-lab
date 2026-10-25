@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Animation dev harness</title>
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<style>
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+  #bar { height: var(--topbar-h); display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid var(--line); }
+  #bar button { background: var(--bg-elev-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; font: 14px var(--font-ui); cursor: pointer; }
+  #bar span { color: var(--text-muted); font-size: 14px; margin-left: auto; }
+  #wrap { display: flex; height: calc(100% - var(--topbar-h)); }
+  #side-l { width: var(--controls-w); flex: none; }
+  #side-r { width: var(--results-w); flex: none; }
+  #map-stage { position: relative; flex: 1; min-width: 0; overflow: hidden; align-self: flex-start; }
+  #map-image { display: block; width: 100%; height: auto; filter: var(--map-filter); }
+  #map-edit-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  #map-anim-layer { position: absolute; left: 0; top: 0; }
+  body.full #side-l, body.full #side-r { display: none; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <button id="b-base">Run baseline</button>
+  <button id="b-opt">Run optimised (compare)</button>
+  <button id="b-edit">Edit mode</button>
+  <span id="status"></span>
+</div>
+<div id="wrap">
+  <div id="side-l"></div>
+  <div id="map-stage">
+    <img id="map-image" src="/maps/placeholder-campus.svg" alt="map" />
+    <svg id="map-edit-layer" viewBox="0 0 1600 1000"></svg>
+    <canvas id="map-anim-layer"></canvas>
+  </div>
+  <div id="side-r"></div>
+</div>
+<script type="module" src="/src/anim/dev.js"></script>
+</body>
+</html>

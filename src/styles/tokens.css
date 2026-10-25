@@ -1,0 +1,61 @@
+/* Design tokens (seed). Task 6 may refine VALUES; token NAMES are a contract. */
+/* --resin-* MUST equal config/ui.json resinColors. */
+:root {
+  /* palette: deep ink-green, warm off-white, one mint/lime accent */
+  --bg: #0B1A15;
+  --bg-elev-1: #10241D;
+  --bg-elev-2: #163027;
+  --line: #22413A;
+  --text: #EFEAE0;
+  --text-muted: #A9B5AE;
+  --text-faint: #6E7F76;
+  --accent: #C6F36B;
+  --accent-ink: #0B1A15;
+  --good: #5BD18B;
+  --warn: #F2B544;
+  --bad: #F0605D;
+
+  /* resin colours (identical everywhere: dots, bins, flows, legends) */
+  --resin-pet: #4FB3FF;
+  --resin-hdpe: #B48CFF;
+  --resin-pp: #FFB35C;
+  --resin-mixed: #9AA7A0;
+  --resin-contaminated: #C2705A;
+
+  /* type */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-md: 16px;
+  --fs-lg: 20px;
+  --fs-xl: 28px;
+  --fs-xxl: 40px;
+
+  /* shape and space */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --glow-accent: 0 0 18px rgba(198, 243, 107, 0.45);
+
+  /* layout */
+  --controls-w: 320px;
+  --results-w: 400px;
+  --topbar-h: 56px;
+
+  /* map treatment */
+  --map-filter: brightness(0.55) saturate(0.45) contrast(1.05);
+
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-med: 400ms;
+}

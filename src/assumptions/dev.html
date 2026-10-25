@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assumptions drawer (dev harness)</title>
+  </head>
+  <body>
+    <main style="padding: 32px; display: flex; flex-direction: column; gap: 16px; max-width: 720px">
+      <h1>Design system sample</h1>
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <p class="label">Controls</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+          <button class="btn-primary" id="open-assumptions" type="button">Open assumptions</button>
+          <button class="btn" type="button">Button</button>
+          <button class="btn-ghost" type="button">Ghost</button>
+          <button class="btn-icon" type="button" aria-label="Icon">+</button>
+          <span class="chip is-active">Active chip</span>
+          <span class="chip">Chip</span>
+          <span class="pill pill-warn">estimate</span>
+          <span class="pill pill-good">good</span>
+          <span class="pill pill-bad">bad</span>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <input class="toggle" type="checkbox" checked aria-label="Toggle sample" />
+          <input class="input" type="text" placeholder="Input sample" aria-label="Input sample" />
+        </div>
+        <p class="muted">Muted body text. <span class="mono">mono 0.7</span></p>
+      </div>
+      <div class="toast toast-info" role="status">Info toast sample.</div>
+    </main>
+
+    <div id="overlay-root"></div>
+
+    <script type="module">
+      import '../styles/tokens.css';
+      import '../styles/fonts.css';
+      import '../styles/base.css';
+      import './assumptions.css';
+      import { mount } from './index.js';
+      import a from '../../config/assumptions.json';
+      import ui from '../../config/ui.json';
+
+      const listeners = new Set();
+      let state = { assumptionsBase: a, assumptions: a, ui, scenario: { assumptionOverrides: {} }, panel: 'assumptions' };
+      const store = {
+        get: () => state,
+        set(patch) { const prev = state; state = { ...state, ...patch }; listeners.forEach((fn) => fn(state, prev)); },
+        subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+      };
+      window.__store = store; // dev-only handle for the browser checks
+      mount(document.getElementById('overlay-root'), store);
+      document.getElementById('open-assumptions').addEventListener('click', () => store.set({ panel: 'assumptions' }));
+    </script>
+  </body>
+</html>

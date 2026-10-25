@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Results dev harness</title>
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <style>
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+    .dev-layout { display: grid; grid-template-columns: 1fr 400px; grid-template-rows: auto 1fr; height: 100vh; }
+    .dev-bar { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--bg-elev-1); }
+    .dev-bar button { font: 600 13px var(--font-ui); background: var(--bg-elev-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+    .dev-bar button:hover { border-color: var(--accent); }
+    .dev-bar label { font-size: 13px; color: var(--text-muted); display: flex; gap: 6px; align-items: center; }
+    .dev-map { display: grid; place-items: center; color: var(--text-faint); }
+    #results { border-left: 1px solid var(--line); background: var(--bg); min-height: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div class="dev-layout">
+    <div class="dev-bar" id="bar"></div>
+    <div class="dev-map" id="map-stage">(map stage placeholder)</div>
+    <div id="results"></div>
+  </div>
+  <div id="overlay-root"></div>
+  <script type="module" src="./dev.js"></script>
+</body>
+</html>

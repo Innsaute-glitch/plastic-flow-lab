@@ -1,0 +1,89 @@
+{
+  "source": "cached",
+  "model": "claude-sonnet-5-5",
+  "createdAt": "2026-10-25T09:31:21.264Z",
+  "round": 1,
+  "scenarioId": "campus-demo-v1",
+  "setup": {
+    "nodes": {
+      "n1": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n2": {
+        "binType": "single",
+        "binCount": 3,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n3": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n4": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n5": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n6": {
+        "binType": "segregated",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n7": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 240,
+        "pickupIntervalDays": 1
+      },
+      "n8": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 1
+      },
+      "n9": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 2
+      },
+      "n10": {
+        "binType": "single",
+        "binCount": 1,
+        "binCapacityL": 120,
+        "pickupIntervalDays": 2
+      }
+    },
+    "sortingMethod": "manual_float"
+  },
+  "rationales": {
+    "n1": "14 kg/day food waste, 18-20 overflow days, 0.55 contamination; daily pickup: needs ~224 L -> 1x240 L.",
+    "n2": "6 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~288 L -> 3x120 L.",
+    "n3": "5 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~240 L -> 1x240 L.",
+    "n4": "3 kg/day mixed overflowed 16 of 30 days; daily pickup: needs ~87 L -> 1x120 L.",
+    "n5": "4 kg/day mixed overflowed 4 of 30 days; daily pickup: needs ~115 L -> 1x120 L.",
+    "n6": "10 kg/day food waste, 11 overflow days, evening peak x2.5; daily pickup: needs ~160 L -> 1x240 L.",
+    "n7": "4 kg/day PET with x3 peak overflowed 26 of 30 days; daily pickup: needs ~192 L -> 1x240 L.",
+    "n8": "3 kg/day PP with x2 peak overflowed 10 of 30 days; daily pickup: needs ~72 L -> 1x120 L.",
+    "n9": "1.5 kg/day HDPE overflowed 13 of 30 days on 7-day pickup; 2-day pickup: needs ~86 L -> 1x120 L.",
+    "n10": "1.5 kg/day PP overflowed 12 of 30 days on 7-day pickup; 2-day pickup: needs ~72 L -> 1x120 L."
+  },
+  "sortingRationale": "Peak daily load is about 52 kg, within 150 kg/day throughput; float raises accuracy to 0.9 for 1050 INR/day, within budget.",
+  "summary": "Daily pickups at most nodes, bins sized to the minimum needed litres, segregated bins at food nodes, manual_float sorting, 2-day pickup for small admin and print nodes.",
+  "clampNotes": [],
+  "raw": "{\n  \"nodes\": [\n    {\n      \"id\": \"n1\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"14 kg/day food waste, 18-20 overflow days, 0.55 contamination; daily pickup: needs ~224 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n2\",\n      \"binType\": \"single\",\n      \"binCount\": 3,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"6 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~288 L -> 3x120 L.\"\n    },\n    {\n      \"id\": \"n3\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"5 kg/day PET overflowed 20 of 30 days; daily pickup: needs ~240 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n4\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day mixed overflowed 16 of 30 days; daily pickup: needs ~87 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n5\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day mixed overflowed 4 of 30 days; daily pickup: needs ~115 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n6\",\n      \"binType\": \"segregated\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"10 kg/day food waste, 11 overflow days, evening peak x2.5; daily pickup: needs ~160 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n7\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 240,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"4 kg/day PET with x3 peak overflowed 26 of 30 days; daily pickup: needs ~192 L -> 1x240 L.\"\n    },\n    {\n      \"id\": \"n8\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 1,\n      \"rationale\": \"3 kg/day PP with x2 peak overflowed 10 of 30 days; daily pickup: needs ~72 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n9\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day HDPE overflowed 13 of 30 days on 7-day pickup; 2-day pickup: needs ~86 L -> 1x120 L.\"\n    },\n    {\n      \"id\": \"n10\",\n      \"binType\": \"single\",\n      \"binCount\": 1,\n      \"binCapacityL\": 120,\n      \"pickupIntervalDays\": 2,\n      \"rationale\": \"1.5 kg/day PP overflowed 12 of 30 days on 7-day pickup; 2-day pickup: needs ~72 L -> 1x120 L.\"\n    }\n  ],\n  \"sortingMethod\": \"manual_float\",\n  \"sortingRationale\": \"Peak daily load is about 52 kg, within 150 kg/day throughput; float raises accuracy to 0.9 for 1050 INR/day, within budget.\",\n  \"summary\": \"Daily pickups at most nodes, bins sized to the minimum needed litres, segregated bins at food nodes, manual_float sorting, 2-day pickup for small admin and print nodes.\"\n}",
+  "fingerprint": "378a203c"
+}

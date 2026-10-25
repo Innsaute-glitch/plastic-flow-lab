@@ -162,3 +162,8 @@ export function mapScaleProblem(map, limits = {}) {
   if (widthM < lim.minMapWidthM || widthM > lim.maxMapWidthM) return { widthM, text: `the whole map would be ${fmtLength(widthM)} wide` };
   return null;
 }
+
+/** File-name slug: lowercase, non-alphanumerics to '-', collapsed, trimmed, max 60 chars. */
+export function slugify(text) {
+  return String(text ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/g, '');
+}

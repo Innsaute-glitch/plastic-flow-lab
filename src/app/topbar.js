@@ -1,6 +1,6 @@
 // Top bar: title, mode chip, Demo toggle, Load demo, Import/Export, Assumptions.
 import { icon } from './icons.js';
-import { newScenario } from './actions.js';
+import { newScenario, renameScenario } from './actions.js';
 import { loadDemo, importFile, downloadScenario } from './io.js';
 
 const MODE_LABEL = { edit: 'Editing', running: 'Running', results: 'Results', optimising: 'Optimising', compare: 'Compare' };
@@ -10,7 +10,7 @@ export function mount(el, store) {
     <div class="tb-brand">
       <span class="tb-logo">${icon('logo', 22)}</span>
       <span class="tb-title">Plastic Flow Lab</span>
-      <span class="tb-name" id="tb-name"></span>
+      <button type="button" class="tb-name" id="tb-name" title="Rename scenario" aria-label="Scenario name, click to rename"><span class="tb-name__text"></span>${icon('pencil', 13)}</button>
     </div>
     <div class="tb-right">
       <span class="tb-mode" id="tb-mode"><i></i><span></span></span>
@@ -74,8 +74,47 @@ export function mount(el, store) {
   $('tb-demo').addEventListener('change', (e) => store.set({ demoMode: e.target.checked }));
   $('tb-edit').addEventListener('click', () => store.set({ mode: 'edit', playback: { ...store.get().playback, playing: false } }));
 
+  const nameBtn = $('tb-name');
+  let editing = null;
+  const startRename = () => {
+    const s = store.get();
+    if (editing || s.mode === 'optimising') return;
+    const btn = nameBtn;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tb-name-input';
+    input.maxLength = 60;
+    input.value = s.scenario.name;
+    input.setAttribute('aria-label', 'Scenario name');
+    editing = input;
+    let done = false;
+    const finish = (save) => {
+      if (done) return;
+      done = true;
+      editing = null;
+      const name = input.value.trim();
+      input.replaceWith(btn);
+      if (save && name && name !== store.get().scenario.name) renameScenario(store, name);
+      if (save === 'focus' || save === false) btn.focus();
+      render(store.get());
+    };
+    input.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); finish('focus'); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+    });
+    input.addEventListener('keyup', (e) => e.stopPropagation());
+    input.addEventListener('blur', () => finish(true));
+    btn.replaceWith(input);
+    input.focus();
+    input.select();
+  };
+  nameBtn.addEventListener('click', startRename);
+
   function render(s) {
-    $('tb-name').textContent = s.scenario.name;
+    nameBtn.querySelector('.tb-name__text').textContent = s.scenario.name;
+    nameBtn.setAttribute('aria-disabled', String(s.mode === 'optimising'));
+    nameBtn.title = s.mode === 'optimising' ? 'Cannot rename while optimising' : 'Rename scenario';
     $('tb-demo').checked = s.demoMode;
     const mode = $('tb-mode');
     mode.dataset.mode = s.mode;

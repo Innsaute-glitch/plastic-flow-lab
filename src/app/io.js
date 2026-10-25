@@ -1,6 +1,6 @@
 // Scenario JSON + CSV import/export, demo loading.
 import { loadScenario, exportScenario, editScenario } from './actions.js';
-import { csvToNodes, MAX_NODES } from './scenario-utils.js';
+import { csvToNodes, MAX_NODES, slugify } from './scenario-utils.js';
 import { notify } from './notify.js';
 
 const BASE = import.meta.env?.BASE_URL ?? '/';
@@ -25,7 +25,7 @@ export function downloadScenario(store) {
   const blob = new Blob([JSON.stringify(scenario, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `${(scenario.id || 'scenario').replace(/[^a-z0-9-_]/gi, '-')}.json`;
+  a.download = `${slugify(scenario.name) || slugify(scenario.id) || 'scenario'}.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

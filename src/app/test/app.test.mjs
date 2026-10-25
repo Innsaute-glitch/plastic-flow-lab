@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createStore } from '../store.js';
-import { emptyScenario, normaliseScenario, csvToNodes, nextNodeId, parseCsvRows, mapScaleProblem } from '../scenario-utils.js';
+import { emptyScenario, normaliseScenario, csvToNodes, nextNodeId, parseCsvRows, mapScaleProblem, slugify } from '../scenario-utils.js';
 
 const J = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const assumptions = J('../../../config/assumptions.json');
@@ -75,4 +75,11 @@ test('mapScaleProblem: accepts the real campus, rejects implausible scales', () 
   assert.ok(mapScaleProblem({ ...map, metresPerPixel: 0 }));
   assert.ok(mapScaleProblem({ ...map, metresPerPixel: 'x' }));
   assert.equal(mapScaleProblem({ ...map, metresPerPixel: 0.02 }, { minMapWidthM: 50 }), null); // 59.2 m wide
+});
+
+test('slugify makes safe file names', () => {
+  assert.equal(slugify('Thapar 2023 · before Saahas'), 'thapar-2023-before-saahas');
+  assert.equal(slugify('  --Hi!!  there-- '), 'hi-there');
+  assert.equal(slugify('···'), '');
+  assert.ok(slugify('a'.repeat(100)).length <= 60);
 });

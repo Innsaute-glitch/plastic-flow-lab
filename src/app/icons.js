@@ -32,6 +32,7 @@ const P = {
   flask: '<path d="M9 3h6M10 3v6L4.500 19a1.500 1.500 0 0 0 1.300 2.200h12.400A1.500 1.500 0 0 0 19.500 19L14 9V3"/><path d="M7.500 15h9"/>',
   weight: '<path d="M6 20h12l-1.500-11h-9z"/><circle cx="12" cy="6" r="2.200"/>',
   target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>',
   logo: '<path d="M4 14c0-5 4-9 9-9h7v6c0 5-4 9-9 9H4z"/><path d="M8 16c2-4 5-6 9-7"/>',
 };
 

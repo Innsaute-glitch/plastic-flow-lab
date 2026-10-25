@@ -16,6 +16,11 @@ export function editScenario(store, mutate, extra = {}) {
   store.set({ scenario, ...RESET, playback: FRESH_PLAYBACK(), llm: FRESH_LLM, ...extra });
 }
 
+/** Rename without invalidating results, playback or the AI answer. */
+export function renameScenario(store, name) {
+  store.set({ scenario: { ...store.get().scenario, name } });
+}
+
 export function addNode(store, x, y) {
   const { scenario, assumptions } = store.get();
   const unplaced = scenario.nodes.find((n) => n.x == null);

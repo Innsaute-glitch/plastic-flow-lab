@@ -3,7 +3,7 @@ import { simulate, SimInputError } from '../sim/index.js';
 import { optimise } from '../llm/client.js';
 import { applyOverrides } from '../shared/assumptions.js';
 import { notify } from './notify.js';
-import { normaliseScenario, defaultNodeSetup, nextNodeId, MAX_NODES } from './scenario-utils.js';
+import { normaliseScenario, emptyScenario, defaultNodeSetup, nextNodeId, MAX_NODES } from './scenario-utils.js';
 
 const RESET = { baseline: null, optimised: null, sweep: null, mode: 'edit' };
 const FRESH_PLAYBACK = (which = 'baseline', playing = false) => ({ t: 0, playing, speed: 1, done: false, which });
@@ -76,6 +76,20 @@ export function loadScenario(store, scenarioObj) {
     notify('error', `Could not load scenario: ${err.message}`);
     return false;
   }
+}
+
+export function newScenario(store) {
+  const st = store.get();
+  const snapshot = structuredClone({
+    scenario: st.scenario, assumptions: st.assumptions, baseline: st.baseline, optimised: st.optimised,
+    sweep: st.sweep, mode: st.mode, playback: { ...st.playback, playing: false }, llm: st.llm, selectedNodeId: st.selectedNodeId,
+  });
+  const fresh = emptyScenario(st.assumptionsBase, structuredClone(st.scenario.map));
+  fresh.assumptionOverrides = structuredClone(st.scenario.assumptionOverrides ?? {});
+  if (!loadScenario(store, fresh)) return;
+  notify('info', 'Cleared. Start placing nodes on the map.', {
+    action: { label: 'Undo', onClick: () => { store.set(snapshot); notify('info', 'Restored.'); } },
+  });
 }
 
 export function exportScenario(store) {

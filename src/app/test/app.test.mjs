@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createStore } from '../store.js';
-import { normaliseScenario, csvToNodes, nextNodeId, parseCsvRows } from '../scenario-utils.js';
+import { emptyScenario, normaliseScenario, csvToNodes, nextNodeId, parseCsvRows } from '../scenario-utils.js';
 
 const J = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const assumptions = J('../../../config/assumptions.json');
@@ -56,4 +56,13 @@ test('CSV quoting and capacity snapping', () => {
   assert.equal(nodes[0].x, 10);
   assert.equal(nodeSetups.n1.binCapacityL, 240);
   assert.equal(warnings.length, 1);
+});
+
+test('emptyScenario keeps the given map and starts with no nodes', () => {
+  const e = emptyScenario(assumptions, demo.map);
+  assert.deepEqual(e.map, { ...emptyScenario(assumptions).map, ...demo.map });
+  assert.equal(e.nodes.length, 0);
+  assert.equal(e.facility, null);
+  e.assumptionOverrides = { a: 1 };
+  assert.deepEqual(normaliseScenario(e, assumptions).assumptionOverrides, { a: 1 });
 });

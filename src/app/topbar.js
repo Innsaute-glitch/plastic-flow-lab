@@ -1,5 +1,6 @@
 // Top bar: title, mode chip, Demo toggle, Load demo, Import/Export, Assumptions.
 import { icon } from './icons.js';
+import { newScenario } from './actions.js';
 import { loadDemo, importFile, downloadScenario } from './io.js';
 
 const MODE_LABEL = { edit: 'Editing', running: 'Running', results: 'Results', optimising: 'Optimising', compare: 'Compare' };
@@ -20,10 +21,12 @@ export function mount(el, store) {
       </label>
       <span class="tb-sep"></span>
       <div class="tb-menu-wrap">
-        <button class="app-btn" id="tb-load" title="Load a demo scenario" aria-haspopup="menu" aria-expanded="false" aria-controls="tb-demo-menu">${icon('map', 16)}<span>Load demo</span><span class="tb-chev">${icon('chevron', 14)}</span></button>
+        <button class="app-btn" id="tb-load" title="Load a demo or start blank" aria-haspopup="menu" aria-expanded="false" aria-controls="tb-demo-menu">${icon('map', 16)}<span>Load demo</span><span class="tb-chev">${icon('chevron', 14)}</span></button>
         <div class="tb-menu" id="tb-demo-menu" role="menu" hidden>
           <button class="tb-menu__item" role="menuitem" data-demo="before"><b>Thapar 2023 · before Saahas</b><span>Mixed bins, the starting point</span></button>
           <button class="tb-menu__item" role="menuitem" data-demo="after"><b>Thapar 2024 · after Saahas</b><span>Segregated bins, what Thapar did</span></button>
+          <div class="tb-menu__div" role="separator"></div>
+          <button class="tb-menu__item" role="menuitem" data-action="blank"><b>Blank campus</b><span>Start from scratch on this map</span></button>
         </div>
       </div>
       <button class="app-btn app-btn--icon" id="tb-import" title="Import scenario (.json) or nodes (.csv)" aria-label="Import">${icon('upload', 17)}</button>
@@ -44,10 +47,11 @@ export function mount(el, store) {
   };
   loadBtn.addEventListener('click', () => setMenu(menu.hidden));
   menu.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-demo]');
+    const item = e.target.closest('[data-demo], [data-action]');
     if (!item) return;
     setMenu(false, true);
-    loadDemo(store, item.dataset.demo);
+    if (item.dataset.action === 'blank') newScenario(store);
+    else loadDemo(store, item.dataset.demo);
   });
   menu.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;

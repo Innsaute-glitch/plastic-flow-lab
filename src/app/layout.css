@@ -37,7 +37,7 @@ button { cursor: pointer; }
 .tb-brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
 .tb-logo { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; color: var(--accent-ink); background: var(--accent); box-shadow: var(--glow-accent); }
 .tb-title { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-lg); letter-spacing: -0.01em; white-space: nowrap; }
-.tb-name { color: var(--text-faint); padding-left: var(--space-3); border-left: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; }
+.tb-name { color: var(--text-faint); padding-left: var(--space-3); border-left: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 34ch; }
 .tb-right { display: flex; align-items: center; gap: var(--space-2); }
 .tb-sep { width: 1px; height: 22px; background: var(--line); margin: 0 var(--space-2); }
 .tb-menu-wrap { position: relative; }
@@ -45,6 +45,7 @@ button { cursor: pointer; }
 .tb-menu { position: absolute; z-index: 50; top: calc(100% + 6px); right: 0; min-width: 270px; display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
 .tb-menu[hidden] { display: none; }
 .tb-menu__item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); text-align: left; cursor: pointer; transition: background var(--dur-fast) var(--ease); }
+.tb-menu__div { height: 1px; margin: 4px 6px; background: var(--line); }
 .tb-menu__item b { font-weight: 500; white-space: nowrap; }
 .tb-menu__item span { color: var(--text-muted); font-size: var(--fs-xs); }
 .tb-menu__item:hover, .tb-menu__item:focus-visible { background: var(--bg-elev-2); outline: none; }
@@ -281,6 +282,9 @@ button { cursor: pointer; }
 .app-toast--error .app-toast__icon { color: var(--bad); }
 .app-toast__icon { display: grid; flex: none; }
 .app-toast__msg { flex: 1; }
+.app-toast__action { flex: none; padding: 4px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--accent); font: inherit; font-weight: 600; cursor: pointer; }
+.app-toast__action:hover { background: var(--bg-elev-1); }
+.app-toast__action:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .app-toast__x { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 8px; background: transparent; color: var(--text-faint); }
 .app-toast__x:hover { color: var(--text); background: var(--bg-elev-1); }
 @keyframes app-toast-in { from { opacity: 0; transform: translateY(-8px); } }

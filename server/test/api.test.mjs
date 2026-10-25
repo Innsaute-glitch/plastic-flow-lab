@@ -83,3 +83,24 @@ test('assumptionOverrides reach the prompt (transportPerKm) and the sizing field
   // n2: 6 kg/day PET: 6 x 1.15 / 0.03 / 0.8 = 287.5 L per day of interval
   assert.equal(input.nodes.find((n) => n.id === 'n2').neededLitresPerDay, 287.5);
 });
+
+test('client disconnect aborts the model call and skips the retry', async () => {
+  let calls = 0;
+  let aborted = false;
+  let release;
+  const gone = new Promise((r) => { release = r; });
+  const slowModel = ({ signal }) => new Promise((_, reject) => {
+    calls += 1;
+    signal.addEventListener('abort', () => { aborted = true; const e = new Error('Cancelled by the user'); e.name = 'AbortError'; reject(e); release(); });
+  });
+  await withServer(slowModel, async (u) => {
+    const ctl = new AbortController();
+    const req = fetch(`${u}/api/optimise`, { method: 'POST', body: JSON.stringify(body), signal: ctl.signal }).then((r) => r.text()).catch(() => null);
+    while (calls === 0) await new Promise((r) => setTimeout(r, 10));
+    ctl.abort();
+    await req;
+    await gone;
+  });
+  assert.equal(aborted, true);
+  assert.equal(calls, 1);
+});

@@ -1,9 +1,11 @@
 // Fallback provider: Anthropic Messages API over fetch (SSE), no SDK. Key from env only.
-export async function callAnthropicApi({ system, user, onDelta, cfg }) {
+export async function callAnthropicApi({ system, user, onDelta, cfg, signal }) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('ANTHROPIC_API_KEY is not set');
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), cfg.timeoutMs);
+  const onAbort = () => ctl.abort();
+  if (signal?.aborted) onAbort(); else signal?.addEventListener('abort', onAbort, { once: true });
   try {
     const res = await fetch(cfg.anthropicApiUrl, {
       method: 'POST',
@@ -32,9 +34,11 @@ export async function callAnthropicApi({ system, user, onDelta, cfg }) {
     if (!text) throw new Error('Anthropic API returned no text');
     return text;
   } catch (e) {
+    if (e.name === 'AbortError' && signal?.aborted) { const c = new Error('Cancelled by the user'); c.name = 'AbortError'; throw c; }
     if (e.name === 'AbortError') throw new Error(`Anthropic API timed out after ${cfg.timeoutMs} ms`);
     throw e;
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
   }
 }

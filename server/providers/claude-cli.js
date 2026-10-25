@@ -6,7 +6,8 @@ import { join } from 'node:path';
 
 const SYSTEM_FILE = new URL('../prompts/optimise.system.md', import.meta.url);
 
-export async function callClaudeCli({ system, user, onDelta, cfg }) {
+export async function callClaudeCli({ system, user, onDelta, cfg, signal }) {
+  if (signal?.aborted) throw cancelledError();
   // Empty cwd so the project's CLAUDE.md is never loaded; system prompt is passed as text (absolute file read).
   const cwd = await mkdtemp(join(tmpdir(), 'resin-llm-'));
   const systemText = system ?? (await readFile(SYSTEM_FILE, 'utf8'));
@@ -28,7 +29,10 @@ export async function callClaudeCli({ system, user, onDelta, cfg }) {
       let buf = '';
       let stderr = '';
       let settled = false;
-      const done = (fn, v) => { if (!settled) { settled = true; clearTimeout(timer); fn(v); } };
+      const done = (fn, v) => { if (!settled) { settled = true; clearTimeout(timer); signal?.removeEventListener('abort', onAbort); fn(v); } };
+      // cancelled by the user: stop the CLI so no further tokens are generated
+      const onAbort = () => { child.kill('SIGTERM'); done(reject, cancelledError()); };
+      signal?.addEventListener('abort', onAbort, { once: true });
       const timer = setTimeout(() => { child.kill('SIGKILL'); done(reject, new Error(`claude-cli timed out after ${cfg.timeoutMs} ms`)); }, cfg.timeoutMs);
       const handle = (line) => {
         if (!line.trim()) return;
@@ -63,4 +67,10 @@ export async function callClaudeCli({ system, user, onDelta, cfg }) {
   } finally {
     rm(cwd, { recursive: true, force: true }).catch(() => {});
   }
+}
+
+function cancelledError() {
+  const e = new Error('Cancelled by the user');
+  e.name = 'AbortError';
+  return e;
 }

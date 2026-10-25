@@ -1,4 +1,5 @@
 // Browser-side optimise(). Contract: plan.md §3.1. Never throws; falls back to the heuristic.
+// Cancel (v0.3): pass `signal` (AbortSignal); a cancelled call returns null (no fallback, no result event).
 import { heuristicProposal } from './heuristic.js';
 import { scenarioFingerprint } from './fingerprint.js';
 
@@ -6,6 +7,7 @@ import { scenarioFingerprint } from './fingerprint.js';
 export const timing = { totalMs: 4000, statusMs: [250, 350], tailMs: 150, chunks: 60 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const isCancel = (e, signal) => signal?.aborted || e?.name === 'AbortError';
 const base = () => (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
 
 function heuristicFallback({ scenario, baseline, assumptions, history }, onEvent, message) {
@@ -18,7 +20,7 @@ function heuristicFallback({ scenario, baseline, assumptions, history }, onEvent
 }
 
 async function demoReplay(args, onEvent) {
-  const { scenario } = args;
+  const { scenario, signal } = args;
   let cached;
   try {
     const res = await fetch(`${base()}demo/cached-proposal.json`);
@@ -37,14 +39,17 @@ async function demoReplay(args, onEvent) {
   }
   onEvent({ type: 'status', stage: 'sending' });
   await sleep(timing.statusMs[0]);
+  if (signal?.aborted) return null;
   onEvent({ type: 'status', stage: 'thinking' });
   await sleep(timing.statusMs[1]);
+  if (signal?.aborted) return null;
   const streamMs = Math.max(0, timing.totalMs - timing.statusMs[0] - timing.statusMs[1] - timing.tailMs);
   const size = Math.ceil(cached.raw.length / timing.chunks);
   const n = Math.ceil(cached.raw.length / size);
   for (let i = 0; i < n; i++) {
     onEvent({ type: 'delta', text: cached.raw.slice(i * size, (i + 1) * size) });
     await sleep(streamMs / n);
+    if (signal?.aborted) return null;
   }
   onEvent({ type: 'status', stage: 'validating' });
   await sleep(timing.tailMs);
@@ -55,9 +60,10 @@ async function demoReplay(args, onEvent) {
 }
 
 async function liveCall(args, onEvent) {
-  const { scenario, baseline, history } = args;
+  const { scenario, baseline, history, signal } = args;
   const res = await fetch(`${base()}api/optimise`, {
     method: 'POST',
+    signal,
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       scenario,
@@ -96,13 +102,14 @@ async function liveCall(args, onEvent) {
   return proposal;
 }
 
-export async function optimise({ scenario, baseline, assumptions, demoMode, history = [] }, onEvent = () => {}) {
-  const args = { scenario, baseline, assumptions, history };
+export async function optimise({ scenario, baseline, assumptions, demoMode, history = [], signal }, onEvent = () => {}) {
+  const args = { scenario, baseline, assumptions, history, signal };
   const emit = (evt) => { try { onEvent(evt); } catch (e) { console.error('[llm] onEvent handler threw:', e.message); } };
   try {
     if (demoMode) return await demoReplay(args, emit);
     return await liveCall(args, emit);
   } catch (e) {
+    if (isCancel(e, signal)) { console.info('[llm] cancelled'); return null; }
     try {
       return heuristicFallback(args, emit, `AI request failed (${e.message}). Showing the rule-based plan instead.`);
     } catch (e2) {

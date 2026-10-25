@@ -22,7 +22,7 @@ Brief: `project-brief.md`. Decisions so far: vanilla JS (ES modules) + Vite, Nod
 - `src/llm/heuristic.js` (pure) exports `heuristicProposal(scenario, baselineSetup, baselineResults, assumptions) -> Proposal` with `source: "heuristic"`.
 
 **LLM, browser side (`src/llm/client.js`, Task 2)**
-- `optimise({ scenario, baseline: { setup, results }, assumptions, demoMode, history = [] }, onEvent) -> Promise<Proposal>`
+- `optimise({ scenario, baseline: { setup, results }, assumptions, demoMode, history = [], signal }, onEvent) -> Promise<Proposal | null>`. Cancel (v0.3): `signal` is an optional AbortSignal; a cancelled call resolves to `null` (no fallback, no `result` event). The server aborts the model call (kills `claude -p` / aborts the API fetch) and skips the retry when the client disconnects.
   - `onEvent(evt)` receives the `LlmEvent` objects below.
   - It never throws: on any failure it resolves with a heuristic proposal and emits an `error` event with `fallback: "heuristic"`.
   - `history` is `[]` for round 1. Each round is `{ setup, summary }`, which leaves room for the later 2–3 round loop.
@@ -30,7 +30,7 @@ Brief: `project-brief.md`. Decisions so far: vanilla JS (ES modules) + Vite, Nod
 **App (`src/app/`, Task 3)**
 - `src/app/store.js`: `createStore(initialState) -> { get(): State, set(patch: Partial<State>), subscribe(fn: (state, prev) => void): unsubscribe }`. `set` makes a shallow merge, and subscribers fire synchronously.
 - `src/app/notify.js`: `notify(level: "info"|"warn"|"error", message: string)`. This is the only way any module shows a toast.
-- `src/app/actions.js`: `runBaseline(store)`, `runOptimise(store)`, `loadScenario(store, scenarioObj)`, `exportScenario(store) -> Scenario`. `runOptimise` calls `optimise()`, then calls `simulate()` with the proposal setup, then runs the seed sweep and sets `mode: "compare"`.
+- `src/app/actions.js`: `runBaseline(store)`, `runOptimise(store)`, `cancelOptimise()` (v0.3: aborts the in-flight AI request; the app returns to its previous state), `newScenario(store)` (v0.3: blank campus, keeps map and cost edits, with Undo), `loadScenario(store, scenarioObj)`, `exportScenario(store) -> Scenario`. `runOptimise` calls `optimise()`, then calls `simulate()` with the proposal setup, then runs the seed sweep and sets `mode: "compare"`.
 - Every UI module exports `mount(el, store) -> unmount`. Modules subscribe to the store themselves and never call each other directly. The only cross-module links are store state and the functions listed in this section.
 
 **Animation (`src/anim/player.js`, Task 4)**

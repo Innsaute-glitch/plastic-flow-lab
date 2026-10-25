@@ -4,8 +4,9 @@ import { buildUserMessage, buildRetryMessage, loadJson } from './user-message.js
 import { applyOverrides } from '../src/shared/assumptions.js';
 import { validateAndClamp, parseModelJson } from '../src/llm/schema.js';
 
-/** Runs prompt -> model -> validate (+1 retry). Calls emit(type, data). Returns the Proposal; throws on final failure. */
-export async function runOptimisation(body, emit, callModel = defaultCallModel) {
+/** Runs prompt -> model -> validate (+1 retry). Calls emit(type, data). Returns the Proposal; throws on final failure.
+ *  `signal` (AbortSignal) cancels: the model call is stopped and there is no retry. */
+export async function runOptimisation(body, emit, callModel = defaultCallModel, signal) {
   const cfg = getLlmConfig();
   const { scenario, baselineSetup, history = [] } = body;
   const assumptions = applyOverrides(loadJson('config/assumptions.json'), scenario?.assumptionOverrides ?? {});
@@ -21,11 +22,12 @@ export async function runOptimisation(body, emit, callModel = defaultCallModel) 
   for (let attempt = 0; attempt <= cfg.maxRetries; attempt++) {
     if (attempt > 0) emit('status', { stage: 'retrying' });
     else emit('status', { stage: 'thinking' });
-    raw = await callModel({ user: prompt, onDelta });
+    raw = await callModel({ user: prompt, onDelta, signal });
     emit('status', { stage: 'validating' });
     v = validateAndClamp(parseModelJson(raw), scenario, baselineSetup, assumptions);
     if (v.ok) break;
     console.warn('[server] model reply rejected:', v.errors.join('; '));
+    if (signal?.aborted) break;
     prompt = buildRetryMessage(user, raw, v.errors);
   }
   if (!v.ok) throw new Error(`Model reply invalid after retry: ${v.errors.join('; ')}`);
@@ -71,11 +73,15 @@ export function createHandler({ callModel = defaultCallModel } = {}) {
       }
       res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache, no-transform', connection: 'keep-alive', 'x-accel-buffering': 'no' });
       const emit = (event, data) => { if (!res.writableEnded) res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`); };
+      // the browser cancelled (or went away): stop the model call instead of letting it run to the end
+      const ctl = new AbortController();
+      res.on('close', () => { if (!res.writableFinished) ctl.abort(); });
       try {
-        const proposal = await runOptimisation(body, emit, callModel);
+        const proposal = await runOptimisation(body, emit, callModel, ctl.signal);
         emit('result', { proposal });
         emit('status', { stage: 'done' });
       } catch (e) {
+        if (ctl.signal.aborted) { console.info('[server] optimise cancelled by the client'); return res.end(); }
         console.error('[server] optimise failed:', e.message);
         emit('error', { message: e.message, fallback: 'heuristic' });
       }

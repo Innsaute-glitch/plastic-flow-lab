@@ -70,3 +70,29 @@ test('server error event leads to heuristic fallback', async () => {
   assert.equal(p.source, 'heuristic');
   assert.match(evts.find((e) => e.type === 'error').message, /boom/);
 });
+
+test('cancel: an aborted demo replay returns null with no result event', async () => {
+  const ctl = new AbortController();
+  const events = [];
+  const p = await withFetch(() => optimise(args({ signal: ctl.signal }), (e) => {
+    events.push(e.type);
+    if (e.type === 'delta') ctl.abort();
+  }), okJson(cached));
+  assert.equal(p, null);
+  assert.ok(events.includes('delta'));
+  assert.ok(!events.includes('result'));
+  assert.ok(!events.includes('error'));
+});
+
+test('cancel: an aborted live call returns null instead of falling back', async () => {
+  const ctl = new AbortController();
+  const hang = (_url, init) => new Promise((_, reject) => {
+    init.signal.addEventListener('abort', () => { const e = new Error('aborted'); e.name = 'AbortError'; reject(e); });
+  });
+  const p = await withFetch(() => {
+    const run = optimise(args({ demoMode: false, signal: ctl.signal }));
+    ctl.abort();
+    return run;
+  }, hang);
+  assert.equal(p, null);
+});

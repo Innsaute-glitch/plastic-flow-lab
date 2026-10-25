@@ -130,13 +130,22 @@ export function runBaseline(store) {
   }
 }
 
+// The in-flight AI request, so the Cancel button can abort it.
+let optimiseCtl = null;
+
+export function cancelOptimise() {
+  optimiseCtl?.abort();
+}
+
 export async function runOptimise(store) {
   const start = store.get();
   const { scenario, assumptions, baseline, demoMode, ui } = start;
   if (!baseline) return notify('warn', 'Run the baseline first.');
   if (start.mode === 'optimising') return;
+  const prev = { mode: start.mode, optimised: start.optimised, sweep: start.sweep, playback: start.playback };
   store.set({ mode: 'optimising', optimised: null, sweep: null, llm: { stage: 'sending', text: '', error: null }, panel: null });
   const stale = () => store.get().scenario !== scenario;
+  const ctl = (optimiseCtl = new AbortController());
   try {
     const onEvent = (evt) => {
       if (stale()) return;
@@ -149,10 +158,16 @@ export async function runOptimise(store) {
       }
     };
     const proposal = await optimise(
-      { scenario, baseline: { setup: baseline.setup, results: baseline.results }, assumptions, demoMode, history: [] },
+      { scenario, baseline: { setup: baseline.setup, results: baseline.results }, assumptions, demoMode, history: [], signal: ctl.signal },
       onEvent
     );
     if (stale()) return;
+    if (!proposal) {
+      // cancelled: back to the baseline results, nothing else changes
+      store.set({ ...prev, playback: { ...prev.playback, playing: false }, llm: FRESH_LLM });
+      notify('info', 'AI request cancelled.');
+      return;
+    }
     const seed = scenario.settings.seed;
     const optimisedResults = simulate(scenario, proposal.setup, assumptions, seed);
     const seeds = Array.from({ length: ui.sweepSeeds }, (_, i) => seed + i);
@@ -171,5 +186,7 @@ export async function runOptimise(store) {
     console.error('[app] runOptimise failed:', err.message);
     notify('error', simErrorMessage(err));
     if (!stale()) store.set({ mode: 'edit', llm: { ...store.get().llm, stage: null } });
+  } finally {
+    if (optimiseCtl === ctl) optimiseCtl = null;
   }
 }

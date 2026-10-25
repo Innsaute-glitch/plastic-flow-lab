@@ -6,7 +6,12 @@ import { notify } from '../notify.js';
 import { MAX_NODES } from '../scenario-utils.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-const SCALE_STEPS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+// Smallest round 1-2-5 distance (m) at or above `target`, for any map scale.
+const niceStep = (target) => {
+  const p = 10 ** Math.floor(Math.log10(target));
+  return [1, 2, 5, 10].map((f) => f * p).find((v) => v >= target);
+};
+const fmtLen = (m) => (m >= 1000 ? `${+(m / 1000).toPrecision(3)} km` : m >= 1 ? `${+m.toPrecision(3)} m` : `${+(m * 100).toPrecision(3)} cm`);
 
 export function mount(el, store) {
   const $ = (id) => el.querySelector('#' + id);
@@ -32,10 +37,12 @@ export function mount(el, store) {
     updateScale(map);
   }
   function updateScale(map) {
+    if (!(map.metresPerPixel > 0) || !(k > 0)) { scaleEl.innerHTML = ''; return; }
     const target = 110 / k * map.metresPerPixel; // metres spanned by ~110 screen px
-    const m = SCALE_STEPS.find((v) => v >= target) ?? SCALE_STEPS.at(-1);
-    const px = (m / map.metresPerPixel) * k;
-    scaleEl.innerHTML = `<span class="ms-bar" style="width:${px.toFixed(0)}px"></span><span class="ms-lbl">${m >= 1000 ? m / 1000 + ' km' : m + ' m'}</span>`;
+    const m = niceStep(target);
+    // a 1-2-5 step is at most 2.5x the target, so the bar stays under ~275 px; clamp anyway to the frame
+    const px = Math.min((m / map.metresPerPixel) * k, frame.clientWidth * 0.45);
+    scaleEl.innerHTML = `<span class="ms-bar" style="width:${px.toFixed(0)}px"></span><span class="ms-lbl">${fmtLen(m)}</span>`;
   }
   const ro = new ResizeObserver(() => { fit(); redrawLabels(); });
   ro.observe(wrap);
@@ -251,9 +258,19 @@ export function mount(el, store) {
     const apply = () => {
       const m = Number(input.value);
       if (!(m > 0) || !(px > 0)) return notify('warn', 'Enter a distance in metres greater than zero.');
-      const mpp = m / px;
-      editScenario(store, (sc) => { sc.map.metresPerPixel = Math.round(mpp * 10000) / 10000; }, { tool: 'select' });
-      notify('info', `Scale set to ${mpp.toFixed(3)} m per pixel.`);
+      const lim = { minMapWidthM: 50, maxMapWidthM: 50000, minPointGapScreenPx: 24, ...store.get().ui?.calibration };
+      if (px * k < lim.minPointGapScreenPx) return notify('warn', 'The two points are too close together. Pick two landmarks further apart.');
+      const mpp = Number((m / px).toPrecision(4));
+      const widthM = map.widthPx * mpp;
+      if (widthM < lim.minMapWidthM || widthM > lim.maxMapWidthM) {
+        return notify('warn', `That would make the whole map ${fmtLen(widthM)} wide. Check the distance: it is the real metres between your two points.`);
+      }
+      const before = map.metresPerPixel;
+      editScenario(store, (sc) => { sc.map.metresPerPixel = mpp; }, { tool: 'select' });
+      notify('info', `Scale set to ${mpp} m per pixel (map ≈ ${fmtLen(widthM)} wide).`, {
+        key: 'calib-undo',
+        action: { label: 'Undo', onClick: () => editScenario(store, (sc) => { sc.map.metresPerPixel = before; }) },
+      });
     };
     pop.querySelector('#pp-ok').onclick = apply;
     pop.querySelector('#pp-x').onclick = () => store.set({ tool: 'select' });

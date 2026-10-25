@@ -132,5 +132,10 @@
     "cost.sortingPerDay",
     "revenue.balePricePerKg",
     "llmLimits.budgetTolerance"
-  ]
+  ],
+  "calibration": {
+    "minMapWidthM": 50,
+    "maxMapWidthM": 50000,
+    "minPointGapScreenPx": 24
+  }
 }

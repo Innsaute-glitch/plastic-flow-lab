@@ -404,7 +404,15 @@ Or skip editing files entirely: **Change image** in the app, calibrate, place no
 
 ## 9. How it was built
 
-The app was built with Claude Code (an AI coding assistant) acting as a project lead: it wrote a plan with shared rules, then six AI agents built separate parts at the same time, and the lead reviewed, connected and tested everything. Our role was to write the brief, answer and approve the design questions (many of the options were proposed by the AI), and check the results. The code itself is AI-generated.
+The code was written by Claude Code (an AI coding agent), not by hand. Claude Code acted as a technical lead. It wrote a plan with shared rules, six AI sub-agents built separate parts at the same time, and the lead reviewed, connected and tested everything. It also ran the web and document research behind the numbers, and wrote these docs.
+
+Our side (the project lead ran the build with Claude Code):
+
+- **Brief and decisions.** We wrote the brief and made the design decisions. Many of the options were proposed by the AI, and we chose between them.
+- **Real-world grounding.** Thapar's waste-management documents, the official campus map, the MRF's location, the hostel and block identification, and student numbers.
+- **The big framing calls.** The real campus with up to 40 points, two demo campuses before and after Saahas, bale revenue and a net-cost budget, and cancellable AI requests.
+- **Hands-on testing.** It found many of the bugs listed below.
+- **Field data and the video.** Coordinated within the group; see `docs/TEAMMATE-TASKS.md`.
 
 ### Tech stack and why
 
@@ -438,6 +446,10 @@ The app was built with Claude Code (an AI coding assistant) acting as a project 
 
 6. **Integration.** The lead connected the parts, generated the real cached AI answer, and ran the full demo in a browser at 1366×768 and 1920×1080, fixing what it found (the animation was misaligned with the map, markers disappeared during replay, metric rows overflowed, flow diagram labels collided).
 7. **Independent review.** A separate AI agent was asked to find errors. It rebuilt the simulation from scratch and compared every number: all matched. It found presentation issues (below), which were fixed.
+8. **Second phase: the real campus.**
+   - **Map and campus.** The placeholder map was replaced by a satellite capture of Thapar. We supplied the official campus map, the MRF coordinates and screenshots identifying the buildings; Claude Code captured and calibrated the map and placed the 40 points.
+   - **Real numbers.** We found Thapar's waste-management documents. AI research agents read them and searched published Indian sources, and every value in the Assumptions panel now cites its source or is marked as an estimate.
+   - **Ideas from testing.** These came from our own testing and questions: the two-campus before/after-Saahas demo (building on an AI suggestion to model Thapar before Saahas), bale revenue and the net budget, cancel, rename and the blank campus. So did a series of bug fixes (calibration limits, label clipping, the Assumptions panel styling, undo behaviour), each reported with a screenshot and fixed by Claude Code.
 
 ### Changes made along the way (and why)
 
@@ -648,7 +660,13 @@ Model answers in plain words. Learn the idea, not the wording.
 
 ### About how it was built
 
-**Q: Did you write the code?** We built it with an AI coding assistant (Claude Code). The code is AI-generated. We wrote the brief, answered and approved the design decisions (stack, cost model, what the AI may and may not do, bin sizing rule; many were proposed by the assistant), reviewed the outputs and checked the results. Be honest about this.
+**Q: Did you write the code?** No, and we say so openly. The code was written by an AI coding agent (Claude Code). Our part was:
+
+- **The project itself.** The brief, the design decisions (many chosen from options the AI proposed), and the real-campus data and sources.
+- **The framing.** The before/after-Saahas comparison and counting bale revenue in the net-cost budget.
+- **Testing.** Hands-on testing that found and drove the fixes for many bugs, and the field data.
+
+We can explain how every part works and why it was designed that way, which is what this guide is for.
 
 **Q: How did multiple agents build one app without conflicts?** A shared plan defined the exact data formats, units and rules first (`plan.md` section 3.1), and each agent owned separate folders. Fake data in the final format let the screens be built before the simulation existed.
 

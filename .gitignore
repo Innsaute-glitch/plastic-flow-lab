@@ -3,7 +3,7 @@ dist/
 .env
 *.log
 .playwright-mcp/
-# agent plans and reports stay local; screenshots are kept
-tasks/*
-!tasks/*.png
-!tasks/shots/
+# agent plans, reports and dev screenshots stay local (git history has the old screenshots)
+tasks/
+# orchestrator handoff notes: local only, kept up to date for the next session
+HANDOFF-NOTES.md

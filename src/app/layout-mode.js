@@ -15,7 +15,11 @@ export const orientFor = (width, height) => (height >= width ? 'portrait' : 'lan
 /** Short screens (phones in landscape) are the ones too low for the medium layout. */
 export const isShort = (height, cfg) => height < cfg.mediumMinHeightPx;
 
-export const hudReserveFor = (layout, cfg) => cfg.hudReservePx[layout];
+/** Space kept free below the map for the replay HUD. Phones in landscape put the HUD in the side column instead, so they reserve none. */
+export const hudReserveFor = (layout, cfg, { short = false, orient = 'portrait' } = {}) => {
+  const r = cfg.hudReservePx;
+  return layout === 'narrow' && short && orient === 'landscape' && 'narrowShortLandscape' in r ? r.narrowShortLandscape : r[layout];
+};
 
 /** The panes a layout lets the user pick between (wide shows all three at once and has no tabs). */
 export function tabsFor(layout) {

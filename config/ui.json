@@ -147,7 +147,8 @@
     "hudReservePx": {
       "wide": 116,
       "medium": 116,
-      "narrow": 64
+      "narrow": 64,
+      "narrowShortLandscape": 0
     }
   }
 }

@@ -491,11 +491,12 @@ button { cursor: pointer; }
   grid-template-columns: minmax(0, 1fr) var(--side-w);
   grid-template-rows: minmax(0, 1fr) var(--stage-foot, 0px);
 }
-#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-stage:not([data-mode="edit"]) { --stage-foot: calc(var(--hud-reserve, 64px) + 6px); }
+/* the HUD sits in the side column (anim.css), so no row is kept free under the map: the map uses the full stage height */
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-strip { padding-right: 0; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-wrap { grid-column: 1; grid-row: 1; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-strip { grid-column: 2; grid-row: 1 / 3; align-self: start; min-height: 0; }
-#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-foot { grid-column: 2; grid-row: 1 / 3; align-self: end; padding: 0; }
-#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .mf-legend { display: flex; flex-flow: column wrap; align-content: flex-start; gap: 4px 12px; height: 100%; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-foot { grid-column: 2; grid-row: 1 / 3; align-self: end; height: auto; padding: 0; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .mf-legend { display: flex; flex-flow: column wrap; align-content: flex-start; gap: 4px 12px; height: 64px; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .ms-hint { height: auto; min-height: 32px; padding: 6px 12px; white-space: normal; border-radius: 16px; line-height: 1.3; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .ms-hint > span:last-child { white-space: normal; overflow: visible; }
 #app[data-layout="narrow"][data-short="true"] .tb-menu { padding: 4px; }

@@ -119,6 +119,7 @@ export function mount(el, store) {
     const obstacles = placed.map((n) => circ(n.x * k, n.y * k, R));
     if (live) for (const n of placed) obstacles.push({ x: n.x * k + 13 * ms + 2, y: n.y * k - 15, w: 14, h: 30 }); // replay fill meter
     if (sc.facility) obstacles.push(circ(sc.facility.x * k, sc.facility.y * k, 30 * facScale() + 4));
+    if (live && sc.facility) obstacles.push({ x: sc.facility.x * k - 24, y: sc.facility.y * k + 8, w: 48, h: 40 }); // the replay's "queue" caption under the facility
     const out = new Map();
     const tryPlace = (id, x, y, text, cands, force) => {
       const w = labelW(text);

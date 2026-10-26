@@ -21,6 +21,9 @@ test('layoutFor: wide from 1240 px, medium 820-1239 and tall enough, narrow othe
 
 test('HUD reserve comes from config: 116 on wide and medium, 64 on narrow (the seam with the HUD)', () => {
   assert.deepEqual(['wide', 'medium', 'narrow'].map((l) => hudReserveFor(l, cfg)), [116, 116, 64]);
+  assert.equal(hudReserveFor('narrow', cfg, { short: true, orient: 'landscape' }), 0, 'phone landscape: HUD lives in the side column');
+  assert.equal(hudReserveFor('narrow', cfg, { short: false, orient: 'landscape' }), 64);
+  assert.equal(hudReserveFor('narrow', cfg, { short: true, orient: 'portrait' }), 64);
 });
 
 test('layoutFor follows whatever thresholds it is given (no numbers baked in)', () => {

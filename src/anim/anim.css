@@ -81,3 +81,17 @@
 }
 .anim-hud__plan { margin-left: auto; font-weight: 600; color: var(--text, #EFEAE0); }
 .anim-hud[data-which="optimised"] .anim-hud__plan { color: var(--accent, #C6F36B); }
+
+/* ---- phone in landscape (scoped exception for Task 7): the HUD moves into the 232px side column of the map stage so the map keeps the
+   full height. Two rows: day/time + speed + details, then play + scrubber + skip. The details pill opens upward inside the column. ---- */
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-hud__panel {
+  left: auto; right: 6px; bottom: 6px; width: var(--side-w, 232px); height: auto;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) 46px 40px; grid-template-rows: 40px 40px; gap: 4px 6px; align-items: center;
+  padding: 6px;
+}
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-hud__top { grid-column: 1 / 3; grid-row: 1; min-width: 0; padding-left: 6px; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn--speed { grid-column: 3; grid-row: 1; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn--more { grid-column: 4; grid-row: 1; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn--main { grid-column: 1; grid-row: 2; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-scrub { grid-column: 2 / 4; grid-row: 2; min-width: 0; width: 100%; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn[data-k="skip"] { grid-column: 4; grid-row: 2; }

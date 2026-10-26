@@ -55,7 +55,7 @@ export function mount(app, store) {
     app.dataset.pane = pane;
     app.dataset.orient = orient;
     app.dataset.short = String(short);
-    stage.style.setProperty('--hud-reserve', `${hudReserveFor(layout, cfg)}px`);
+    stage.style.setProperty('--hud-reserve', `${hudReserveFor(layout, cfg, { short, orient })}px`);
     // hidden panes must not take focus or taps (they stay laid out so scroll position and canvases survive)
     for (const [id, el] of Object.entries(panels)) el.inert = layout === 'wide' ? false : id === 'map' ? layout === 'narrow' && pane !== 'map' : id !== pane;
     applyTabs();

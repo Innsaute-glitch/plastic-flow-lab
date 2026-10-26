@@ -1,5 +1,7 @@
 {
-  "playbackSeconds": 30,
+  "playbackSeconds": 90,
+  "truckPauseShare": 0.5,
+  "truckPauseMaxSeconds": 2,
   "sweepSeeds": 5,
   "fillThresholds": {
     "amberPct": 60,

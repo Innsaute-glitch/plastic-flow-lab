@@ -25,7 +25,7 @@ export function createPlayer(canvas, { scenario, results, ui, onUpdate, hud } = 
   const nodeById = new Map(scenario.nodes.map((n) => [n.id, n]));
   const nodes = order.map((id) => nodeById.get(id));
   const N = nodes.length;
-  const sched = buildSchedule(tl, ui.playbackSeconds);
+  const sched = buildSchedule(tl, ui.playbackSeconds, { pauseShare: ui.truckPauseShare, pauseMax: ui.truckPauseMaxSeconds });
   const idxOf = new Map(order.map((id, i) => [id, i]));
   const routes = tl.trips.map((tr) => buildRoute(tr.path));
   const fillColor = makeFillColor(ui);

@@ -20,7 +20,7 @@ Made for the college assignment *"Plastic Waste Management: From Collection to R
 
 1. **Map your campus.** Place up to 40 waste-generating nodes (hostels, canteens, academic blocks, library...) and a sorting facility on a map image. The demo uses the real Thapar Institute (TIET), Patiala campus: 40 real buildings and the real MRF.
 2. **Describe today's setup.** For each node set the waste type, kg/day, rush hours, bins (type, count, size) and pickup interval; pick the facility's sorting method.
-3. **Run 30 days.** An hourly simulation plays back in about 30 seconds: bins fill, overflow and leak litter, trucks drive the shortest route, and the facility sorts plastic into bales.
+3. **Run 30 days.** An hourly simulation plays back in about 90 seconds at 1× (2× and 4× speed it up): bins fill, overflow and leak litter, trucks drive the shortest route, and the facility sorts plastic into bales.
 4. **See where every kilogram went.** Metrics (recovery, purity, contamination, overflow, distance, spend, bale revenue, net cost, CO₂e avoided), a flow diagram from generation to recycling route, and a per-node table.
 5. **Optimise with AI.** Claude Sonnet proposes new pickup intervals, bin types and sizes and a sorting method, with a reason for each. The **same simulation re-runs** the proposal and shows before vs after, checked across 5 random seeds and against a net-cost budget.
 

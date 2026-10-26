@@ -60,7 +60,7 @@ Do these in order and tick them off. Each step says what you should see.
 2. **Turn on Demo mode.** Click the **Demo** switch in the top bar so it turns green.
    ✅ Nothing visible changes yet. This makes the AI step work without the internet.
 3. **Run the baseline.** Click **Run** (left panel).
-   ✅ Coloured dots flow into the bins, the bin meters fill and turn red, and a truck route draws itself. The day counter at the bottom-left counts to 30. It takes about 30 seconds (use **4×** to speed it up).
+   ✅ Coloured dots flow into the bins, the bin meters fill and turn red, and a truck route draws itself. The day counter at the bottom-left counts to 30. At normal speed (1×) it takes about 90 seconds; **4×** finishes in about 23 seconds.
 4. **Read the results** in the right column.
    ✅ "Overflow bin-days" shows **44**. Recovery rate shows **18.4%**. Total spend is about **₹47.0k** and bale revenue about **₹51.6k**.
 5. **Optimise.** Click **Optimise** (left panel).

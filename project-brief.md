@@ -35,7 +35,7 @@ A single-page web app for a laptop and projector.
    - generation rate in kg/day
    - optional peak window (for example a canteen lunch spike)
    - current setup: bin type (single mixed vs segregated), bin count, bin capacity, pickup interval in days
-4. **Run baseline.** A 30-day simulation plays back visually in about 30 seconds.
+4. **Run baseline.** A 30-day simulation plays back visually in about 90 seconds at 1×, with 2× and 4× to speed it up.
    - Waste dots flow from each node into its bin at a speed matching its rate.
    - Bin fill meters rise and shift green, amber, red.
    - Overflowing bins pulse and leak "litter" dots.

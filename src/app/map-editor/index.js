@@ -21,6 +21,12 @@ export function mount(el, store) {
   let k = 1; // screen px per image px
   let loadedSrc = null;
   let warnedSrc = null;
+  // Touch: there is no hover, so names show on tap, hit targets grow and the hints say "Tap".
+  const coarseMQ = window.matchMedia('(pointer: coarse)');
+  const coarse = () => coarseMQ.matches;
+  const appEl = document.getElementById('app');
+  const isNarrow = () => appEl?.dataset.layout === 'narrow';
+  const TOUCH_PICK_PX = 22; // a finger picks the nearest marker within this many screen px (>= 44 px target)
 
   /* ---------- sizing ---------- */
   function fit() {
@@ -33,6 +39,7 @@ export function mount(el, store) {
     frame.style.height = `${Math.floor(w / ar)}px`;
     k = w / map.widthPx;
     frame.style.setProperty('--inv', String(1 / k));
+    wrap.style.setProperty('--map-ar', String(ar)); // lets the narrow layout shrink the map pane to the image's shape
     updateScale(map);
   }
   function updateScale(map) {
@@ -43,7 +50,7 @@ export function mount(el, store) {
     const px = Math.min((m / map.metresPerPixel) * k, frame.clientWidth * 0.45);
     scaleEl.innerHTML = `<span class="ms-bar" style="width:${px.toFixed(0)}px"></span><span class="ms-lbl">${fmtLen(m)}</span>`;
   }
-  const ro = new ResizeObserver(() => { fit(); redrawLabels(); });
+  const ro = new ResizeObserver(() => { fit(); redrawLabels(); drawStrip(store.get()); });
   ro.observe(wrap);
 
   /* ---------- helpers ---------- */
@@ -137,7 +144,7 @@ export function mount(el, store) {
         ${sel ? '<circle class="mk-pulse" r="24"/><circle class="mk-pulse mk-pulse--2" r="24"/>' : ''}
         <circle class="mk-halo" r="20"/><circle class="mk-ring" r="12"/><circle class="mk-core" r="6.5"/>
         ${sel ? '<circle class="mk-sel" r="19"/>' : ''}
-        <circle class="mk-hit" r="${(Math.max(19, 14 / ms)).toFixed(1)}"/>
+        <circle class="mk-hit" r="${(Math.max(19, (coarse() ? 20 : 14) / ms)).toFixed(1)}"/>
       </g>`);
     }
     if (sc.facility) {
@@ -198,16 +205,22 @@ export function mount(el, store) {
   function drawStrip(s) {
     const { scenario: sc, ui } = s;
     const unplaced = sc.nodes.find((n) => n.x == null);
+    const verb = coarse() ? 'Tap' : 'Click';
     let hint = '';
     if (s.mode !== 'edit') hint = `<span class="ms-hint">${icon('info', 15)}<span>Replaying the model run. Press Edit to change the map.</span></span>`;
     else if (unplaced && s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>Place: <b>${esc(unplaced.name)}</b></span></span>`;
-    else if (s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>Click the map to add a node (${sc.nodes.length}/${MAX_NODES})</span></span>`;
-    else if (s.tool === 'place-facility') hint = `<span class="ms-hint ms-hint--accent">${icon('factory', 15)}<span>Click the map to place the facility</span></span>`;
-    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? 'Click the first point · this rescales all distances and costs' : 'Click the second point'}</span></span>`;
+    else if (s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${verb} the map to add a node (${sc.nodes.length}/${MAX_NODES})</span></span>`;
+    else if (s.tool === 'place-facility') hint = `<span class="ms-hint ms-hint--accent">${icon('factory', 15)}<span>${verb} the map to place the facility</span></span>`;
+    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? `${verb} the first point · this rescales all distances and costs` : `${verb} the second point`}</span></span>`;
     else if (unplaced) hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${sc.nodes.filter((n) => n.x == null).length} node(s) need a place. Use the pin tool.</span></span>`;
-    else if (!sc.nodes.length && !sc.facility) hint = `<span class="ms-hint">${icon('info', 15)}<span>Pick a tool on the left, or load the demo.</span></span>`;
-    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them. Hover a marker for its name.</span></span>`;
-    strip.innerHTML = `<div class="ms-left">${hint}</div>`;
+    else if (!sc.nodes.length && !sc.facility) hint = `<span class="ms-hint">${icon('info', 15)}<span>${isNarrow() ? 'Pick a tool in Setup' : 'Pick a tool on the left'}, or load the demo.</span></span>`;
+    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them. ${coarse() ? 'Tap' : 'Hover'} a marker for its name.</span></span>`;
+    // narrow layout: the map and Setup are separate panes, so a selected node offers a one-tap jump to its editor
+    const sel = s.mode === 'edit' && s.selectedNodeId
+      ? (s.selectedNodeId === 'facility' ? (sc.facility ? { name: sc.facility.name || 'sorting facility' } : null) : sc.nodes.find((n) => n.id === s.selectedNodeId))
+      : null;
+    const chip = sel ? `<button type="button" class="ms-chip" data-pane-goto="setup" aria-label="Edit ${esc(sel.name)} in Setup"><span class="ms-chip__t">Edit <b>${esc(clip(sel.name, 28))}</b></span>${icon('arrow', 16)}</button>` : '';
+    strip.innerHTML = `<div class="ms-left">${hint}${chip}</div>`;
     const legend = Object.entries(ui.wasteTypeColorKey).map(([w, key]) =>
       `<span class="ms-leg"><i style="--c:var(--resin-${key})"></i>${esc(ui.wasteTypeLabels[w])}</span>`).join('');
     const placed = sc.nodes.filter((n) => n.x != null).length;
@@ -274,18 +287,50 @@ export function mount(el, store) {
     pop.querySelector('#pp-ok').onclick = apply;
     pop.querySelector('#pp-x').onclick = () => store.set({ tool: 'select' });
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') apply(); e.stopPropagation(); });
+    // keep the popover inside the frame on small maps (it is ~230 px wide)
+    const fw = frame.clientWidth, fh = frame.clientHeight, pw = pop.offsetWidth, ph = pop.offsetHeight;
+    if (pw && fw) pop.style.left = `${Math.min(fw - pw / 2 - 6, Math.max(pw / 2 + 6, (mx / 100) * fw))}px`;
+    if (ph && fh) pop.style.top = `${Math.max(6, Math.min(fh - ph - 6, (my / 100) * fh + 14))}px`;
     setTimeout(() => input.focus(), 0);
   }
 
   /* ---------- pointer interaction ---------- */
+  // Tapped name (touch has no hover): shown for a moment and kept across re-renders.
+  let pinId = null, pinTimer = 0;
+  function pinName(id) {
+    clearTimeout(pinTimer);
+    pinId = id;
+    showHover(id);
+    pinTimer = setTimeout(() => { pinId = null; showHover(null); }, 2500);
+  }
+  // The marker under a finger: the nearest one within TOUCH_PICK_PX, so dense markers stay tappable.
+  function nearestMarker(e, s) {
+    const r = svg.getBoundingClientRect();
+    let best = null, bestD = TOUCH_PICK_PX;
+    const consider = (id, it) => {
+      if (!it || it.x == null) return;
+      const d = Math.hypot(r.left + it.x * k - e.clientX, r.top + it.y * k - e.clientY);
+      if (d < bestD) { best = id; bestD = d; }
+    };
+    s.scenario.nodes.forEach((n) => consider(n.id, n));
+    if (s.scenario.facility) consider('facility', s.scenario.facility);
+    return best;
+  }
   svg.addEventListener('pointerdown', (e) => {
     const s = store.get();
-    if (s.mode !== 'edit' || e.button !== 0) return;
+    if (s.mode !== 'edit') {
+      const live = e.target.closest?.('.mk');
+      if (live && e.pointerType !== 'mouse') pinName(live.dataset.id);
+      return;
+    }
+    if (e.button !== 0) return;
     const g = e.target.closest('.mk');
-    drag = { id: g?.dataset.id ?? null, sx: e.clientX, sy: e.clientY, moved: false, pos: null };
+    let id = g?.dataset.id ?? null;
+    if (e.pointerType !== 'mouse' && s.tool === 'select') id = nearestMarker(e, s) ?? id;
+    drag = { id, sx: e.clientX, sy: e.clientY, moved: false, pos: null };
     svg.setPointerCapture(e.pointerId);
-    if (g && s.tool !== 'calibrate') {
-      drag.origin = g.dataset.id === 'facility' ? s.scenario.facility : s.scenario.nodes.find((n) => n.id === g.dataset.id);
+    if (id && s.tool !== 'calibrate') {
+      drag.origin = id === 'facility' ? s.scenario.facility : s.scenario.nodes.find((n) => n.id === id);
     }
   });
   svg.addEventListener('pointermove', (e) => {
@@ -331,8 +376,8 @@ export function mount(el, store) {
       render(store.get());
     } else if (s.selectedNodeId) store.set({ selectedNodeId: null });
   });
-  svg.addEventListener('pointerover', (e) => { const id = e.target.closest?.('.mk')?.dataset.id ?? null; if (id !== hoverId && !drag) showHover(id); });
-  svg.addEventListener('pointerleave', () => { if (!drag) showHover(null); });
+  svg.addEventListener('pointerover', (e) => { if (e.pointerType !== 'mouse') return; const id = e.target.closest?.('.mk')?.dataset.id ?? null; if (id !== hoverId && !drag) showHover(id); });
+  svg.addEventListener('pointerleave', (e) => { if (!drag && e.pointerType === 'mouse') showHover(null); });
   svg.addEventListener('pointercancel', () => { drag = null; svg.classList.remove('is-dragging'); });
 
   const onKey = (e) => {
@@ -361,10 +406,11 @@ export function mount(el, store) {
     el.dataset.mode = s.mode;
     drawMap(s);
     drawSvg(s);
+    if (pinId) showHover(pinId);
     drawStrip(s);
     drawPopover(s);
   }
   render(store.get());
   const off = store.subscribe(render);
-  return () => { off(); ro.disconnect(); document.removeEventListener('keydown', onKey); };
+  return () => { off(); ro.disconnect(); clearTimeout(pinTimer); document.removeEventListener('keydown', onKey); };
 }

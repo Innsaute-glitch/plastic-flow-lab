@@ -1,8 +1,8 @@
 // Results mode: metric cards with ticking counters, Sankey, per-node table.
-import { h, svgIcon, ICONS } from './dom.js';
+import { h, svgIcon, ICONS, fitK } from './dom.js';
 import { METRICS, fmtInt, fmtDec1, fmtKg, fmtInr, gainsRows } from './format.js';
 import { createGainsButton, closeGains } from './gains.js';
-import { tick } from './counter.js';
+import { tick, formatNumber } from './counter.js';
 import { createSankey } from './sankey.js';
 
 const CARD_ORDER = ['recovery', 'purity', 'contamination', 'km', 'cost'];
@@ -66,6 +66,7 @@ export function createMetricCards() {
           const net = summary.cost.net;
           const surplus = net < 0;
           tick(val, Math.abs(net), { decimals: 0, duration: animate ? 1000 : 0 });
+          num.style.setProperty('--k', fitK(formatNumber(Math.abs(net), 0).length + 1, 9)); // + the rupee sign
           unitEl.textContent = surplus ? 'surplus' : 'net cost';
           card.classList.toggle('results-metric--surplus', surplus);
           num.classList.toggle('is-long', Math.abs(net) >= 1e6);
@@ -75,6 +76,7 @@ export function createMetricCards() {
           continue;
         }
         tick(val, m.get(summary), { decimals: m.decimals, duration: animate ? 1000 : 0 });
+        num.style.setProperty('--k', fitK(formatNumber(m.get(summary), m.decimals).length, card.classList.contains('results-metric--hero') ? 6 : 5));
         sub.textContent = subFor(k, summary, days);
       }
     },

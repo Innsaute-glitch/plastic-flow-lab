@@ -5,6 +5,9 @@ export function h(tag, cls, text) {
   if (text !== undefined) n.textContent = text;
   return n;
 }
+// Scale factor (0-1) for a figure that must stay inside its card: 1 up to `fit` characters, then shrinking in proportion.
+// CSS multiplies its container-relative font size by --k, so a longer number never spills past the card edge.
+export const fitK = (chars, fit) => Math.min(1, fit / Math.max(chars, 1)).toFixed(2);
 export function svgIcon(path, size = 14, cls = '') {
   const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   s.setAttribute('viewBox', '0 0 16 16');

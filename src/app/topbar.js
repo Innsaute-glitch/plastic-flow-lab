@@ -32,45 +32,88 @@ export function mount(el, store) {
       <button class="app-btn app-btn--icon" id="tb-import" title="Import scenario (.json) or nodes (.csv)" aria-label="Import">${icon('upload', 17)}</button>
       <button class="app-btn app-btn--icon" id="tb-export" title="Export scenario as JSON" aria-label="Export">${icon('download', 17)}</button>
       <button class="app-btn" id="tb-assume" title="Show model assumptions">${icon('sliders', 16)}<span>Assumptions</span></button>
+      <div class="tb-menu-wrap tb-more-wrap">
+        <button class="app-btn app-btn--icon" id="tb-more" title="More" aria-label="More: rename, load demo, import, export, assumptions" aria-haspopup="menu" aria-expanded="false" aria-controls="tb-more-menu">${icon('more', 22)}</button>
+        <div class="tb-menu" id="tb-more-menu" role="menu" hidden>
+          <button class="tb-menu__item" role="menuitem" data-cmd="rename"><b>Rename scenario</b><span class="tb-menu__name"></span></button>
+          <div class="tb-menu__div" role="separator"></div>
+          <div class="tb-menu__head" role="presentation">Load demo</div>
+          <button class="tb-menu__item" role="menuitem" data-demo="before"><b>Thapar 2023 · before Saahas</b><span>Mixed bins, the starting point</span></button>
+          <button class="tb-menu__item" role="menuitem" data-demo="after"><b>Thapar 2024 · after Saahas</b><span>Segregated bins, what Thapar did</span></button>
+          <button class="tb-menu__item" role="menuitem" data-action="blank"><b>Blank campus</b><span>Start from scratch on this map</span></button>
+          <div class="tb-menu__div" role="separator"></div>
+          <button class="tb-menu__item tb-menu__item--row" role="menuitem" data-cmd="import">${icon('upload', 17)}<b>Import</b><span>.json scenario or .csv nodes</span></button>
+          <button class="tb-menu__item tb-menu__item--row" role="menuitem" data-cmd="export">${icon('download', 17)}<b>Export</b><span>Scenario as JSON</span></button>
+          <button class="tb-menu__item tb-menu__item--row" role="menuitem" data-cmd="assume">${icon('sliders', 17)}<b>Assumptions</b><span>Model numbers and sources</span></button>
+        </div>
+      </div>
       <input type="file" id="tb-file" accept=".json,.csv,application/json,text/csv" hidden />
     </div>`;
   const $ = (id) => el.querySelector('#' + id);
   const file = $('tb-file');
 
-  const loadBtn = $('tb-load');
-  const menu = $('tb-demo-menu');
-  const setMenu = (open, focusBtn = false) => {
-    menu.hidden = !open;
-    loadBtn.setAttribute('aria-expanded', String(open));
-    if (open) menu.querySelector('[role="menuitem"]').focus();
-    else if (focusBtn) loadBtn.focus();
+  // Two dropdowns share the same behaviour: the Load demo menu (wide, medium) and the ⋯ menu (narrow).
+  const menus = [];
+  function bindMenu(btn, menu) {
+    const m = {
+      menu,
+      isOpen: () => !menu.hidden,
+      set(open, focusBtn = false) {
+        if (open) menus.forEach((o) => o !== m && o.set(false));
+        menu.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+        if (open) menu.querySelector('[role="menuitem"]').focus();
+        else if (focusBtn) btn.focus();
+      },
+    };
+    btn.addEventListener('click', () => m.set(menu.hidden));
+    menu.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const items = [...menu.querySelectorAll('[role="menuitem"]')];
+      const i = items.indexOf(document.activeElement);
+      items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus();
+    });
+    menus.push(m);
+    return m;
+  }
+  const loadMenu = bindMenu($('tb-load'), $('tb-demo-menu'));
+  const moreMenu = bindMenu($('tb-more'), $('tb-more-menu'));
+  const runCommand = (cmd) => {
+    if (cmd === 'import') file.click();
+    else if (cmd === 'export') downloadScenario(store);
+    else if (cmd === 'assume') store.set({ panel: store.get().panel === 'assumptions' ? null : 'assumptions' });
+    else if (cmd === 'rename') startRename();
   };
-  loadBtn.addEventListener('click', () => setMenu(menu.hidden));
-  menu.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-demo], [data-action]');
-    if (!item) return;
-    setMenu(false, true);
-    if (item.dataset.action === 'blank') newScenario(store);
-    else loadDemo(store, item.dataset.demo);
-  });
-  menu.addEventListener('keydown', (e) => {
-    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-    e.preventDefault();
-    const items = [...menu.querySelectorAll('[role="menuitem"]')];
-    const i = items.indexOf(document.activeElement);
-    items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus();
-  });
-  const onDocClick = (e) => { if (!menu.hidden && !e.target.closest('.tb-menu-wrap')) setMenu(false); };
-  const onKey = (e) => { if (e.key === 'Escape' && !menu.hidden) { e.stopPropagation(); setMenu(false, true); } };
+  for (const m of [loadMenu, moreMenu]) {
+    m.menu.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-demo], [data-action], [data-cmd]');
+      if (!item) return;
+      const renaming = item.dataset.cmd === 'rename';
+      m.set(false, !renaming);
+      if (item.dataset.cmd) runCommand(item.dataset.cmd);
+      else if (item.dataset.action === 'blank') newScenario(store);
+      else loadDemo(store, item.dataset.demo);
+    });
+  }
+  const closeMenus = () => menus.forEach((m) => m.isOpen() && m.set(false));
+  const onDocClick = (e) => { if (!e.target.closest('.tb-menu-wrap')) closeMenus(); };
+  const onKey = (e) => {
+    const open = menus.find((m) => m.isOpen());
+    if (e.key !== 'Escape' || !open) return;
+    e.stopPropagation();
+    open.set(false, true);
+  };
   document.addEventListener('click', onDocClick);
   document.addEventListener('keydown', onKey);
-  $('tb-import').addEventListener('click', () => file.click());
+  window.addEventListener('resize', closeMenus);
+  $('tb-import').addEventListener('click', () => runCommand('import'));
   file.addEventListener('change', () => {
     importFile(store, file.files[0]);
     file.value = '';
   });
-  $('tb-export').addEventListener('click', () => downloadScenario(store));
-  $('tb-assume').addEventListener('click', () => store.set({ panel: store.get().panel === 'assumptions' ? null : 'assumptions' }));
+  $('tb-export').addEventListener('click', () => runCommand('export'));
+  $('tb-assume').addEventListener('click', () => runCommand('assume'));
   $('tb-demo').addEventListener('change', (e) => store.set({ demoMode: e.target.checked }));
   $('tb-edit').addEventListener('click', () => store.set({ mode: 'edit', playback: { ...store.get().playback, playing: false } }));
 
@@ -87,11 +130,13 @@ export function mount(el, store) {
     input.value = s.scenario.name;
     input.setAttribute('aria-label', 'Scenario name');
     editing = input;
+    el.classList.add('is-renaming');
     let done = false;
     const finish = (save) => {
       if (done) return;
       done = true;
       editing = null;
+      el.classList.remove('is-renaming');
       const name = input.value.trim();
       input.replaceWith(btn);
       if (save && name && name !== store.get().scenario.name) renameScenario(store, name);
@@ -121,6 +166,7 @@ export function mount(el, store) {
     mode.querySelector('span').textContent = MODE_LABEL[s.mode] ?? s.mode;
     $('tb-edit').hidden = !(s.mode === 'results' || s.mode === 'compare');
     $('tb-assume').classList.toggle('is-active', s.panel === 'assumptions');
+    el.querySelector('.tb-menu__name').textContent = s.scenario.name;
   }
   render(store.get());
   const unsub = store.subscribe(render);
@@ -128,5 +174,6 @@ export function mount(el, store) {
     unsub();
     document.removeEventListener('click', onDocClick);
     document.removeEventListener('keydown', onKey);
+    window.removeEventListener('resize', closeMenus);
   };
 }

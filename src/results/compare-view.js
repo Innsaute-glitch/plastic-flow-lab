@@ -2,7 +2,7 @@
 import { h, svgIcon, ICONS, deltaChip } from './dom.js';
 import { METRICS, deltaFor, formatMetric, budgetStatus, sweepRange, sweepWins, setupChanges, gainsDeltaRows } from './format.js';
 import { createGainsButton, closeGains } from './gains.js';
-import { tick } from './counter.js';
+import { tick, formatNumber } from './counter.js';
 import { createSankeyCard } from './metrics-view.js';
 import { sourceBadgeEl } from './ai-activity.js';
 
@@ -73,6 +73,8 @@ export function createCompareView(ctx) {
     arrow.innerHTML = '<svg viewBox="0 0 40 24" width="40" height="24"><path d="M2 12h32M24 3l11 9-11 9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const after = h('span', 'results-hero-after', String(bs.overflowBinDays));
     nums.append(before, arrow, after);
+    // big figures shrink together so that e.g. "812 -> 340" still fits a 306px pane (CSS multiplies its sizes by --k)
+    nums.style.setProperty('--k', Math.min(1, 120 / (17 * formatNumber(bs.overflowBinDays, 0).length + 31 * formatNumber(os.overflowBinDays, 0).length)).toFixed(2));
     hero.appendChild(nums);
     const foot = h('div', 'results-hero-foot');
     foot.appendChild(deltaChip(hd, { big: true, text: hd.pct === null ? '' : `${Math.round(hd.pct * 100)}%` }));

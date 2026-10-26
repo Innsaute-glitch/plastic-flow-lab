@@ -37,3 +37,47 @@
 .anim-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--text, #EFEAE0); box-shadow: 0 0 8px rgba(198, 243, 107, 0.7); }
 .anim-scrub::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--text, #EFEAE0); }
 
+
+/* ---- narrow-layout HUD: one 40px-high row inside --hud-reserve (64px, set by the shell on #map-stage) ---- */
+/* Controls that exist only for the narrow row stay hidden everywhere else. */
+.anim-hud__extra, .anim-btn--speed, .anim-btn--more { display: none; }
+
+#app[data-layout="narrow"] .anim-hud__run,
+#app[data-layout="narrow"] .anim-hud__chips,
+#app[data-layout="narrow"] .anim-hud__top .anim-chip,
+#app[data-layout="narrow"] .anim-hud__daytot,
+#app[data-layout="narrow"] .anim-speed { display: none; }
+#app[data-layout="narrow"] .anim-btn--speed,
+#app[data-layout="narrow"] .anim-btn--more { display: inline-grid; }
+
+#app[data-layout="narrow"] .anim-hud__panel {
+  left: 12px; right: 12px; bottom: 12px; width: auto; height: var(--hud-reserve, 64px);
+  padding: 0 6px 0 12px; border-radius: var(--radius-md, 14px);
+  flex-direction: row; align-items: center; gap: 6px;
+}
+#app[data-layout="narrow"] .anim-hud[data-which="optimised"] .anim-hud__panel { border-color: rgba(198, 243, 107, 0.4); }
+#app[data-layout="narrow"] .anim-hud__top { display: grid; gap: 1px; flex: none; min-width: 58px; }
+#app[data-layout="narrow"] .anim-hud__day { font-size: 18px; white-space: nowrap; }
+#app[data-layout="narrow"] .anim-hud__clock { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted, #A9B5AE); }
+/* the bins-full indicator, always visible in the strip: green dot, red and glowing when something overflows */
+#app[data-layout="narrow"] .anim-hud__clock::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good, #5BD18B); transition: background 0.4s, box-shadow 0.4s; }
+#app[data-layout="narrow"] .is-overflowing .anim-hud__clock::before { background: var(--bad, #F0605D); box-shadow: 0 0 10px var(--bad, #F0605D); }
+#app[data-layout="narrow"] .anim-hud__bar { display: contents; }
+#app[data-layout="narrow"] .anim-btn { width: var(--touch-min, 40px); height: var(--touch-min, 40px); }
+#app[data-layout="narrow"] .anim-btn--speed { font: 600 14px var(--font-ui, system-ui); width: 46px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+#app[data-layout="narrow"] .anim-scrub { height: var(--touch-min, 40px); min-width: 48px; background: linear-gradient(90deg, var(--accent, #C6F36B) var(--p), rgba(239, 234, 224, 0.18) var(--p)) center / 100% 4px no-repeat; }
+#app[data-layout="narrow"] .anim-scrub::-webkit-slider-thumb { width: 20px; height: 20px; }
+#app[data-layout="narrow"] .anim-scrub::-moz-range-thumb { width: 20px; height: 20px; }
+#app[data-layout="narrow"] .anim-btn--more svg { transition: transform var(--dur-fast, 150ms); }
+#app[data-layout="narrow"] .anim-hud__panel.is-more .anim-btn--more { background: rgba(198, 243, 107, 0.18); color: var(--accent, #C6F36B); }
+#app[data-layout="narrow"] .anim-hud__panel.is-more .anim-btn--more svg { transform: rotate(180deg); }
+/* tap-to-expand details: a floating pill above the strip, so the reserved 64px never grows */
+#app[data-layout="narrow"] .anim-hud__panel.is-more .anim-hud__extra {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px;
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 8px);
+  padding: 8px 12px; border-radius: var(--radius-md, 14px); font-size: 14px; color: var(--text-muted, #A9B5AE);
+  background: rgba(16, 36, 29, 0.78); -webkit-backdrop-filter: blur(14px) saturate(1.25); backdrop-filter: blur(14px) saturate(1.25);
+  border: 1px solid rgba(239, 234, 224, 0.13); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.anim-hud__plan { margin-left: auto; font-weight: 600; color: var(--text, #EFEAE0); }
+.anim-hud[data-which="optimised"] .anim-hud__plan { color: var(--accent, #C6F36B); }

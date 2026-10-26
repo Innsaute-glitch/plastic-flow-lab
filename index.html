@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0B1A15" />
     <title>Plastic Flow Lab</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230B1A15'/%3E%3Cpath d='M5 14c0-4.500 3.500-8 8-8h6v5.500c0 4.500-3.500 8-8 8H5z' fill='none' stroke='%23C6F36B' stroke-width='1.800'/%3E%3C/svg%3E" />
   </head>
@@ -11,6 +12,7 @@
     <div id="app">
       <header id="topbar"></header>
       <main id="layout">
+        <nav id="pane-tabs" role="tablist" aria-label="Panels" hidden></nav>
         <aside id="controls" class="app-col" aria-label="Scenario controls"></aside>
         <section id="map-stage" aria-label="Map">
           <div id="map-strip"></div>

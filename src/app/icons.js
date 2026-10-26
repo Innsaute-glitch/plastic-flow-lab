@@ -33,6 +33,9 @@ const P = {
   weight: '<path d="M6 20h12l-1.500-11h-9z"/><circle cx="12" cy="6" r="2.200"/>',
   target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
   pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>',
+  chart: '<path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/>',
+  more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   logo: '<path d="M4 14c0-5 4-9 9-9h7v6c0 5-4 9-9 9H4z"/><path d="M8 16c2-4 5-6 9-7"/>',
 };
 

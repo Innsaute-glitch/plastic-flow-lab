@@ -7,6 +7,7 @@ import ui from '../config/ui.json';
 import { applyOverrides } from './shared/assumptions.js';
 import { createStore } from './app/store.js';
 import { emptyScenario } from './app/scenario-utils.js';
+import { mount as mountShell } from './app/shell.js';
 import { mount as mountTopbar } from './app/topbar.js';
 import { mount as mountControls } from './app/controls/index.js';
 import { mount as mountMapEditor } from './app/map-editor/index.js';
@@ -37,6 +38,7 @@ store.subscribe((s, prev) => {
 
 const $ = (id) => document.getElementById(id);
 const unmounts = [
+  mountShell($('app'), store),
   mountTopbar($('topbar'), store),
   mountControls($('controls'), store),
   mountMapEditor($('map-stage'), store),

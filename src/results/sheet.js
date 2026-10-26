@@ -24,6 +24,10 @@ export function createSheet(root, getState, onClose) {
   x.addEventListener('click', onClose);
   head.appendChild(x);
   sheet.appendChild(head);
+  // shown by CSS only when the sheet is too narrow for the chart (phones): the sheet then scrolls sideways
+  const hint = h('p', 'results-sheet-hint');
+  hint.append('Swipe sideways to see the whole chart.', h('span', 'results-sheet-turn', ' Turn your phone sideways for a wider view.'));
+  sheet.appendChild(hint);
 
   const grid = h('div', 'results-sheet-grid' + (optimised ? ' is-two' : ''));
   sheet.appendChild(grid);

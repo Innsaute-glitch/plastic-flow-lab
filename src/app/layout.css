@@ -20,6 +20,8 @@ button { cursor: pointer; }
   display: grid;
   grid-template-rows: var(--topbar-h) minmax(0, 1fr);
   height: 100vh;
+  height: 100dvh; /* mobile browsers: the visible height, not the height behind the toolbar */
+  width: 100%; overflow: hidden;
   background:
     radial-gradient(900px 420px at 72% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%),
     var(--bg);
@@ -27,6 +29,7 @@ button { cursor: pointer; }
 
 /* ---------- top bar ---------- */
 #topbar {
+  container: topbar / inline-size;
   position: relative; z-index: 20;
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
   padding: 0 var(--space-4);
@@ -48,7 +51,7 @@ button { cursor: pointer; }
 .tb-sep { width: 1px; height: 22px; background: var(--line); margin: 0 var(--space-2); }
 .tb-menu-wrap { position: relative; }
 .tb-chev { display: grid; margin-left: -2px; color: var(--text-muted); transform: rotate(-90deg); }
-.tb-menu { position: absolute; z-index: 50; top: calc(100% + 6px); right: 0; min-width: 270px; display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
+.tb-menu { position: absolute; z-index: 50; top: calc(100% + 6px); right: 0; min-width: 270px; max-width: calc(100vw - 16px); max-height: calc(100dvh - var(--topbar-h) - 12px); overflow-y: auto; display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
 .tb-menu[hidden] { display: none; }
 .tb-menu__item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); text-align: left; cursor: pointer; transition: background var(--dur-fast) var(--ease); }
 .tb-menu__div { height: 1px; margin: 4px 6px; background: var(--line); }
@@ -315,3 +318,181 @@ button { cursor: pointer; }
 /* the name has a left separator, so a box outline looks harsh: show focus as an accent underline + pencil */
 #app .tb-name:focus-visible { outline: none; color: var(--text); }
 #app .tb-name:focus-visible .tb-name__text { box-shadow: inset 0 -2px 0 var(--accent); } /* inset: the text box clips overflow for the ellipsis */
+
+/* =====================================================================================
+   Responsive shell (plan.md 3.4). The shell (shell.js) sets #app[data-layout=wide|medium|narrow]
+   and #app[data-pane=setup|map|results]. wide = the three columns above, untouched.
+   Everything below applies to medium and narrow only, except the touch sizes.
+   ===================================================================================== */
+.tb-more-wrap, .tb-menu__head { display: none; }
+#pane-tabs { display: flex; }
+.pt-tab { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; border: 1px solid transparent; border-radius: 11px; background: transparent; color: var(--text-muted); font-weight: 500; transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease); -webkit-tap-highlight-color: transparent; }
+.pt-tab:hover { color: var(--text); }
+.pt-tab[aria-selected="true"] { color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, var(--bg-elev-2)); border-color: color-mix(in srgb, var(--accent) 38%, transparent); }
+.pt-ico { position: relative; display: grid; }
+.pt-dot { position: absolute; top: -3px; right: -5px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-elev-1); box-sizing: content-box; box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent); animation: app-blink 1.6s ease-in-out 3; }
+
+/* ---------- touch sizes: 40 px minimum for anything you tap (narrow layout, or any coarse pointer) ---------- */
+#app { --hit: 0px; }
+#app[data-layout="narrow"] { --hit: 40px; }
+@media (pointer: coarse) { #app { --hit: 40px; } }
+#app .app-btn, #app .tb-name, #app .app-input, #app .app-stepper, #app .c-row, #app .c-method, #app .app-chip, #app .tb-menu__item, #app .app-switch-row, #app .pt-tab { min-height: var(--hit); }
+#app .app-btn--icon, #app .app-stepper button, #app .app-seg button { min-width: var(--hit); }
+#app .app-seg button, #app .app-stepper button { min-height: var(--hit); }
+#app .app-toast__x { min-width: var(--hit); min-height: var(--hit); }
+#app .app-toast__action { min-height: var(--hit); }
+#app .app-switch input { top: 50%; bottom: auto; height: max(100%, var(--hit)); transform: translateY(-50%); }
+/* 16px stops iOS zooming the page when a field gets focus */
+#app[data-layout="narrow"] :is(.app-input, .tb-name-input) { font-size: 16px; }
+@media (pointer: coarse) { #app :is(.app-input, .tb-name-input) { font-size: 16px; } }
+
+/* ---------- panes: all panes share one grid cell so the hidden ones keep their size, scroll and canvases ---------- */
+#app:not([data-layout="wide"]) :is(#controls, #results, #map-stage) { transition: opacity 160ms var(--ease), visibility 0s linear 0s; }
+#app[data-layout="medium"][data-pane="setup"] #results,
+#app[data-layout="medium"][data-pane="results"] #controls,
+#app[data-layout="narrow"]:not([data-pane="setup"]) #controls,
+#app[data-layout="narrow"]:not([data-pane="map"]) #map-stage,
+#app[data-layout="narrow"]:not([data-pane="results"]) #results {
+  visibility: hidden; opacity: 0; pointer-events: none;
+  transition: opacity 160ms var(--ease), visibility 0s linear 160ms;
+}
+
+/* ---------- medium: 340 px side panel with Setup / Results tabs, map fills the rest ---------- */
+#app[data-layout="medium"] #layout {
+  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "tabs map" "side map";
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+#app[data-layout="medium"] #pane-tabs { grid-area: tabs; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--bg-elev-1); border: 1px solid var(--line); border-radius: var(--radius-md); }
+#app[data-layout="medium"] .pt-tab { height: 38px; }
+#app[data-layout="medium"] :is(#controls, #results) { grid-area: side; }
+#app[data-layout="medium"] #map-stage { grid-area: map; }
+@container topbar (max-width: 940px) {
+  .tb-name { max-width: 20ch; }
+  #app[data-layout="medium"] .tb-title { display: none; }
+  #tb-assume > span:not(.app-icon), #tb-load > span:not(.app-icon):not(.tb-chev) { display: none; }
+  #tb-assume { width: 38px; padding: 0; }
+}
+
+/* ---------- narrow: one pane at a time, bottom tab bar ---------- */
+#app[data-layout="narrow"] { --topbar-h: 52px; --tabbar-h: 60px; }
+#app[data-layout="narrow"] #layout {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "pane" "tabs";
+  gap: 8px; padding: 8px 8px 0;
+}
+#app[data-layout="narrow"] :is(#controls, #map-stage, #results) { grid-area: pane; }
+#app[data-layout="narrow"] #pane-tabs {
+  grid-area: tabs; margin: 0 -8px; box-sizing: border-box;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+  padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px;
+  background: color-mix(in srgb, var(--bg-elev-1) 94%, transparent); border-top: 1px solid var(--line);
+}
+#app[data-layout="narrow"] .pt-tab { flex-direction: column; gap: 1px; font-size: var(--fs-xs); }
+#app[data-layout="narrow"] #controls { gap: 10px; padding: 2px 0 8px; }
+#app[data-layout="narrow"] #controls .c-sec--fill { flex: none; min-height: 0; }
+#app[data-layout="narrow"] #controls .c-sec--fill > .app-card { flex: none; }
+#app[data-layout="narrow"] #controls .c-list { flex: none; overflow: visible; }
+#app[data-layout="narrow"] #map-stage { padding: 8px; gap: 8px; }
+#app[data-layout="narrow"] #results { padding: var(--space-3); }
+
+/* top bar, narrow: logo, name, mode chip, Edit, Demo, ⋯ */
+#app[data-layout="narrow"] #topbar { gap: var(--space-2); padding: 0 12px; }
+#app[data-layout="narrow"] .tb-right { gap: 6px; }
+#app[data-layout="narrow"] .tb-brand { flex: 1 1 0; gap: var(--space-2); }
+#app[data-layout="narrow"] .tb-logo { flex: none; }
+#app[data-layout="narrow"] .tb-title { display: none; }
+#app[data-layout="narrow"] .tb-name { flex: 1 1 0; min-width: 0; padding-left: var(--space-2); border-left: 0; font-size: var(--fs-sm); }
+#app[data-layout="narrow"] .tb-menu-wrap:not(.tb-more-wrap), #app[data-layout="narrow"] #tb-import, #app[data-layout="narrow"] #tb-export, #app[data-layout="narrow"] #tb-assume, #app[data-layout="narrow"] .tb-sep { display: none; }
+#app[data-layout="narrow"] .tb-more-wrap { display: block; }
+#app[data-layout="narrow"] .tb-menu__head { display: block; padding: 6px 10px 2px; color: var(--text-faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; }
+#app[data-layout="narrow"] #tb-edit { padding: 0 10px; gap: 6px; }
+#app[data-layout="narrow"] .app-switch-row { padding: 0 6px; gap: 6px; }
+#app[data-layout="narrow"] .tb-mode { padding: 0 10px; gap: 6px; }
+#topbar.is-renaming .tb-name-input { width: 100%; max-width: none; }
+#app[data-layout="narrow"] #topbar.is-renaming :is(.tb-right, .tb-logo) { display: none; }
+#app[data-layout="narrow"] .tb-name-input { flex: 1 1 0; width: auto; min-width: 0; max-width: none; height: 38px; font-size: 16px; /* 16px stops iOS zooming on focus */ }
+.tb-menu__item--row { display: grid; grid-template-columns: 22px 1fr; column-gap: 10px; align-items: center; }
+.tb-menu__item--row > .app-icon { grid-row: span 2; color: var(--text-muted); }
+@container topbar (max-width: 560px) {
+  .tb-name { display: none; }
+}
+@container topbar (max-width: 440px) {
+  #app[data-layout="narrow"] .app-switch-row > .app-icon { display: none; } /* the Demo label and switch stay */
+}
+@container topbar (max-width: 340px) {
+  #app[data-layout="narrow"] #tb-edit { width: var(--hit); padding: 0; }
+  #app[data-layout="narrow"] #tb-edit > span { display: none; }
+}
+
+/* map strip on narrow: the hint can wrap, a selected node offers a jump to Setup */
+.ms-chip { display: none; }
+#app[data-layout="narrow"] .ms-left { flex: 1 1 auto; min-width: 0; }
+/* while a run plays, the animation's run badge (Baseline / Optimised) sits at the top right of the stage: leave it room */
+#app[data-layout="narrow"] #map-stage:not([data-mode="edit"]) #map-strip { padding-right: 92px; }
+#app[data-layout="narrow"] #map-strip { align-items: stretch; }
+#app[data-layout="narrow"] .ms-hint { height: auto; min-height: 32px; padding: 6px 12px; white-space: normal; border-radius: 16px; line-height: 1.3; }
+#app[data-layout="narrow"] .ms-hint .app-icon { flex: none; }
+#app[data-layout="narrow"] .ms-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line)); background: color-mix(in srgb, var(--accent) 12%, var(--bg-elev-1)); color: var(--accent); font-weight: 500; text-align: left; }
+#app[data-layout="narrow"] .ms-chip__t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#app[data-layout="narrow"] .ms-chip b { font-weight: 600; color: var(--text); }
+#app[data-layout="narrow"] .ms-chip .app-icon { flex: none; }
+#app[data-layout="narrow"] .ms-left:has(.ms-chip) .ms-hint { display: none; }
+
+/* map foot on narrow: the animation HUD owns the reserved 64 px while a run plays; in edit it shows the legend */
+#app[data-layout="narrow"] #map-foot { padding: 0 2px; gap: 6px; overflow: hidden; }
+#app[data-layout="narrow"] .mf-facts { display: none; }
+#app[data-layout="narrow"] .mf-legend { gap: 4px 12px; }
+
+/* portrait phones and tablets: the stage shrinks to the map's own shape instead of floating it in empty space */
+@media (orientation: portrait) {
+  #app[data-layout="narrow"] #map-stage { align-self: start; }
+  #app[data-layout="narrow"] #map-wrap { flex: none; aspect-ratio: var(--map-ar, 1.6); }
+}
+
+/* toasts sit above the bottom tab bar on narrow, and stretch to the screen width */
+#app[data-layout="narrow"] #toast-root {
+  top: auto; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 10px);
+  left: 12px; right: 12px; transform: none; align-items: stretch; flex-direction: column-reverse;
+}
+#app[data-layout="narrow"] .app-toast { max-width: none; }
+#app[data-layout="narrow"] .app-toast.is-leaving { transform: translateY(6px); }
+#app[data-layout="narrow"] .app-toast { animation-name: app-toast-in-up; }
+@keyframes app-toast-in-up { from { opacity: 0; transform: translateY(8px); } }
+
+/* short screens (phones in landscape): shave the chrome so the map gets the height */
+@media (max-height: 560px) {
+  #app[data-layout="narrow"] { --topbar-h: 44px; --tabbar-h: 48px; }
+  #app[data-layout="narrow"] .tb-logo { width: 30px; height: 30px; }
+  #app[data-layout="narrow"] #pane-tabs { padding-top: 4px; padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)); }
+  #app[data-layout="narrow"] .pt-tab { flex-direction: row; gap: 8px; }
+  #app[data-layout="narrow"] #layout { padding-top: 6px; gap: 6px; }
+}
+
+/* phones in landscape: the map takes the whole height, hint/chip and legend move to a column beside it,
+   and the bottom row is only kept free for the animation HUD while a run plays (--hud-reserve) */
+@media (max-height: 560px) and (orientation: landscape) {
+  #app[data-layout="narrow"] #map-stage {
+    --side-w: 232px;
+    display: grid; padding: 6px; gap: 0 10px;
+    grid-template-columns: minmax(0, 1fr) var(--side-w);
+    grid-template-rows: minmax(0, 1fr) var(--stage-foot, 0px);
+  }
+  #app[data-layout="narrow"] #map-stage:not([data-mode="edit"]) { --stage-foot: calc(var(--hud-reserve, 64px) + 6px); }
+  #app[data-layout="narrow"] #map-wrap { grid-column: 1; grid-row: 1; }
+  #app[data-layout="narrow"] #map-strip { grid-column: 2; grid-row: 1 / 3; align-self: start; min-height: 0; }
+  #app[data-layout="narrow"] #map-foot { grid-column: 2; grid-row: 1 / 3; align-self: end; height: auto; padding: 0; }
+  #app[data-layout="narrow"] .mf-legend { display: flex; flex-direction: column; gap: 4px; }
+}
+@media (max-height: 560px) {
+  #app[data-layout="narrow"] .tb-menu { padding: 4px; }
+  #app[data-layout="narrow"] .tb-menu__item { padding: 4px 10px; }
+  #app[data-layout="narrow"] .tb-menu__item > span { display: none; }
+  #app[data-layout="narrow"] .tb-menu__item[data-cmd="rename"] > span { display: block; }
+  #app[data-layout="narrow"] .tb-menu__div { margin: 2px 6px; }
+  #app[data-layout="narrow"] .tb-menu__head { padding-top: 2px; }
+}

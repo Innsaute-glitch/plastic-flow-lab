@@ -50,6 +50,9 @@
   --controls-w: 320px;
   --results-w: 400px;
   --topbar-h: 56px;
+  --drawer-w: 440px; /* right-hand drawers; full width below 480px (base.css) */
+  --touch-min: 40px; /* smallest touch target on the narrow layout */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 
   /* map treatment */
   --map-filter: brightness(0.55) saturate(0.45) contrast(1.05);

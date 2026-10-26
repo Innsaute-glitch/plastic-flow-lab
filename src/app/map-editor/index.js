@@ -26,7 +26,24 @@ export function mount(el, store) {
   const coarse = () => coarseMQ.matches;
   const appEl = document.getElementById('app');
   const isNarrow = () => appEl?.dataset.layout === 'narrow';
-  const TOUCH_PICK_PX = 22; // a finger picks the nearest marker within this many screen px (>= 44 px target)
+  const TOUCH_PICK_PX = 20; // a finger picks the nearest marker within this many screen px (matches the 20 px hit radius)
+  // Narrow portrait: the map is sized from the pane HEIGHT and is wider than the screen; the wrap pans sideways.
+  const canPan = () => appEl?.dataset.layout === 'narrow' && appEl?.dataset.orient === 'portrait';
+  let centredFor = '';
+  let panned = false; // the user has swiped: the one-time hint goes away for good
+  let ignoreScrollUntil = 0;
+  const swipe = document.createElement('div');
+  swipe.className = 'ms-swipe';
+  swipe.hidden = true;
+  swipe.setAttribute('aria-hidden', 'true');
+  swipe.innerHTML = `${icon('arrow', 14)}<span>Swipe the map sideways</span>`;
+  el.appendChild(swipe);
+  const setScroll = (x) => { ignoreScrollUntil = performance.now() + 150; wrap.scrollLeft = x; };
+  wrap.addEventListener('scroll', () => {
+    if (panned || performance.now() < ignoreScrollUntil) return;
+    panned = true;
+    swipe.hidden = true;
+  }, { passive: true });
 
   /* ---------- sizing ---------- */
   function fit() {
@@ -34,12 +51,17 @@ export function mount(el, store) {
     const ar = map.widthPx / map.heightPx;
     const cw = wrap.clientWidth, ch = wrap.clientHeight;
     if (!cw || !ch) return;
-    const w = Math.floor(Math.min(cw, ch * ar));
+    const pan = canPan();
+    const w = Math.floor(pan ? ch * ar : Math.min(cw, ch * ar));
     frame.style.width = `${w}px`;
     frame.style.height = `${Math.floor(w / ar)}px`;
     k = w / map.widthPx;
     frame.style.setProperty('--inv', String(1 / k));
-    wrap.style.setProperty('--map-ar', String(ar)); // lets the narrow layout shrink the map pane to the image's shape
+    const overflow = pan && w > cw + 8;
+    swipe.hidden = !overflow || panned;
+    // first show (and after a resize or rotation, until the user swipes): centred. fit() also runs on every store update, so only on a new size
+    const sizeKey = `${w}x${cw}`;
+    if (overflow && !panned && sizeKey !== centredFor) { centredFor = sizeKey; setScroll((w - cw) / 2); }
     updateScale(map);
   }
   function updateScale(map) {
@@ -52,6 +74,9 @@ export function mount(el, store) {
   }
   const ro = new ResizeObserver(() => { fit(); redrawLabels(); drawStrip(store.get()); });
   ro.observe(wrap);
+  // the shell flips these attributes on rotation: re-fit even when the wrap's own size did not change
+  const mo = new MutationObserver(() => { fit(); redrawLabels(); drawStrip(store.get()); });
+  if (appEl) mo.observe(appEl, { attributes: true, attributeFilter: ['data-layout', 'data-orient'] });
 
   /* ---------- helpers ---------- */
   const toImage = (e) => {
@@ -206,15 +231,16 @@ export function mount(el, store) {
     const { scenario: sc, ui } = s;
     const unplaced = sc.nodes.find((n) => n.x == null);
     const verb = coarse() ? 'Tap' : 'Click';
+    const nrw = isNarrow(); // narrow: one short line
     let hint = '';
-    if (s.mode !== 'edit') hint = `<span class="ms-hint">${icon('info', 15)}<span>Replaying the model run. Press Edit to change the map.</span></span>`;
+    if (s.mode !== 'edit') hint = `<span class="ms-hint">${icon('info', 15)}<span>${nrw ? 'Replaying the model run' : 'Replaying the model run. Press Edit to change the map.'}</span></span>`;
     else if (unplaced && s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>Place: <b>${esc(unplaced.name)}</b></span></span>`;
     else if (s.tool === 'add-node') hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${verb} the map to add a node (${sc.nodes.length}/${MAX_NODES})</span></span>`;
     else if (s.tool === 'place-facility') hint = `<span class="ms-hint ms-hint--accent">${icon('factory', 15)}<span>${verb} the map to place the facility</span></span>`;
-    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? `${verb} the first point · this rescales all distances and costs` : `${verb} the second point`}</span></span>`;
-    else if (unplaced) hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${sc.nodes.filter((n) => n.x == null).length} node(s) need a place. Use the pin tool.</span></span>`;
+    else if (s.tool === 'calibrate') hint = `<span class="ms-hint ms-hint--accent">${icon('ruler', 15)}<span>${calib.length === 0 ? (nrw ? `${verb} the first point to rescale` : `${verb} the first point · this rescales all distances and costs`) : `${verb} the second point`}</span></span>`;
+    else if (unplaced) hint = `<span class="ms-hint ms-hint--accent">${icon('pin-plus', 15)}<span>${sc.nodes.filter((n) => n.x == null).length} node(s) need a place.${nrw ? '' : ' Use the pin tool.'}</span></span>`;
     else if (!sc.nodes.length && !sc.facility) hint = `<span class="ms-hint">${icon('info', 15)}<span>${isNarrow() ? 'Pick a tool in Setup' : 'Pick a tool on the left'}, or load the demo.</span></span>`;
-    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>Drag markers to move them. ${coarse() ? 'Tap' : 'Hover'} a marker for its name.</span></span>`;
+    else hint = `<span class="ms-hint">${icon('cursor', 15)}<span>${nrw ? `Drag to move · ${coarse() ? 'tap' : 'hover'} for the name` : `Drag markers to move them. ${coarse() ? 'Tap' : 'Hover'} a marker for its name.`}</span></span>`;
     // narrow layout: the map and Setup are separate panes, so a selected node offers a one-tap jump to its editor
     const sel = s.mode === 'edit' && s.selectedNodeId
       ? (s.selectedNodeId === 'facility' ? (sc.facility ? { name: sc.facility.name || 'sorting facility' } : null) : sc.nodes.find((n) => n.id === s.selectedNodeId))
@@ -317,6 +343,7 @@ export function mount(el, store) {
     return best;
   }
   svg.addEventListener('pointerdown', (e) => {
+    cancelAnimationFrame(flingRaf);
     const s = store.get();
     if (s.mode !== 'edit') {
       const live = e.target.closest?.('.mk');
@@ -328,12 +355,36 @@ export function mount(el, store) {
     let id = g?.dataset.id ?? null;
     if (e.pointerType !== 'mouse' && s.tool === 'select') id = nearestMarker(e, s) ?? id;
     drag = { id, sx: e.clientX, sy: e.clientY, moved: false, pos: null };
+    // touch on the background of a pannable map: the finger scrolls the wrap (SVG ignores per-marker touch-action, so we do it by hand)
+    if (!id && e.pointerType !== 'mouse' && canPan()) Object.assign(drag, { pan: true, scroll0: wrap.scrollLeft, lastX: e.clientX, lastT: e.timeStamp, vx: 0 });
     svg.setPointerCapture(e.pointerId);
     if (id && s.tool !== 'calibrate') {
       drag.origin = id === 'facility' ? s.scenario.facility : s.scenario.nodes.find((n) => n.id === id);
     }
   });
+  let flingRaf = 0;
+  function fling(v) { // a little inertia after a swipe, px per ms
+    cancelAnimationFrame(flingRaf);
+    let last = performance.now();
+    const step = (t) => {
+      const dt = t - last; last = t;
+      wrap.scrollLeft += v * dt;
+      v *= Math.pow(0.994, dt);
+      if (Math.abs(v) > 0.03) flingRaf = requestAnimationFrame(step);
+    };
+    flingRaf = requestAnimationFrame(step);
+  }
   svg.addEventListener('pointermove', (e) => {
+    if (drag?.pan) {
+      const dx = e.clientX - drag.sx;
+      if (!drag.moved && Math.abs(dx) < 6 && Math.abs(e.clientY - drag.sy) < 6) return;
+      drag.moved = true;
+      wrap.scrollLeft = drag.scroll0 - dx;
+      const dt = e.timeStamp - drag.lastT;
+      if (dt > 0) drag.vx = 0.8 * drag.vx + 0.2 * ((drag.lastX - e.clientX) / dt);
+      drag.lastX = e.clientX; drag.lastT = e.timeStamp;
+      return;
+    }
     if (!drag?.origin) return;
     if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
     drag.moved = true;
@@ -352,6 +403,7 @@ export function mount(el, store) {
     const d = drag;
     drag = null;
     svg.classList.remove('is-dragging');
+    if (d.pan && d.moved) { if (Math.abs(d.vx) > 0.2 && e.timeStamp - d.lastT < 80) fling(d.vx); return; }
     const s = store.get();
     if (d.id && d.origin) {
       if (d.moved && d.pos) moveNode(store, d.id, d.pos[0], d.pos[1]);
@@ -412,5 +464,5 @@ export function mount(el, store) {
   }
   render(store.get());
   const off = store.subscribe(render);
-  return () => { off(); ro.disconnect(); clearTimeout(pinTimer); document.removeEventListener('keydown', onKey); };
+  return () => { off(); ro.disconnect(); mo.disconnect(); swipe.remove(); clearTimeout(pinTimer); document.removeEventListener('keydown', onKey); };
 }

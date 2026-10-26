@@ -283,7 +283,7 @@ button { cursor: pointer; }
 .c-maprow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
 
 /* ---------- toasts ---------- */
-#toast-root { position: fixed; z-index: 100; left: 50%; top: calc(var(--topbar-h) + 14px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+#toast-root { position: fixed; z-index: 45; /* above the top bar, under drawers (50), sheets (60) and popovers (80): a toast never covers their content */ left: 50%; top: calc(var(--topbar-h) + 14px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
 .app-toast { pointer-events: auto; display: flex; align-items: center; gap: 10px; max-width: min(560px, 92vw); padding: 10px 12px 10px 14px; border-radius: var(--radius-md); background: var(--bg-elev-2); border: 1px solid var(--line); box-shadow: var(--shadow-card); animation: app-toast-in 250ms var(--ease); }
 .app-toast.is-leaving { opacity: 0; transform: translateY(-6px); transition: all 200ms var(--ease); }
 .app-toast--info .app-toast__icon { color: var(--accent); }
@@ -341,7 +341,9 @@ button { cursor: pointer; }
 #app .app-seg button, #app .app-stepper button { min-height: var(--hit); }
 #app .app-toast__x { min-width: var(--hit); min-height: var(--hit); }
 #app .app-toast__action { min-height: var(--hit); }
-#app .app-switch input { top: 50%; bottom: auto; height: max(100%, var(--hit)); transform: translateY(-50%); }
+#app .app-switch { height: max(22px, var(--hit)); }
+#app .app-switch input { height: 100%; }
+#app .app-switch i { box-sizing: border-box; top: 50%; bottom: auto; height: 22px; transform: translateY(-50%); }
 /* 16px stops iOS zooming the page when a field gets focus */
 #app[data-layout="narrow"] :is(.app-input, .tb-name-input) { font-size: 16px; }
 @media (pointer: coarse) { #app :is(.app-input, .tb-name-input) { font-size: 16px; } }
@@ -435,7 +437,8 @@ button { cursor: pointer; }
 /* while a run plays, the animation's run badge (Baseline / Optimised) sits at the top right of the stage: leave it room */
 #app[data-layout="narrow"] #map-stage:not([data-mode="edit"]) #map-strip { padding-right: 92px; }
 #app[data-layout="narrow"] #map-strip { align-items: stretch; }
-#app[data-layout="narrow"] .ms-hint { height: auto; min-height: 32px; padding: 6px 12px; white-space: normal; border-radius: 16px; line-height: 1.3; }
+#app[data-layout="narrow"] .ms-hint { max-width: 100%; box-sizing: border-box; padding: 0 12px; }
+#app[data-layout="narrow"] .ms-hint > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #app[data-layout="narrow"] .ms-hint .app-icon { flex: none; }
 #app[data-layout="narrow"] .ms-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line)); background: color-mix(in srgb, var(--accent) 12%, var(--bg-elev-1)); color: var(--accent); font-weight: 500; text-align: left; }
 #app[data-layout="narrow"] .ms-chip__t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -448,9 +451,20 @@ button { cursor: pointer; }
 #app[data-layout="narrow"] .mf-facts { display: none; }
 #app[data-layout="narrow"] .mf-legend { gap: 4px 12px; }
 
-/* portrait phones and tablets: the stage shrinks to the map's own shape instead of floating it in empty space */
-#app[data-layout="narrow"][data-orient="portrait"] #map-stage { align-self: start; }
-#app[data-layout="narrow"][data-orient="portrait"] #map-wrap { flex: none; aspect-ratio: var(--map-ar, 1.6); }
+/* portrait phones and tablets: the map is sized from the pane HEIGHT (see fit() in map-editor), so it is wider than the screen and the
+   wrap pans sideways with a finger. The edit layer keeps touch-action none; map-editor pans the wrap itself when a finger drags the background
+   (so marker drags still move nodes), and in replay the layer is pointer-events none so the wrap scrolls natively. */
+#app[data-layout="narrow"][data-orient="portrait"] #map-wrap { display: flex; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+#app[data-layout="narrow"][data-orient="portrait"] #map-wrap::-webkit-scrollbar { display: none; }
+#app[data-layout="narrow"][data-orient="portrait"] #map-frame { flex: none; margin: auto; }
+.ms-swipe { display: none; }
+#app[data-layout="narrow"][data-orient="portrait"] .ms-swipe:not([hidden]) {
+  display: flex; align-items: center; gap: 8px; position: absolute; z-index: 6; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--hud-reserve, 64px) + 26px); padding: 6px 14px; border-radius: 999px; white-space: nowrap; pointer-events: none;
+  font-size: var(--fs-xs); color: var(--text); background: color-mix(in srgb, var(--bg) 82%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  backdrop-filter: blur(6px); animation: app-swipe-nudge 2.4s var(--ease) infinite;
+}
+@keyframes app-swipe-nudge { 50% { transform: translateX(calc(-50% + 6px)); } }
 
 /* toasts sit above the bottom tab bar on narrow, and stretch to the screen width */
 #app[data-layout="narrow"] #toast-root {
@@ -480,8 +494,10 @@ button { cursor: pointer; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-stage:not([data-mode="edit"]) { --stage-foot: calc(var(--hud-reserve, 64px) + 6px); }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-wrap { grid-column: 1; grid-row: 1; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-strip { grid-column: 2; grid-row: 1 / 3; align-self: start; min-height: 0; }
-#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-foot { grid-column: 2; grid-row: 1 / 3; align-self: end; height: auto; padding: 0; }
-#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .mf-legend { display: flex; flex-direction: column; gap: 4px; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] #map-foot { grid-column: 2; grid-row: 1 / 3; align-self: end; padding: 0; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .mf-legend { display: flex; flex-flow: column wrap; align-content: flex-start; gap: 4px 12px; height: 100%; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .ms-hint { height: auto; min-height: 32px; padding: 6px 12px; white-space: normal; border-radius: 16px; line-height: 1.3; }
+#app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .ms-hint > span:last-child { white-space: normal; overflow: visible; }
 #app[data-layout="narrow"][data-short="true"] .tb-menu { padding: 4px; }
 #app[data-layout="narrow"][data-short="true"] .tb-menu__item { padding: 4px 10px; }
 #app[data-layout="narrow"][data-short="true"] .tb-menu__item > span { display: none; }

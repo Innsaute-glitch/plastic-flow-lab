@@ -1,5 +1,7 @@
 # Plan: Plastic waste collection simulator ("the LLM proposes, the simulation verifies")
 
+*Status (26 Oct 2026): built; contracts at v0.3. The task list (§3.2) is kept as the record of how the app was built, with facts updated to the current app: the real Thapar map, up to 40 nodes, and the explainer merged into `docs/TEAM-GUIDE.md`.*
+
 Brief: `project-brief.md`. Decisions so far: vanilla JS (ES modules) + Vite, Node backend, Claude Sonnet 5.5 called by default through the local Claude Code subscription (`claude -p`), with the Anthropic API as a switchable fallback. Route order is NOT proposed by the LLM; the sim computes routes. A cost metric with a budget rule is added. Nodes are placed by clicking the map.
 
 ---
@@ -270,14 +272,15 @@ Editing the scenario (nodes, setup, map, assumptionOverrides) sets `baseline`, `
 ```
 plastic_project/
   package.json  vite.config.js  index.html*  .env.example  .gitignore
-  CLAUDE.md  plan.md  notes.md  project-brief.md
+  CLAUDE.md  plan.md  notes.md  project-brief.md  README.md  GETTING-STARTED.md
+  start-windows.bat  start-mac.command
   config/            assumptions.json  ui.json  llm.json
   data/              README.md  nodes.template.csv
-  docs/              HOW-IT-WORKS.md
+  docs/              TEAM-GUIDE.md  FIELD-DATA-GUIDE.md  TEAMMATE-TASKS.md  images/
   fixtures/          (see 3.3)
   public/
-    maps/            placeholder-campus.svg  README.md
-    demo/            demo-scenario.json  cached-proposal.json
+    maps/            campus.jpg  campus-labelled.jpg  campus-reference.jpg  placeholder-campus.svg  README.md
+    demo/            demo-scenario.json  demo-scenario-after.json  cached-proposal.json
   server/            index.js  api.js  providers/  prompts/optimise.system.md  cli-optimise.mjs  test/
   src/
     main.js*         entry: loads config, creates the store, mounts modules
@@ -288,14 +291,15 @@ plastic_project/
     results/         results panel, sankey, compare, ai-activity, ai-drawer
     assumptions/     assumptions panel
     styles/          tokens.css base.css fonts.css
+    shared/          assumptions.js (applyOverrides) budget.js (budgetCap, budgetCheck)
 ```
 `*` = owned by Task 3.
 
 ### File ownership
 | Task | Owns |
 |---|---|
-| Orchestrator | `package.json`, `vite.config.js`, `config/*`, `src/shared/*`, `data/*`, `fixtures/*`, `public/maps/*`, `public/demo/demo-scenario.json`, `plan.md`, `CLAUDE.md`, `.env.example` |
-| 1 Sim | `src/sim/**`, `docs/HOW-IT-WORKS.md` |
+| Orchestrator | `package.json`, `vite.config.js`, `config/*`, `src/shared/*`, `data/*`, `fixtures/*`, `public/maps/*`, `public/demo/demo-scenario.json`, `public/demo/demo-scenario-after.json`, `plan.md`, `CLAUDE.md`, `.env.example`, top-level docs (`README.md`, `GETTING-STARTED.md`, `project-brief.md`, `notes.md`), `docs/**`, start scripts |
+| 1 Sim | `src/sim/**` |
 | 2 LLM | `server/**`, `src/llm/**`, `public/demo/cached-proposal.json` |
 | 3 App shell & editor | `index.html`, `src/main.js`, `src/app/**` |
 | 4 Animation | `src/anim/**` |
@@ -324,7 +328,7 @@ Nobody edits another task's files. The stubs in `src/sim/index.js` and `src/llm/
 
 ## Task 1: Simulation engine            [complex]
 Depends on: nothing (contracts + `config/assumptions.json` + `fixtures/scenario.demo.json`)
-Owns: `src/sim/**`, `docs/HOW-IT-WORKS.md`
+Owns: `src/sim/**`
 
 Accepts:     `scenario`, `setup`, `assumptions`, `seed`, as specified in §3.1
 Produces:    `Results` exactly as specified in §3.1 (summary, perNode, flows, timeline)
@@ -332,7 +336,7 @@ Does:
 - Seeded PRNG (mulberry32), hourly generation with an active-hours and peak profile, bin fill and overflow, litter vs side waste, the end-of-day pickup rule, daily routing (brute force ≤ 8 stops / NN + 2-opt), facility queue with a throughput cap, sorting by method (accuracy, contaminant detection, process loss), flow aggregation, metrics, and cost through `computeCost`.
 - Contamination model: base fraction per waste type + a single-bin cross-contamination add-on (segregated bins reduce it by the compliance factor) + side waste that counts as fully contaminated. All parameters come from `assumptions.json`.
 - `npm run test:sim` runs the tests and prints a readable summary table for `fixtures/scenario.demo.json` (baseline vs `fixtures/proposal.json` setup).
-- Writes `docs/HOW-IT-WORKS.md`: a one-page, plain-words explainer of the sim plus a paragraph on the optimise loop, for the three team members.
+- Wrote `docs/HOW-IT-WORKS.md`, a one-page plain-words explainer of the sim and the optimise loop. It has since been merged into `docs/TEAM-GUIDE.md` (sections 5 and 13).
 Does NOT:    touch the DOM, use `Math.random`/`Date`, read files inside `simulate` (the test script reads files), or call the LLM
 Tools:       plain JS, Node's built-in `node:test` + `node:assert` (no test framework)
 Done-check:  `npm run test:sim` passes all of these:
@@ -383,23 +387,23 @@ Owns: `index.html`, `src/main.js`, `src/app/**`
 Accepts:     `config/*.json`, Scenario files, CSV per `data/nodes.template.csv`
 Produces:    the State and store (§3.1); the mounted layout; the actions
 Does:
-- `index.html` + `layout.css`: a three-column layout of controls (left, about 320px), map stage (centre, flexible) and results (right, about 400px), plus a top bar with the title, Demo-mode toggle, Load demo, Import/Export and Assumptions buttons.
+- `index.html` + `layout.css`: a three-column layout of controls (left, about 320px), map stage (centre, flexible) and results (right, about 400px), plus a top bar with the title, the scenario name (click to rename), the mode chip, Demo-mode toggle, a Load demo menu (the two Thapar campuses, or Blank campus with Undo), Import/Export and Assumptions buttons.
 - Mount points with these ids: `#controls`, `#map-stage` (containing `<img id="map-image">`, `<svg id="map-edit-layer">`, `<canvas id="map-anim-layer">`), `#results`, `#overlay-root` (for drawers/modals), `#toast-root`. `main.js` mounts `src/anim/player.js` on `#map-stage`, `src/results/index.js` on `#results` and `src/assumptions/index.js` on `#overlay-root`.
 - The map stage keeps the image aspect ratio and applies the darkened/desaturated CSS filter. Google attribution stays visible bottom-right, taken from `scenario.map.attribution`.
 - Edit layer (SVG, in image-pixel viewBox):
-  - Click to add a node (max 10; adding is disabled with a toast when full).
+  - Click to add a node (max 40; adding is disabled with a toast when full).
   - A separate tool places the facility.
   - Nodes can be dragged to move, show glowing markers coloured by waste type, and show their name labels.
   - Select a node to edit it; delete is available.
-- Calibrate tool: click two points, enter the metres between them, and it sets `map.metresPerPixel`. A "Change map image" option takes a file input and sets `map.src` (object URL / data URL), `widthPx` and `heightPx`.
+- Calibrate tool (in the Map card, not the toolbar, because it rescales every distance): click two points, enter the metres between them, and it sets `map.metresPerPixel`; scales that make the map narrower than 50 m or wider than 50 km are refused (limits in `config/ui.json`). A "Change image" option (also in the Map card) takes a file input and sets `map.src` (object URL / data URL), `widthPx` and `heightPx`.
 - Node editor in the controls panel: name, waste type (icon chips), rate kg/day, peak toggle with start/end/multiplier, bin type, bin count, capacity (allowed values), and pickup interval. The facility gets a sorting method selector. Labels are short, with icons.
 - Run button → `runBaseline`. Optimise button (enabled once a baseline exists) → `runOptimise`, which runs `optimise()`, then `simulate` on the proposal, then the sweep over `ui.sweepSeeds` seeds for both setups, then `mode: "compare"`, then a playback of the optimised run.
-- `io.js`: export/import of the full Scenario JSON (including `lastProposal`), CSV import (positions optional; nodes without x/y are placed by clicking, one by one, with a "Place: <name>" prompt), and Load demo (fetches `demo/demo-scenario.json`).
+- `io.js`: export/import of the full Scenario JSON (including `lastProposal`), CSV import (positions optional; nodes without x/y are placed by clicking, one by one, with a "Place: <name>" prompt), and Load demo (fetches `demo/demo-scenario.json` or `demo/demo-scenario-after.json`).
 - `notify.js` toasts.
 Does NOT:    compute any outcome itself (calls `simulate`), draw animation (Task 4), or render results or the AI activity (Task 5)
 Tools:       vanilla DOM + SVG; no framework
 Done-check:  `npm run dev`, then in the browser:
-- Load demo shows 10 nodes and the facility on the placeholder map.
+- Load demo shows 40 nodes and the facility on the Thapar map.
 - Add, drag and delete a node, and edit its fields.
 - Run → the store has `baseline.results` (taken from the stub or the real sim).
 - Export and then import give a deep-equal scenario.
@@ -424,7 +428,7 @@ Does:
 - Respects `prefers-reduced-motion` (shows the final frame directly).
 Does NOT:    compute fills, overflow or routes (reads them only), draw the edit-mode markers (Task 3), or use any library
 Tools:       Canvas 2D
-Done-check:  a standalone harness page `src/anim/dev.html` (served by Vite at `/src/anim/dev.html`) plays `fixtures/results.baseline.json` on the placeholder map. It finishes in 30 s ± 1 at 1× with day 30 shown. Bins go red and leak on overflow days, trucks follow paths, and DevTools Performance shows no long frames over 50 ms.
+Done-check:  a standalone harness page `src/anim/dev.html` (served by Vite at `/src/anim/dev.html`) plays `fixtures/results.baseline.json` on the campus map. It finishes in 30 s ± 1 at 1× with day 30 shown. Bins go red and leak on overflow days, trucks follow paths, and DevTools Performance shows no long frames over 50 ms.
 
 ## Task 5: Results panel, Sankey, before/after, AI activity            [complex]
 Depends on: `fixtures/results.baseline.json`, `fixtures/results.optimised.json`, `fixtures/proposal.json`, `fixtures/sweep.json`, `fixtures/llm-stream-events.json`, `config/ui.json`
@@ -470,17 +474,17 @@ Multi-round loop (not in v1 anyway) → seed sweep → peak windows → animated
 - **Sim correctness:** believable-but-wrong numbers. Mitigated by the golden hand-computed tests, the mass-balance invariant and determinism tests.
 - **`claude -p` on the demo laptop:** it needs to be logged in, and it adds startup latency (about 3–10 s). Mitigated by demo mode (cached), the heuristic fallback and the `anthropic-api` switch. The subscription route is only for this local, personal tool.
 - **The optimiser "winning" by brute force:** mitigated by the cost metric and the budget rule in both the prompt and the compare view.
-- **Placeholder numbers in `assumptions.json`:** every value is marked `estimate: true` until the research teammate supplies sources.
+- **Estimated numbers in `assumptions.json`:** every value without a source is marked `estimate: true` (24 of 34 today, each with its reasoning).
 - **Polish with Haiku builders:** visual quality needs an orchestrator review pass with screenshots.
 
 ---
 
 ## 3.3 Fixtures
-Fixture numbers are **fake but shape-exact**. `fixtures/make-fixtures.mjs` regenerates them; it is not a simulation.
+Fixture numbers are **fake but shape-exact**. `fixtures/make-fixtures.mjs` regenerates them; it is not a simulation. It is also the **source of truth for the demo campuses** (`npm run fixtures`). Hand-computed tests read the frozen copies in `fixtures/golden/` (the original 10-node scenario and placeholder assumptions), which are never regenerated.
 
 | File | Mirrors | Used by |
 |---|---|---|
-| `scenario.demo.json` | Scenario (10 nodes + facility, baseline setup) | 1, 2, 3, 4, 5 |
+| `scenario.demo.json` | Scenario (the 40-node Thapar 2023 campus + facility, baseline setup) | 1, 2, 3, 4, 5 |
 | `results.baseline.json` | Results incl. a 720-frame timeline (lots of overflow) | 3, 4, 5, 2 |
 | `results.optimised.json` | Results (little overflow) | 4, 5 |
 | `proposal.json` | Proposal (`source: "llm"`) | 1 (test table), 3, 5 |
@@ -488,7 +492,7 @@ Fixture numbers are **fake but shape-exact**. `fixtures/make-fixtures.mjs` regen
 | `llm-stream-events.json` | an array of `LlmEvent`s for replay | 2, 5 |
 | `sweep.json` | `state.sweep` | 5 |
 
-Also: `public/demo/demo-scenario.json` (a copy of `scenario.demo.json`), `public/demo/cached-proposal.json` (seeded from `proposal.json` with `source: "cached"`; regenerated live at integration), and `data/nodes.template.csv`.
+Also written by the same script: `public/demo/demo-scenario.json` (a copy of `scenario.demo.json`) and `public/demo/demo-scenario-after.json` (same campus, all segregated). `public/demo/cached-proposal.json` is a real Claude answer, regenerated with `server/cli-optimise.mjs` whenever the demo changes. `data/nodes.template.csv` holds three example Thapar rows.
 
 ## Parallelism
 All six tasks start at once. Tasks 3, 4 and 5 build against the fixtures and stubs, and Task 2 uses the fixture baseline. The only late dependency is regenerating the cached proposal from real sim output, which the orchestrator does at integration. Task 6's tokens are seeded now, so the other tasks can use the variable names immediately.

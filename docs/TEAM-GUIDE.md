@@ -1,6 +1,6 @@
 # Plastic Flow Lab — Team Guide
 
-*Last updated 25 Oct 2026. Beginner setup: [GETTING-STARTED.md](../GETTING-STARTED.md).*
+*Last updated 26 Oct 2026. Beginner setup: [GETTING-STARTED.md](../GETTING-STARTED.md). This guide also replaces the old short explainer, `docs/HOW-IT-WORKS.md`: for the short version, read section 1, then the "How does the simulation work?" answer in section 13.*
 
 Plastic Flow Lab simulates a campus plastic-waste collection and sorting system for 30 days, asks an AI to propose a better setup, then re-runs the simulation to measure whether the proposal actually helps. This guide explains what it does, how to run it, how every part works, and how to answer viva questions about it.
 
@@ -49,8 +49,6 @@ The cached AI answer is a real Claude Sonnet 5.5 answer for the 2023 campus. Res
 
 Reading it honestly: given the 2023 campus, the AI independently proposed nearly what Thapar actually did with Saahas (segregation at 35 of the 40 points). It went further on overflow, recovery and CO₂e by right-sizing bins and adding a float-tank sorter. Saahas's real plan ends with a slightly larger surplus and less landfill, because it segregates everywhere without any extra sorting cost. The AI's float-tank sorter loses a little more in processing, so its landfill is about the same as before (494 vs 484 kg). So the AI matches the real decision and beats it on some measures, not all. Both numbers come from our model with estimated inputs, not from measurements. The AI's improvement is also checked on 5 random seeds.
 
-Screenshots in `docs/images/` were taken before the real map and may look different.
-
 ### What the app is not
 
 - Not a presentation: it has no landing page or theory text. The PPT covers the theory; the app is a working tool.
@@ -82,10 +80,10 @@ This installs the only dependencies: Vite (the dev server and bundler), d3-sanke
 | --- | --- | --- |
 | `npm run dev` | Starts the app at http://localhost:5173 with the AI endpoint built in | While working on it, and for most demos |
 | `npm start` | Builds an optimised version into `dist/` and serves it at http://localhost:8787 | The presentation laptop, or to check the final build |
-| `npm test` | Runs all 50 automated tests (simulation, AI layer, app, animation, results) | After any change, before presenting |
+| `npm test` | Runs all 60 automated tests (simulation, AI layer, app, animation, results) | After any change, before presenting |
 | `npm run test:sim` | Simulation tests only, then prints a baseline-vs-proposal table | To show the sim's numbers in a terminal |
 | `node server/cli-optimise.mjs <scenario.json> <results.json>` | Makes one live AI call from the terminal and prints the proposal | To regenerate the cached demo answer |
-| `npm run fixtures` | Rebuilds the fake test data in `fixtures/` | Rarely; only the developer test pages use it |
+| `npm run fixtures` | Rebuilds the two demo campuses (`public/demo/demo-scenario.json` and `demo-scenario-after.json`) from `fixtures/make-fixtures.mjs`, plus the fake test data in `fixtures/` | After changing the demo nodes, rates or bins in `fixtures/make-fixtures.mjs` (the source of truth for the demo data); then regenerate the cached AI answer |
 
 ### Demo mode vs live AI
 
@@ -112,14 +110,14 @@ Open `config/llm.json` and change `"provider": "claude-cli"` to `"provider": "an
 
 ## 4. Using the app
 
-The screen has three columns: **controls on the left**, the **map in the centre**, **results on the right**. The top bar shows the current mode (Editing, Running, Results, Optimising, Compare), the Demo switch, Load demo, Import, Export and Assumptions.
+The screen has three columns: **controls on the left**, the **map in the centre**, **results on the right**. The top bar shows the scenario name (click it to rename; Export uses it as the file name), the current mode (Editing, Running, Results, Optimising, Compare), the Demo switch, the **Load demo** menu (the two Thapar campuses, or **Blank campus**), Import, Export and Assumptions.
 
 ### The 3-minute demo path (rehearse this)
 
 1. **Load demo, "before" (Thapar 2023).** 40 campus nodes and the sorting facility (the MRF) appear on the real satellite map. Each node's colour is its waste type.
 2. **Switch Demo on** (top bar) so nothing depends on the internet.
 3. **Run.** The 30 days replay in about 30 seconds. Waste dots flow into bins, bin meters rise green → amber → red, overflowing bins pulse red and drop litter specks, and the truck draws its route to the facility on pickup days. The HUD (bottom-left) shows the day, how many bins are full, kg of litter and kg sorted. Use **2× / 4×** or **Skip to end** if short on time.
-4. **Read the baseline results** (right column). Point at overflow bin-days (44), recovery (18.4%) and the flow diagram: the red band from Generated to "Overflow → litter" is plastic lost to the environment.
+4. **Read the baseline results** (right column). Point at overflow bin-days (44), recovery (18.4%) and the flow diagram: of about 7,200 kg sorted, only about 2,200 kg ends up in clean PET/HDPE/PP bales; nearly 2,000 kg is pulled out as contaminated, because everything goes into one mixed bin.
 5. **Optimise.** The AI card shows the stages (Sending → Thinking → Validating) and the AI's answer streaming in, with each node's reason popping out as it arrives. Pressed it by mistake? **Cancel** (the Optimise button turns into it, there's one on the AI card, or press Esc) stops the request at once: the server stops Claude so no more tokens are used, there is no retry, and the app goes back to the baseline results.
 6. **Before → after.** The map replays the AI's plan. The right column shows the big headline (44 → 0 overflow bin-days), each metric with its change, the budget check, the 5-seed check, the flow diagram (toggle Before/After, or expand to side by side) and the list of changes with the AI's reason for each.
 7. **Then load "after" (Thapar 2024) and press Run** to show what Thapar really did with Saahas, and compare it with the AI's plan using the table in section 1.
@@ -129,11 +127,11 @@ The screen has three columns: **controls on the left**, the **map in the centre*
 
 | Tool or control | What it does |
 | --- | --- |
-| **Select** | Click a node to edit it in the left panel; drag a node to move it. Delete key removes the selected node; Esc deselects. |
-| **Add** | Click the map to place a new node (maximum 40). |
-| **Place** | Click the map to place the sorting facility (it does not count toward the 40). |
+| **Select** (toolbar) | Click a node to edit it in the left panel; drag a node to move it. Delete key removes the selected node; Esc deselects. |
+| **Add** (toolbar, or **+** on the Nodes card) | Click the map to place a new node (maximum 40; the Nodes card shows the count, e.g. 40/40). |
+| **Place** (toolbar) | Click the map to place or move the sorting facility (it does not count toward the 40). |
 | **Calibrate** (Map card) | Click two points on the map, then type the real distance between them in metres. This sets the map scale used for truck distances, so it rescales every distance and cost. The Thapar map is already calibrated, so this is only needed after **Change image**. |
-| **Change image** | Load a different map screenshot (any campus or town). |
+| **Change image** (Map card) | Load a different map screenshot (any campus or town). |
 | Node editor | Name, waste type (icon chips), rate in kg/day, optional peak window (start hour, end hour, multiplier), bin type (single or segregated), bin count, bin size (60/120/240/660 L), pickup interval in days. |
 | Sorting facility | Manual (350 kg/day), Manual + float tank (500 kg/day), Manual + NIR sensor (1,200 kg/day). |
 
@@ -142,8 +140,10 @@ Any edit clears old results, because they no longer match the campus. Press **Ed
 ### Saving and loading
 
 - **Export** (download icon) saves the whole scenario as one JSON file: map, nodes, bins, settings, edited costs and the last AI proposal.
-- **Import** (upload icon) loads a scenario JSON, or a CSV of nodes from the field survey (see section 8). Nodes without map positions are placed one by one: the app says "Place: Main canteen" and you click its spot.
+- **Import** (upload icon) loads a scenario JSON, or a CSV of nodes from the field survey (see section 8). Nodes without map positions are placed one by one: the app says "Place: G Block Canteen" and you click its spot.
 - Export then Import gives back exactly the same scenario (this is tested).
+- **Rename:** click the scenario name in the top bar. Renaming keeps the results.
+- **Blank campus** (in the Load demo menu): removes all nodes and the facility but keeps the map and any edited costs. An **Undo** button in the message brings the campus back.
 
 ### The Assumptions panel
 
@@ -211,9 +211,9 @@ This repeats on days 2, 5 ... 29, giving 10 overflow bin-days. Over 30 days: 300
 - **Summary:** generated, collected, litter, still in bins, backlog, recovery rate, purity, contamination rate, overflow bin-days, overflow calendar days, route distance, truck trips, pickups, spend (transport, bins, sorting), bale revenue, net cost, recycled kg, landfill kg, CO₂e avoided and a mass-balance error that must be 0.
 - **Per node:** generated, collected, litter, overflow days, pickups, average bin fill at pickup (capped at 100%), average load at pickup (uncapped), maximum fill.
 - **Flows:** 18 links that feed the flow diagram (every one always present, 0 kg where nothing flows).
-- **Timeline:** 720 frames (per node: waste generated that hour, kg in the bin, fill %, overflow, litter; plus the facility queue and running totals) and a list of truck trips with their exact path. The animation only replays this. It never calculates anything itself.
+- **Timeline:** 720 frames (per node: waste generated that hour, kg in the bin, fill %, overflow, litter; plus the facility queue and running totals) and a list of truck trips (day, route, exact `path` points, distance, duration, kg collected per node). Node values describe the end of the hour *before* any pickup, so on a pickup day the bin shows full and the next frame shows it empty; facility values are taken *after* that evening's sorting. The animation only replays this. It never calculates anything itself.
 
-One run of the 40-node demo takes about 30 milliseconds, so the 11 runs after you press Optimise (the proposal, plus the 5-seed check of baseline and proposal) finish instantly.
+One run of the 40-node demo takes about 15 milliseconds on our laptop, so the 11 runs after you press Optimise (the proposal, plus the 5-seed check of baseline and proposal) finish instantly.
 
 ## 6. Reading the results
 
@@ -243,9 +243,9 @@ It shows where every kilogram went, left to right. Band width = kg.
 - **Generated** splits into **Overflow → litter** (lost), **Still in bins** (waiting at day 30) and **Collected**.
 - **Collected** splits into **Unsorted backlog** (facility couldn't keep up) and **Sorted**.
 - **Sorted** splits into **PET / HDPE / PP bales**, **Mixed / multilayer residue**, **Contaminated** and **Rejected**.
-- The right-most column is the recycling route: bales → **Mechanical route**; residue and half of the contaminated → **Chemical recycling candidate**; the other half of contaminated and rejected → **Landfill**.
+- The right-most column is the recycling route: bales → **Mechanical route**; residue and 90% of the contaminated → **Chemical recycling candidate**; the other 10% of contaminated and rejected → **Landfill**.
 
-In the 2023 baseline the story is visible at a glance: a red band goes to litter and some plastic piles up as backlog. In the AI plan the overflow band disappears.
+In the 2023 baseline, bins are emptied daily, so very little is lost as litter (about 2 kg over 30 days) and there is no backlog. The story is in the middle column: the contaminated band is wide (about 2,000 kg) because everything goes into one mixed bin. In the AI plan, segregated bins and the float tank shrink it to about 1,350 kg and the bales grow.
 
 The colours are fixed across the whole app: PET blue, HDPE purple, PP orange, mixed grey, contaminated brown-red. The same colour is used for that material on the map dots, the bins, the flow diagram and the legends.
 
@@ -395,12 +395,12 @@ To re-capture or use another campus (full steps in `public/maps/README.md`):
 
 1. Take a Google Maps satellite screenshot of the campus, keeping the attribution visible.
 2. Save it as `public/maps/campus.jpg`.
-3. In `public/demo/demo-scenario.json` and `public/demo/demo-scenario-after.json`, set `map.src`, the image width and height in pixels, and the attribution text.
-4. Set the scale: either compute metres ÷ pixels from Google's scale bar, or use **Calibrate** in the app (click two landmarks, type the distance).
-5. Move the nodes and the facility onto their real spots, then Export and copy the result back.
+3. In `fixtures/make-fixtures.mjs`, set `map.src`, the image width and height in pixels, and the attribution text, then run `npm run fixtures` to rewrite both demo campuses.
+4. Set the scale: either compute metres ÷ pixels from Google's scale bar, or use **Calibrate** in the app's Map card (click two landmarks, type the distance).
+5. Move the nodes and the facility onto their real spots, then Export and copy the positions back into `fixtures/make-fixtures.mjs`.
 6. Regenerate the cached AI answer (section 7), because the scenario changed.
 
-Or skip editing files entirely: **Change image** in the app, calibrate, place nodes, Export.
+Or skip editing files entirely: **Change image** in the Map card, calibrate, place nodes, Export.
 
 ## 9. How it was built
 
@@ -422,7 +422,7 @@ Our side (the project lead ran the build with Claude Code):
 | Dev server / bundler | Vite | Instant reloads, one command to run, builds a small production bundle |
 | Map overlay | SVG for editable markers, Canvas 2D for the animation | SVG is easy to click and drag; canvas draws hundreds of moving dots smoothly at 60 fps |
 | Flow diagram | d3-sankey + d3-shape | Standard, small libraries for Sankey layout; we draw the SVG ourselves |
-| Backend | Node.js, built-in modules only (about 60 lines for the server) | Same language as the front end; keeps the AI key/login on the server, never in the browser |
+| Backend | Node.js, built-in modules only (about 120 lines for the server and API) | Same language as the front end; keeps the AI key/login on the server, never in the browser |
 | AI | Claude Sonnet 5.5, via Claude Code subscription (`claude -p`) or the Anthropic API | Fast enough for a live demo, reliable at producing structured JSON |
 | Tests | Node's built-in test runner | No extra test framework to install |
 | Fonts | Inter and Space Grotesk, bundled locally | Works offline; no Google Fonts download at the presentation |
@@ -437,7 +437,7 @@ Our side (the project lead ran the build with Claude Code):
 
 | # | Part | Owns |
 | --- | --- | --- |
-| 1 | Simulation engine, tests, plain-words explainer | `src/sim/`, `docs/HOW-IT-WORKS.md` |
+| 1 | Simulation engine, tests, plain-words explainer (since merged into this guide) | `src/sim/` |
 | 2 | AI integration: server, prompt, validation, fallback, demo mode | `server/`, `src/llm/` |
 | 3 | App layout, map editor, settings, save/load | `index.html`, `src/main.js`, `src/app/` |
 | 4 | Animation that replays the simulation | `src/anim/` |
@@ -482,8 +482,9 @@ If a reviewer asks "show me where X happens", this is where to look.
 | `public/maps/` | The real Thapar satellite map (`campus.jpg`), its labelled and node-id versions, and the guide to replacing it |
 | `data/nodes.template.csv`, `data/README.md` | Field survey template and its column guide |
 | `plan.md` | The full design: shared contracts (section 3.1), the task list, fixtures |
+| `project-brief.md` | The brief the project was built from, updated to the current scope |
 | `CLAUDE.md` | Short version of the rules every agent followed |
-| `docs/HOW-IT-WORKS.md` | Short plain-words explainer of the simulation |
+| `fixtures/make-fixtures.mjs` | Source of truth for the demo campuses: node names, positions, rates and bins. `npm run fixtures` writes the demo files from it |
 
 ### Simulation (`src/sim/`)
 
@@ -553,7 +554,7 @@ A simulation can produce numbers that look believable but are wrong (a pickup on
 
 **5. End-to-end browser checks.** The full demo was run in a real browser at 1366×768 and 1920×1080 with screenshots, and the console was checked for errors (none).
 
-In total `npm test` runs **50 automated tests**: 15 simulation, 20 AI layer (clamping, retry, fallback, demo replay, fingerprint, server), and 15 app, animation and results tests.
+In total `npm test` runs **60 automated tests**: 15 simulation, 23 AI layer (clamping, retry, fallback, cancel, demo replay, fingerprint, server), and 22 app, animation and results tests.
 
 **What the tests cannot prove:** that our assumptions match reality. The model is only as good as its inputs, which is why every input is in one visible file with its source, and why the field survey includes observed overflow days to compare against.
 
@@ -612,7 +613,7 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: What is random in it, and how do you get the same answer every time?** Only the ±15% day-to-day variation in waste. It uses a seeded random generator, so the same seed gives the same 30 days. Both before and after use the same seed, so they face the exact same waste and the comparison is fair.
 
-**Q: How do you know the improvement isn't just luck?** We re-run before and after with 5 different seeds. The AI plan is better in all 5 (overflow 145-160 bin-days before, 0 after).
+**Q: How do you know the improvement isn't just luck?** We re-run before and after with 5 different seeds. The AI plan is better in all 5 (overflow 30-46 bin-days before, 0 after; recovery 18.4-18.5% before, 28.0-28.1% after).
 
 **Q: When exactly does a pickup happen?** At the end of day d when (d + 1) is divisible by the interval. Interval 3 means days 2, 5, 8 and so on (days count from 0). This rule is tested because being one day off would silently change every result.
 
@@ -624,7 +625,7 @@ Model answers in plain words. Learn the idea, not the wording.
 
 **Q: What is "load at pickup" and why can it be over 100%?** It is how much plastic arrived since the last pickup, as a % of the bin's capacity. The bin itself can't be more than 100% full; the excess is the overflow. 326% means three times more waste arrived than the bin can hold.
 
-**Q: Why is recovery only 41% when overflow is zero?** Recovery counts only clean, correctly sorted PET, HDPE and PP. Multilayer packaging goes to chemical recycling instead, contaminated material is removed, sorting is not perfect, and a few % is lost in processing.
+**Q: Why is recovery only 28% when overflow is zero?** Recovery counts only clean, correctly sorted PET, HDPE and PP. Multilayer packaging goes to chemical recycling instead, contaminated material is removed, sorting is not perfect, and a few % is lost in processing.
 
 **Q: What is the difference between mechanical and chemical recycling in your results?** Clean, sorted PET/HDPE/PP bales go to the mechanical route (shredded, washed, re-melted). Mixed, multilayer and dirty plastic that mechanical recycling can't handle is tagged as a chemical recycling candidate (e.g. pyrolysis). Rejected material goes to landfill.
 

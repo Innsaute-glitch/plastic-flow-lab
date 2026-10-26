@@ -1,6 +1,8 @@
 # Field data: how to fill `nodes.csv`
 
-Copy `nodes.template.csv` to `nodes.csv`, fill in one row per collection point (max 10), then use **Import → CSV** in the app.
+Copy `nodes.template.csv` to `nodes.csv`, fill in one row per collection point (max 40), then use **Import** (upload icon in the top bar) and pick the CSV.
+
+The template's three rows are example nodes copied from the Thapar demo (G Block Canteen, Hostel J, Nava Nalanda Library). Replace them with your own rows. Importing a CSV replaces the nodes of the current scenario; the map and facility stay.
 
 | Column | Meaning | Allowed values |
 |---|---|---|

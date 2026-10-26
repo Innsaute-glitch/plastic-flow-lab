@@ -2,7 +2,7 @@
 
 The simulator runs on the real Thapar campus map. Most model numbers now come from Thapar's own waste-management documents or published Indian sources. Each one carries its source, and an amber **estimate** tag in the app's Assumptions panel when it isn't sourced. A few numbers can only come from looking at the campus. This guide lists them in priority order, so even one short visit helps.
 
-Nothing in the code needs to change when this data arrives. Values go into `config/assumptions.json`, or into each node's `observed` field via the CSV template, `data/nodes.template.csv`.
+Nothing in the code needs to change when this data arrives. Values go into `config/assumptions.json`, or into the demo nodes' rates and `observed` fields in `fixtures/make-fixtures.mjs` (then `npm run fixtures`). For a campus of your own, use the CSV template, `data/nodes.template.csv`.
 
 ---
 
@@ -12,7 +12,7 @@ The MRF is near the STP in the north-west corner of campus, and Saahas runs it w
 
 | Question | Feeds into | Why it matters |
 |---|---|---|
-| Daily dry-waste intake (kg), ideally a week of weigh logs | total generation, `rateKgPerDay` | Our ~200 kg/day plastic figure is derived. A real log replaces it. |
+| Daily dry-waste intake (kg), ideally a week of weigh logs | total generation, `rateKgPerDay` | Our ~238 kg/day plastic total is derived (beds × a per-bed rate, plus estimates for canteens and blocks). A real log replaces it. |
 | Plastic share of dry waste, by type if they know (PET bottles, HDPE, PP, films, multilayer) | `resinMix`, rates | Sets the recovery ceiling |
 | How many workers sort plastic, and kg per worker per day | `sorting.methods.manual.throughputKgPerDay` | Decides whether sorting is a bottleneck |
 | Share of plastic rejected as too dirty, sent to co-processing | `contamination.baseFraction`, `sorting.contaminatedToChemicalFraction` | Drives bale purity and recovery |

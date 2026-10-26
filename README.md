@@ -14,7 +14,7 @@ Made for the college assignment *"Plastic Waste Management: From Collection to R
 >
 > So read it as an AI-built tool shaped and checked by me, not as a sample of my own hand-written code.
 
-![Before and after (screenshot predates the real campus map)](docs/images/before-after.png)
+![Before and after: the AI plan replayed on the Thapar 2023 campus](docs/images/before-after.png)
 
 ## What it does
 
@@ -57,7 +57,7 @@ Reading it honestly: given the 2023 campus, the AI independently proposed nearly
 npm install
 npm run dev      # http://localhost:5173 (dev server with the AI endpoint)
 npm start        # build + production server at http://localhost:8787
-npm test         # 50 automated tests
+npm test         # 60 automated tests
 ```
 
 **Demo path (3 minutes):** Load **"before"** (Thapar 2023) → switch **Demo** on → **Run** → **Optimise** → compare before/after. Then load **"after"** (Thapar 2024) → **Run** to show what Thapar really did.
@@ -74,12 +74,12 @@ npm test         # 50 automated tests
 |---|---|
 | [GETTING-STARTED.md](GETTING-STARTED.md) | Running and checking the app with no terminal; phones and tablets |
 | [docs/TEAM-GUIDE.md](docs/TEAM-GUIDE.md) | Full explanation: how everything works, results, AI, code map, testing, limitations, **viva Q&A**, glossary |
-| [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md) | Short plain-words explainer of the simulation |
+| [docs/TEAMMATE-TASKS.md](docs/TEAMMATE-TASKS.md) | No-code task sheet for the team: field checks, map check, video script |
 | [data/README.md](data/README.md) | How to fill in the field-survey CSV |
 | [public/maps/README.md](public/maps/README.md) | The real campus map, how it was captured and how to replace it |
 | [docs/FIELD-DATA-GUIDE.md](docs/FIELD-DATA-GUIDE.md) | What the team should collect on campus next |
 | [plan.md](plan.md) | Technical design: data contracts, units, rules, task breakdown |
-| [project-brief.md](project-brief.md) | The original brief |
+| [project-brief.md](project-brief.md) | The project brief, updated to the current scope |
 
 ## How it works (short)
 
@@ -104,25 +104,25 @@ src/assumptions/  Assumptions panel (editable costs)
 src/styles/    design tokens and shared styles
 public/        demo scenarios (before/after Saahas), cached AI answer, campus map images
 data/          field-survey CSV template
-docs/          team guide, explainer, images
-fixtures/      fake test data used by component test pages
+docs/          team guide, field-data guide, teammate tasks, images
+fixtures/      make-fixtures.mjs (source of the demo campuses), fake UI test data, frozen golden test inputs
 ```
 
 ## Plugging in real data
 
 These drop in with **no code changes**:
 
-- **Field data:** see [docs/FIELD-DATA-GUIDE.md](docs/FIELD-DATA-GUIDE.md) for what to collect. Fill `data/nodes.template.csv`, then use **Import → CSV** in the app and click each node's spot on the map.
-- **A different map:** follow `public/maps/README.md`, or use **Change image** + **Calibrate** in the app. (The Thapar map is already in place.)
+- **Field data:** see [docs/FIELD-DATA-GUIDE.md](docs/FIELD-DATA-GUIDE.md) for what to collect. Fill `data/nodes.template.csv`, then use **Import** (top bar) and click each node's spot on the map.
+- **A different map:** follow `public/maps/README.md`, or use **Change image** and **Calibrate** in the app's Map card. (The Thapar map is already in place and calibrated.)
 - **Sourced assumptions:** edit values and sources in `config/assumptions.json` and set `"estimate": false`. Most are already sourced from the Thapar case study, CPCB, US EPA WARM, IndiaMART and Punjab minimum wage; the rest keep the amber "estimate" tag with their reasoning shown in the Assumptions panel.
 
-After changing the demo scenario, regenerate the cached AI answer with `node server/cli-optimise.mjs <scenario.json> <baseline-results.json>`.
+The demo campuses are generated from `fixtures/make-fixtures.mjs` (`npm run fixtures`). After changing them, regenerate the cached AI answer with `node server/cli-optimise.mjs <scenario.json> <baseline-results.json>` (Team Guide, section 7).
 
 The Thapar source documents are the case study *"From theory to practice"* and *"Waste Management at Thapar Institute"*. They live in a local `pdfs/` folder that is not committed.
 
 ## Tests
 
-`npm test` runs 54 tests: hand-calculated simulation cases (overflow days, pickup timing, backlog, sorting, cost, routing), mass balance (every kg accounted for), determinism, AI answer clamping, retry and fallback, demo replay and fingerprint, and app, animation and results checks. An independent rebuild of the simulation matched every number.
+`npm test` runs 60 tests: hand-calculated simulation cases (overflow days, pickup timing, backlog, sorting, cost, routing), mass balance (every kg accounted for), determinism, AI answer clamping, retry and fallback, demo replay and fingerprint, and app, animation and results checks. An independent rebuild of the simulation matched every number.
 
 ## Built with
 

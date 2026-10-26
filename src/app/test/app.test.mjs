@@ -40,12 +40,12 @@ test('nextNodeId picks lowest free id and stops at 40', () => {
 test('CSV template imports; positions optional', () => {
   const text = readFileSync(new URL('../../../data/nodes.template.csv', import.meta.url), 'utf8');
   const { nodes, nodeSetups, warnings } = csvToNodes(text, assumptions, Object.keys(ui.wasteTypeLabels));
-  assert.ok(nodes.length >= 1 && nodes.length <= 10);
+  assert.ok(nodes.length >= 1 && nodes.length <= 40);
   assert.equal(nodes[0].id, 'n1');
-  assert.equal(nodes[0].name, 'Main canteen');
-  assert.deepEqual(nodes[0].peak, { startHour: 12, endHour: 14, multiplier: 3 });
+  assert.equal(nodes[0].name, 'G Block Canteen');
+  assert.deepEqual(nodes[0].peak, { startHour: 12, endHour: 14, multiplier: 2.5 });
   assert.equal(nodes[0].x, null);
-  assert.equal(nodeSetups.n1.binCapacityL, 120);
+  assert.equal(nodeSetups.n1.binCapacityL, 240);
   assert.deepEqual(warnings, []);
 });
 

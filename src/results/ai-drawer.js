@@ -2,6 +2,7 @@
 import { h, svgIcon, ICONS } from './dom.js';
 import { fmtInr, fmtInrSigned, fmtKg } from './format.js';
 import { sourceBadgeEl } from './ai-activity.js';
+import { proposalLabels } from './source-labels.js';
 
 function prettyRaw(raw) {
   try {
@@ -15,7 +16,6 @@ export function createAiDrawer(root, store) {
   const back = h('div', 'results-drawer-back');
   const panel = h('aside', 'results-drawer');
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', 'What the AI saw and said');
   back.appendChild(panel);
   const close = () => store.set({ panel: null });
   back.addEventListener('mousedown', (e) => e.target === back && close());
@@ -25,9 +25,12 @@ export function createAiDrawer(root, store) {
   const state = store.get();
   const { scenario, baseline, optimised, assumptions, ui } = state;
   const p = optimised?.proposal;
+  const L = proposalLabels(p?.source);
+  const isRules = p?.source === 'heuristic';
+  panel.setAttribute('aria-label', L.aria);
 
   const head = h('div', 'results-drawer-head');
-  head.appendChild(h('h2', 'results-title', 'What the AI saw / said'));
+  head.appendChild(h('h2', 'results-title', L.title));
   if (p) head.appendChild(sourceBadgeEl(p.source));
   const x = h('button', 'results-iconbtn');
   x.type = 'button';
@@ -41,7 +44,7 @@ export function createAiDrawer(root, store) {
   panel.appendChild(body);
 
   // Request summary
-  body.appendChild(h('h3', 'results-h3', 'What it saw'));
+  body.appendChild(h('h3', 'results-h3', L.saw));
   const lim = assumptions?.llmLimits;
   const facts = [
     ['Scenario', `${scenario.name} · ${scenario.nodes.length} nodes + facility`],
@@ -72,11 +75,11 @@ export function createAiDrawer(root, store) {
   });
   body.appendChild(tbl);
 
-  body.appendChild(h('h3', 'results-h3', 'What it said'));
+  body.appendChild(h('h3', 'results-h3', L.said));
   if (p) {
-    const meta = h('div', 'results-drawer-meta', `${p.model || 'model'} · round ${p.round} · ${p.createdAt || ''}`);
+    const meta = h('div', 'results-drawer-meta', isRules ? 'Rule-based fallback · no AI call' : `${p.model || 'model'} · round ${p.round} · ${p.createdAt || ''}`);
     body.appendChild(meta);
-    body.appendChild(h('pre', 'results-raw', prettyRaw(p.raw || '(no raw text)')));
+    body.appendChild(h('pre', 'results-raw', isRules ? JSON.stringify(p.setup, null, 2) : prettyRaw(p.raw || '(no raw text)')));
   } else {
     body.appendChild(h('p', 'results-muted', 'Nothing yet. Run Optimise to see the model response.'));
   }

@@ -5,6 +5,7 @@ import { createGainsButton, closeGains } from './gains.js';
 import { tick, formatNumber } from './counter.js';
 import { createSankeyCard } from './metrics-view.js';
 import { sourceBadgeEl } from './ai-activity.js';
+import { proposalLabels } from './source-labels.js';
 
 const M = Object.fromEntries(METRICS.map((m) => [m.key, m]));
 
@@ -174,7 +175,7 @@ export function createCompareView(ctx) {
     chgHead.append(h('h3', 'results-h3', 'Changes made'));
     const drawerBtn = h('button', 'results-linkbtn');
     drawerBtn.type = 'button';
-    drawerBtn.append(svgIcon(ICONS.eye, 14), document.createTextNode(' What the AI saw / said'));
+    drawerBtn.append(svgIcon(ICONS.eye, 14), document.createTextNode(proposalLabels(proposal.source).link));
     drawerBtn.addEventListener('click', () => store.set({ panel: 'ai-drawer' }));
     chgHead.appendChild(drawerBtn);
     chg.appendChild(chgHead);

@@ -167,3 +167,23 @@ export function mapScaleProblem(map, limits = {}) {
 export function slugify(text) {
   return String(text ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/g, '');
 }
+
+/** New scenario with node/facility positions scaled to a new image size. metresPerPixel is adjusted so real distances stay the same. */
+export function rescaleToImage(scenario, newW, newH) {
+  const out = structuredClone(scenario);
+  const oldW = scenario.map.widthPx, oldH = scenario.map.heightPx;
+  if (oldW === newW && oldH === newH) return out;
+  const kx = newW / oldW, ky = newH / oldH;
+  const r1 = (v) => Math.round(v * 10) / 10;
+  const scale = (p) => {
+    if (!p) return;
+    if (p.x != null) p.x = r1(p.x * kx);
+    if (p.y != null) p.y = r1(p.y * ky);
+  };
+  out.nodes.forEach(scale);
+  scale(out.facility);
+  out.map.widthPx = newW;
+  out.map.heightPx = newH;
+  out.map.metresPerPixel = Math.round(scenario.map.metresPerPixel * (oldW / newW) * 1e4) / 1e4;
+  return out;
+}

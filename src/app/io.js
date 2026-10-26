@@ -1,6 +1,6 @@
 // Scenario JSON + CSV import/export, demo loading.
 import { loadScenario, exportScenario, editScenario } from './actions.js';
-import { csvToNodes, MAX_NODES, slugify } from './scenario-utils.js';
+import { csvToNodes, MAX_NODES, slugify, rescaleToImage } from './scenario-utils.js';
 import { notify } from './notify.js';
 
 const BASE = import.meta.env?.BASE_URL ?? '/';
@@ -73,9 +73,13 @@ export function changeMapImage(store, file) {
     img.onload = () => {
       const w = img.naturalWidth || 1600, h = img.naturalHeight || 1000;
       editScenario(store, (s) => {
-        s.map = { ...s.map, src, widthPx: w, heightPx: h };
+        const next = rescaleToImage(s, w, h);
+        s.map = next.map;
+        s.nodes = next.nodes;
+        s.facility = next.facility;
+        s.map.src = src;
       }, { tool: 'calibrate' });
-      notify('info', 'Map changed. Calibrate the scale and keep the image attribution.');
+      notify('info', 'Map changed. Node positions were scaled to the new image: drag them onto the right spots, then calibrate the scale. Keep the image\'s attribution.');
     };
     img.src = src;
   };

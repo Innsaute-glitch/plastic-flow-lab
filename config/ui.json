@@ -137,5 +137,15 @@
     "minMapWidthM": 50,
     "maxMapWidthM": 50000,
     "minPointGapScreenPx": 24
+  },
+  "layout": {
+    "wideMinWidthPx": 1240,
+    "mediumMinWidthPx": 820,
+    "mediumMinHeightPx": 560,
+    "hudReservePx": {
+      "wide": 116,
+      "medium": 116,
+      "narrow": 64
+    }
   }
 }

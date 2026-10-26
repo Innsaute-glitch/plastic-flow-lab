@@ -2,7 +2,7 @@
 // The seam with the panels (plan.md 3.4): layout and pane come from window size and user taps, never from the store.
 // The store is only READ for the pane rules (a mode or tool change switches the pane once).
 import { icon } from './icons.js';
-import { layoutFor, tabsFor, normalisePane, paneOnModeChange, paneOnToolChange, HUD_RESERVE_PX } from './layout-mode.js';
+import { layoutFor, orientFor, isShort, hudReserveFor, tabsFor, normalisePane, paneOnModeChange, paneOnToolChange } from './layout-mode.js';
 
 const TAB = {
   setup: { label: 'Setup', icon: 'sliders', panel: 'controls' },
@@ -16,7 +16,10 @@ export function mount(app, store) {
   const stage = document.getElementById('map-stage');
   const panels = { setup: document.getElementById('controls'), map: stage, results: document.getElementById('results') };
 
+  const cfg = store.get().ui.layout; // breakpoints and HUD reserve: config/ui.json
   let layout = null;
+  let orient = null;
+  let short = null;
   let pane = 'setup';
   let stableH = window.innerHeight;
   const dots = new Set();
@@ -50,7 +53,9 @@ export function mount(app, store) {
     dots.delete(pane);
     app.dataset.layout = layout;
     app.dataset.pane = pane;
-    stage.style.setProperty('--hud-reserve', `${HUD_RESERVE_PX[layout]}px`);
+    app.dataset.orient = orient;
+    app.dataset.short = String(short);
+    stage.style.setProperty('--hud-reserve', `${hudReserveFor(layout, cfg)}px`);
     // hidden panes must not take focus or taps (they stay laid out so scroll position and canvases survive)
     for (const [id, el] of Object.entries(panels)) el.inert = layout === 'wide' ? false : id === 'map' ? layout === 'narrow' && pane !== 'map' : id !== pane;
     applyTabs();
@@ -64,12 +69,13 @@ export function mount(app, store) {
   }
 
   function measure() {
-    const h = window.innerHeight;
+    const h = window.innerHeight, w = window.innerWidth;
     // an on-screen keyboard shrinks innerHeight: do not let that flip a tablet to the narrow layout
     if (!typing() || h > stableH) stableH = h;
-    const next = layoutFor(window.innerWidth, typing() ? Math.max(h, stableH) : h);
-    if (next === layout) return;
-    layout = next;
+    const useH = typing() ? Math.max(h, stableH) : h;
+    const next = layoutFor(w, useH, cfg), nOrient = orientFor(w, h), nShort = isShort(useH, cfg);
+    if (next === layout && nOrient === orient && nShort === short) return;
+    layout = next; orient = nOrient; short = nShort;
     apply();
   }
 
@@ -118,7 +124,7 @@ export function mount(app, store) {
   });
 
   window.addEventListener('resize', measure);
-  const mqs = ['(min-width: 820px)', '(min-width: 1240px)', '(min-height: 560px)'].map((q) => window.matchMedia(q));
+  const mqs = [`(min-width: ${cfg.mediumMinWidthPx}px)`, `(min-width: ${cfg.wideMinWidthPx}px)`, `(min-height: ${cfg.mediumMinHeightPx}px)`, '(orientation: portrait)'].map((q) => window.matchMedia(q));
   mqs.forEach((m) => m.addEventListener('change', measure));
   window.addEventListener('orientationchange', measure);
   document.addEventListener('focusout', () => setTimeout(measure, 150));

@@ -1,15 +1,21 @@
 // Pure layout and pane rules (plan.md section 3.4). No DOM: the shell (shell.js) applies the results.
-// The widths below are repeated in layout.css media queries (CSS cannot import JS); keep both in step.
-export const BREAKPOINTS = { wideMinW: 1240, mediumMinW: 820, mediumMinH: 560 };
-export const HUD_RESERVE_PX = { wide: 116, medium: 116, narrow: 64 };
+// Breakpoints and the HUD reserve come from config/ui.json `layout` (passed in as `cfg`); no numbers live here.
 export const PANES = ['setup', 'map', 'results'];
 const MAP_TOOLS = ['add-node', 'place-facility', 'calibrate'];
 
-export function layoutFor(width, height) {
-  if (width >= BREAKPOINTS.wideMinW) return 'wide';
-  if (width >= BREAKPOINTS.mediumMinW && height >= BREAKPOINTS.mediumMinH) return 'medium';
+export function layoutFor(width, height, cfg) {
+  if (width >= cfg.wideMinWidthPx) return 'wide';
+  if (width >= cfg.mediumMinWidthPx && height >= cfg.mediumMinHeightPx) return 'medium';
   return 'narrow';
 }
+
+/** Same rule as CSS `orientation`: portrait when the screen is at least as tall as it is wide. */
+export const orientFor = (width, height) => (height >= width ? 'portrait' : 'landscape');
+
+/** Short screens (phones in landscape) are the ones too low for the medium layout. */
+export const isShort = (height, cfg) => height < cfg.mediumMinHeightPx;
+
+export const hudReserveFor = (layout, cfg) => cfg.hudReservePx[layout];
 
 /** The panes a layout lets the user pick between (wide shows all three at once and has no tabs). */
 export function tabsFor(layout) {

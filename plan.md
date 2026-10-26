@@ -317,7 +317,7 @@ Nobody edits another task's files. The stubs in `src/sim/index.js` and `src/llm/
 
 ### Single-source constants
 - `config/assumptions.json`: **every** model number. Each leaf is `{ "value", "unit", "source", "estimate": true|false }`. The sim reads `.value`, and the Assumptions panel renders all four fields. Code must contain no model numbers.
-- `config/ui.json`: resin/flow colours and labels, fill thresholds (green/amber/red), `playbackSeconds` (30), `sweepSeeds` (5), and waste type → colour key.
+- `config/ui.json`: resin/flow colours and labels, fill thresholds (green/amber/red), `playbackSeconds` (90), `truckPauseShare` (0.5), `truckPauseMaxSeconds` (2), `sweepSeeds` (5), waste type → colour key, and `layout` (breakpoints and HUD reserve, §3.4).
 - `config/llm.json`: provider (`"claude-cli" | "anthropic-api"`), model, timeout, max retries.
 - `src/styles/tokens.css`: CSS custom properties (palette, radii, spacing, fonts). Resin colours appear there as `--resin-pet` etc. **with the same hex values as `config/ui.json`**.
 - The system prompt lives only in `server/prompts/optimise.system.md`.
@@ -428,7 +428,7 @@ Does:
 - Respects `prefers-reduced-motion` (shows the final frame directly).
 Does NOT:    compute fills, overflow or routes (reads them only), draw the edit-mode markers (Task 3), or use any library
 Tools:       Canvas 2D
-Done-check:  a standalone harness page `src/anim/dev.html` (served by Vite at `/src/anim/dev.html`) plays `fixtures/results.baseline.json` on the campus map. It finishes in 30 s ± 1 at 1× with day 30 shown. Bins go red and leak on overflow days, trucks follow paths, and DevTools Performance shows no long frames over 50 ms.
+Done-check:  a standalone harness page `src/anim/dev.html` (served by Vite at `/src/anim/dev.html`) plays `fixtures/results.baseline.json` on the campus map. It finishes in 90 s ± 1 at 1× (originally 30 s) with day 30 shown. Bins go red and leak on overflow days, trucks follow paths, and DevTools Performance shows no long frames over 50 ms.
 
 ## Task 5: Results panel, Sankey, before/after, AI activity            [complex]
 Depends on: `fixtures/results.baseline.json`, `fixtures/results.optimised.json`, `fixtures/proposal.json`, `fixtures/sweep.json`, `fixtures/llm-stream-events.json`, `config/ui.json`

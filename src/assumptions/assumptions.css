@@ -291,6 +291,23 @@
   min-height: var(--touch-min);
 }
 
+@media (pointer: coarse) {
+  #app .assumptions .assumption-input {
+    min-height: var(--touch-min);
+    font-size: var(--fs-md);
+  }
+
+  #app .assumptions .assumption-reset {
+    width: var(--touch-min);
+    min-height: var(--touch-min);
+  }
+
+  #app .assumptions .assumptions-reset-all {
+    min-height: var(--touch-min);
+  }
+
+}
+
 /* Phone on its side: the screen is about 390px tall, so give the list the room instead of the intro text. */
 @container assumptions (max-height: 480px) {
   .assumptions-header {

@@ -150,5 +150,9 @@
       "narrow": 64,
       "narrowShortLandscape": 0
     }
+  },
+  "touch": {
+    "pickRadiusPx": 20,
+    "namePinMs": 2500
   }
 }

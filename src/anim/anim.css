@@ -95,3 +95,14 @@
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn--main { grid-column: 1; grid-row: 2; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-scrub { grid-column: 2 / 4; grid-row: 2; min-width: 0; width: 100%; }
 #app[data-layout="narrow"][data-short="true"][data-orient="landscape"] .anim-btn[data-k="skip"] { grid-column: 4; grid-row: 2; }
+
+/* touch screens in the wide/medium HUD (a tablet): 40px hit areas. The narrow row sets the same sizes above. */
+@media (pointer: coarse) {
+  .anim-btn, .anim-btn--main { width: var(--touch-min, 40px); height: var(--touch-min, 40px); }
+  .anim-speed button { min-width: 36px; height: var(--touch-min, 40px); padding: 0 8px; }
+  .anim-scrub { height: var(--touch-min, 40px); background: linear-gradient(90deg, var(--accent, #C6F36B) var(--p), rgba(239, 234, 224, 0.18) var(--p)) center / 100% 4px no-repeat; }
+  .anim-scrub::-webkit-slider-thumb { width: 20px; height: 20px; }
+  .anim-scrub::-moz-range-thumb { width: 20px; height: 20px; }
+  .anim-hud__panel { gap: 2px; padding-top: 6px; padding-bottom: 6px; }
+  .anim-hud__bar { margin-top: 0; }
+}

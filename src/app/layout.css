@@ -341,7 +341,8 @@ button { cursor: pointer; }
 #app .app-seg button, #app .app-stepper button { min-height: var(--hit); }
 #app .app-toast__x { min-width: var(--hit); min-height: var(--hit); }
 #app .app-toast__action { min-height: var(--hit); }
-#app .app-switch { height: max(22px, var(--hit)); }
+#app .app-switch { height: max(22px, var(--hit)); width: max(38px, var(--hit)); }
+#app .app-switch input:checked + i::after { transform: translateX(calc(max(38px, var(--hit)) - 22px)); }
 #app .app-switch input { height: 100%; }
 #app .app-switch i { box-sizing: border-box; top: 50%; bottom: auto; height: 22px; transform: translateY(-50%); }
 /* 16px stops iOS zooming the page when a field gets focus */
@@ -376,6 +377,11 @@ button { cursor: pointer; }
   #app[data-layout="medium"] .tb-title { display: none; }
   #tb-assume > span:not(.app-icon), #tb-load > span:not(.app-icon):not(.tb-chev) { display: none; }
   #tb-assume { width: 38px; padding: 0; }
+}
+/* medium: the scenario name is the only rename handle, so it keeps room for ~12 characters; the app title gives way first */
+#app[data-layout="medium"] .tb-name { min-width: calc(12ch + var(--space-3) + 14px); }
+@container topbar (max-width: 1150px) {
+  #app[data-layout="medium"] .tb-title { display: none; }
 }
 
 /* ---------- narrow: one pane at a time, bottom tab bar ---------- */

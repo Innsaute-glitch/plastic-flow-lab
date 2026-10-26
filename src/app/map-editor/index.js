@@ -26,7 +26,7 @@ export function mount(el, store) {
   const coarse = () => coarseMQ.matches;
   const appEl = document.getElementById('app');
   const isNarrow = () => appEl?.dataset.layout === 'narrow';
-  const TOUCH_PICK_PX = 20; // a finger picks the nearest marker within this many screen px (matches the 20 px hit radius)
+  const touchCfg = store.get().ui.touch; // config/ui.json: pickRadiusPx (finger pick + hit radius), namePinMs (how long a tapped name stays)
   // Narrow portrait: the map is sized from the pane HEIGHT and is wider than the screen; the wrap pans sideways.
   const canPan = () => appEl?.dataset.layout === 'narrow' && appEl?.dataset.orient === 'portrait';
   let centredFor = '';
@@ -39,11 +39,16 @@ export function mount(el, store) {
   swipe.innerHTML = `${icon('arrow', 14)}<span>Swipe the map sideways</span>`;
   el.appendChild(swipe);
   const setScroll = (x) => { ignoreScrollUntil = performance.now() + 150; wrap.scrollLeft = x; };
-  wrap.addEventListener('scroll', () => {
-    if (panned || performance.now() < ignoreScrollUntil) return;
+  // only a scroll that follows the user's own touch / wheel counts as a swipe (a rotation also fires scroll events when the wrap re-clamps)
+  let lastUserInput = -1e9;
+  const noteInput = () => { lastUserInput = performance.now(); };
+  const onWrapScroll = () => {
+    if (panned || performance.now() < ignoreScrollUntil || performance.now() - lastUserInput > 1500) return;
     panned = true;
     swipe.hidden = true;
-  }, { passive: true });
+  };
+  wrap.addEventListener('scroll', onWrapScroll, { passive: true });
+  for (const ev of ['pointerdown', 'touchstart', 'wheel']) wrap.addEventListener(ev, noteInput, { capture: true, passive: true });
 
   /* ---------- sizing ---------- */
   function fit() {
@@ -60,6 +65,7 @@ export function mount(el, store) {
     const overflow = pan && w > cw + 8;
     swipe.hidden = !overflow || panned;
     // first show (and after a resize or rotation, until the user swipes): centred. fit() also runs on every store update, so only on a new size
+    if (!overflow) centredFor = ''; // rotating away and back must centre again, even at the same size
     const sizeKey = `${w}x${cw}`;
     if (overflow && !panned && sizeKey !== centredFor) { centredFor = sizeKey; setScroll((w - cw) / 2); }
     updateScale(map);
@@ -170,7 +176,7 @@ export function mount(el, store) {
         ${sel ? '<circle class="mk-pulse" r="24"/><circle class="mk-pulse mk-pulse--2" r="24"/>' : ''}
         <circle class="mk-halo" r="20"/><circle class="mk-ring" r="12"/><circle class="mk-core" r="6.5"/>
         ${sel ? '<circle class="mk-sel" r="19"/>' : ''}
-        <circle class="mk-hit" r="${(Math.max(19, (coarse() ? 20 : 14) / ms)).toFixed(1)}"/>
+        <circle class="mk-hit" r="${(Math.max(19, (coarse() ? touchCfg.pickRadiusPx : 14) / ms)).toFixed(1)}"/>
       </g>`);
     }
     if (sc.facility) {
@@ -328,12 +334,12 @@ export function mount(el, store) {
     clearTimeout(pinTimer);
     pinId = id;
     showHover(id);
-    pinTimer = setTimeout(() => { pinId = null; showHover(null); }, 2500);
+    pinTimer = setTimeout(() => { pinId = null; showHover(null); }, touchCfg.namePinMs);
   }
-  // The marker under a finger: the nearest one within TOUCH_PICK_PX, so dense markers stay tappable.
+  // The marker under a finger: the nearest one within ui.touch.pickRadiusPx, so dense markers stay tappable.
   function nearestMarker(e, s) {
     const r = svg.getBoundingClientRect();
-    let best = null, bestD = TOUCH_PICK_PX;
+    let best = null, bestD = touchCfg.pickRadiusPx;
     const consider = (id, it) => {
       if (!it || it.x == null) return;
       const d = Math.hypot(r.left + it.x * k - e.clientX, r.top + it.y * k - e.clientY);
@@ -465,5 +471,5 @@ export function mount(el, store) {
   }
   render(store.get());
   const off = store.subscribe(render);
-  return () => { off(); ro.disconnect(); mo.disconnect(); swipe.remove(); clearTimeout(pinTimer); document.removeEventListener('keydown', onKey); };
+  return () => { off(); ro.disconnect(); mo.disconnect(); swipe.remove(); clearTimeout(pinTimer); cancelAnimationFrame(flingRaf); wrap.removeEventListener('scroll', onWrapScroll); for (const ev of ['pointerdown', 'touchstart', 'wheel']) wrap.removeEventListener(ev, noteInput, { capture: true }); document.removeEventListener('keydown', onKey); };
 }

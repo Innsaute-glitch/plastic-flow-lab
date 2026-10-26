@@ -444,6 +444,28 @@ input[type="checkbox"].toggle:disabled {
   max-width: calc(100vw - 2 * var(--space-4));
 }
 
+/* Any touch screen: the same 40px targets, whatever the layout */
+@media (pointer: coarse) {
+  #app .btn,
+  #app .btn-primary,
+  #app .btn-ghost,
+  #app .input,
+  #app .select,
+  #app button.chip {
+    min-height: var(--touch-min);
+  }
+
+  #app .btn-icon {
+    width: var(--touch-min);
+    height: var(--touch-min);
+  }
+
+  #app .input,
+  #app .select {
+    font-size: var(--fs-md);
+  }
+}
+
 /* Utilities */
 .muted {
   color: var(--text-muted);

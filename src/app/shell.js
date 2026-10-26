@@ -59,6 +59,12 @@ export function mount(app, store) {
     // hidden panes must not take focus or taps (they stay laid out so scroll position and canvases survive)
     for (const [id, el] of Object.entries(panels)) el.inert = layout === 'wide' ? false : id === 'map' ? layout === 'narrow' && pane !== 'map' : id !== pane;
     applyTabs();
+    // the tab buttons control real tab panels while tabs are shown (medium has no Map tab, so the map is not a panel there)
+    const tabbed = tabsFor(layout);
+    for (const [id, el] of Object.entries(panels)) {
+      if (tabbed.includes(id)) { el.setAttribute('role', 'tabpanel'); el.setAttribute('aria-labelledby', `pt-${id}`); }
+      else { el.removeAttribute('role'); el.removeAttribute('aria-labelledby'); }
+    }
   }
 
   function setPane(next, { focus = false } = {}) {
@@ -127,7 +133,9 @@ export function mount(app, store) {
   const mqs = [`(min-width: ${cfg.mediumMinWidthPx}px)`, `(min-width: ${cfg.wideMinWidthPx}px)`, `(min-height: ${cfg.mediumMinHeightPx}px)`, '(orientation: portrait)'].map((q) => window.matchMedia(q));
   mqs.forEach((m) => m.addEventListener('change', measure));
   window.addEventListener('orientationchange', measure);
-  document.addEventListener('focusout', () => setTimeout(measure, 150));
+  let focusTimer = 0;
+  const onFocusOut = () => { clearTimeout(focusTimer); focusTimer = setTimeout(measure, 150); };
+  document.addEventListener('focusout', onFocusOut);
   measure();
 
   return () => {
@@ -136,5 +144,7 @@ export function mount(app, store) {
     window.removeEventListener('orientationchange', measure);
     mqs.forEach((m) => m.removeEventListener('change', measure));
     document.removeEventListener('click', onGoto);
+    document.removeEventListener('focusout', onFocusOut);
+    clearTimeout(focusTimer);
   };
 }

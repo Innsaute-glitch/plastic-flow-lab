@@ -496,3 +496,77 @@ Also written by the same script: `public/demo/demo-scenario.json` (a copy of `sc
 
 ## Parallelism
 All six tasks start at once. Tasks 3, 4 and 5 build against the fixtures and stubs, and Task 2 uses the fixture baseline. The only late dependency is regenerating the cached proposal from real sim output, which the orchestrator does at integration. Task 6's tokens are seeded now, so the other tasks can use the variable names immediately.
+
+---
+
+## 3.4 Phase 3: phones and tablets (planned 26 Oct 2026, not started)
+
+**Why:** `GETTING-STARTED.md` step 5 says the app can be opened on a phone or tablet. Today it can't, in practice. The three-column grid needs about 1237 px and has no breakpoints below 1500 px, so anything narrower scrolls sideways. On a phone in landscape the map is 174×107 px. Measured in Playwright at 1024×768, 768×1024, 844×390 and 390×844.
+
+**Contract impact: none.** No change to §3.1 shapes, the store's state or any module's `mount()` signature. The active pane is DOM-only UI state, owned by the app shell. The seam below is a UI contract for this phase only.
+
+### Layouts
+| Name | When | Arrangement |
+|---|---|---|
+| `wide` | width ≥ 1240 px | Unchanged: controls, map, results |
+| `medium` | 820–1239 px wide and height ≥ 560 px (tablet landscape, small laptops) | Two columns: a 340 px side panel with tabs **Setup / Results**, and the map filling the rest |
+| `narrow` | width < 820 px, or height < 560 px (tablet portrait, all phones) | One pane at a time, picked from a bottom tab bar **Setup / Map / Results**. The top bar is compact |
+
+### The seam (shared by Tasks 7 and 8)
+- The shell sets `data-layout="wide|medium|narrow"` and `data-pane="setup|map|results"` on `#app`. It updates them on resize (`matchMedia`), never from the store.
+- The shell sets `--hud-reserve` on `#map-stage`: 116 px on `wide`/`medium`, 64 px on `narrow`. Task 8 makes the HUD fit that height.
+- Other modules style for small screens **only** through `#app[data-layout=…]` selectors or container queries on their own root. They never read the pane and never add their own `matchMedia` for layout.
+- Use `100dvh`, not `100vh`, for anything full-height (mobile browser toolbars). Pad fixed bottom elements with `env(safe-area-inset-bottom)`.
+
+### Pane rules (shell)
+- Mode changes switch the pane once; after that the user's tap wins until the next mode change:
+  - `running` → Map on `narrow`, Results on `medium`.
+  - `optimising` and `compare` → Results (the AI card lives there).
+  - Back to `edit` → Setup.
+- A dot on a tab means there is something new there (for example, the replay is running on Map while the user reads Results).
+- On `narrow`, picking Add, Place or Calibrate switches to Map. Tapping a node on the map shows a chip, "Edit G Block Canteen →", that opens Setup. Selecting a node never jumps panes by itself.
+
+## Task 7: Responsive shell            [complex]
+Owns: `index.html`, `src/main.js`, `src/app/**`
+Does:
+- Implements the layouts, the seam, the pane rules and the tab bar. The tab bar is a new element in `index.html`: a tab strip at the top of the side panel on `medium`, a fixed bottom bar on `narrow`.
+- Compact top bar on `narrow`: logo, mode chip, Demo switch and a **⋯** menu holding Load demo, Import, Export and Assumptions. The scenario name truncates and can still be renamed from the menu.
+- Map editor on touch:
+  - Names show on tap: there is no hover on touch screens.
+  - Drag still works (it already uses pointer events with `touch-action: none`).
+  - Tap targets are at least 40 px.
+- Toasts sit above the bottom tab bar. The `.tb-menu` and the gains popover stay inside the screen.
+- Fixes found on the way, only in its own files.
+Does NOT: change the store's state shape, or restyle results, the Assumptions panel, the HUD or base components (Task 8).
+
+## Task 8: Responsive panels            [complex]
+Owns: `src/results/**`, `src/assumptions/**`, `src/anim/**`, `src/styles/**`
+Does:
+- Drawers (Assumptions, "What the AI saw") go full width below 480 px; the 440 px width is now set in two places (`base.css`, `assumptions.css`).
+- The wide Sankey sheet is usable on a phone: it scrolls sideways inside the sheet, with a "turn sideways for a wider view" hint in portrait.
+- The HUD fits in 64 px on `narrow` as a single row (day and time, play/pause, scrubber, speed, skip). The litter and sorted figures move into a tap-to-expand row.
+- Results cards hold their numbers at a 340 px pane width and at phone width (this also fixes "km" spilling past the Route distance card's padding).
+- Base buttons, chips and inputs meet a 40 px touch target on `narrow`.
+- Fixes found on the way, only in its own files.
+Does NOT: touch `src/app/**`, `index.html` or the seam attributes.
+
+### Done-check (both tasks, then the orchestrator's integration pass)
+1. `npm test` passes (all 60 tests), plus any new tests.
+2. **Every new or changed CSS file is imported by the app itself**, not only by a dev page. Check in the real app, not the dev harness. (The Assumptions panel once shipped unstyled for exactly this reason.)
+3. Playwright screenshot matrix in the real app, Demo on. The builder looks at every image itself:
+   - Sizes: 1920×1080, 1366×768, 1024×768, 768×1024, 844×390 and 390×844.
+   - States: edit (node selected), running (mid-replay), optimising (AI card streaming), compare (top and bottom of results), Assumptions open, wide Sankey open, toast showing, ⋯ menu open.
+4. At every size: no sideways page scroll (`documentElement.scrollWidth === innerWidth`), nothing clipped, no toast or menu off-screen, no console errors.
+5. 1920×1080 and 1366×768 look unchanged next to `docs/images/`.
+
+### Then (orchestrator)
+- Integration review of both tasks' screenshots. Any bug goes through `/bugfix`.
+- A real-device check by the user over Tailscale. Run `npm start` (port 8787 listens on all network interfaces; the Vite dev server only listens on 127.0.0.1), then open `http://<laptop-tailscale-ip>:8787` on the phone.
+- Update the docs: `GETTING-STARTED.md` step 5, the Team Guide's limitations and using-the-app sections, a phone screenshot in the README if it looks good, and `HANDOFF-NOTES.md`.
+- Commit and push.
+
+### Risks
+- A missing CSS import passes every test and still ships an unstyled panel. Done-check 2 exists for this.
+- Desktop regressions from the new selectors. Done-check 5 catches them.
+- Canvas animation speed on a phone at 3× pixel density. Playwright can't measure this, so it waits for the real-device check.
+- Two tasks styling the same element. Avoided by the ownership split and the seam rule.
